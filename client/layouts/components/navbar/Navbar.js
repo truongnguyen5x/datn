@@ -2,10 +2,8 @@ import React from "react"
 import { Navbar } from "reactstrap"
 import { connect } from "react-redux"
 import classnames from "classnames"
-import { useAuth0 } from "../../../authServices/auth0/auth0Service"
 import {
-  logoutWithJWT,
-  logoutWithFirebase
+  logoutWithJWT
 } from "../../../redux/actions/auth/loginActions"
 import NavbarBookmarks from "./NavbarBookmarks"
 import NavbarUser from "./NavbarUser"
@@ -30,7 +28,7 @@ const UserName = props => {
   return username
 }
 const ThemeNavbar = props => {
-  const { user } = useAuth0()
+  let user = undefined
   const colorsArr = [ "primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating" , "static" , "sticky" , "hidden"]
   return (
@@ -103,7 +101,6 @@ const ThemeNavbar = props => {
                     : null
                 }
                 logoutWithJWT={props.logoutWithJWT}
-                logoutWithFirebase={props.logoutWithFirebase}
               />
             </div>
           </div>
@@ -120,7 +117,5 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  logoutWithJWT,
-  logoutWithFirebase,
-  useAuth0
+  logoutWithJWT
 })(ThemeNavbar)

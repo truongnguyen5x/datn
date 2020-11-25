@@ -38,7 +38,7 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin(),
-        new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
         new HtmlWebPackPlugin({
             template: "./client/index.html",
             filename: "./index.html"

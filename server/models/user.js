@@ -9,16 +9,27 @@ const User = sequelize.define('User', {
         primaryKey: true,
         unique: true
     },
-    // first_name: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false
-    // },
-    // last_name: {
-    //     type: DataTypes.STRING
-    //     // allowNull defaults to true
-    // },
+    email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
+    first_name: {
+        type: DataTypes.STRING
+    },
+    last_name: {
+        type: DataTypes.STRING
+        // allowNull defaults to true
+    },
+    hash_password: {
+        type: DataTypes.STRING
+    },
     private_key: {
-        type: DataTypes.BLOB
+        type: DataTypes.BLOB,
+        allowNull: true
+    },
+    refresh_token: {
+        type: DataTypes.STRING
     }
 }, {
     tableName: 'users'

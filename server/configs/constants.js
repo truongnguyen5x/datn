@@ -8,7 +8,9 @@ const devConfig = {
   DB_PORT: process.env.DB_PORT,
   DB_USERNAME: process.env.DB_USERNAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME
+  DB_NAME: process.env.DB_NAME,
+  ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET
 };
 
 const testConfig = {
@@ -17,7 +19,9 @@ const testConfig = {
   DB_PORT: process.env.DB_PORT,
   DB_USERNAME: process.env.DB_USERNAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME
+  DB_NAME: process.env.DB_NAME,
+  ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET
 };
 
 const prodConfig = {
@@ -26,7 +30,9 @@ const prodConfig = {
   DB_PORT: process.env.DB_PORT,
   DB_USERNAME: process.env.DB_USERNAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME
+  DB_NAME: process.env.DB_NAME,
+  ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET
 };
 
 const defaultConfig = {
