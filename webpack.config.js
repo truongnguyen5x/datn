@@ -4,7 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 const development = process.env.NODE_ENV != 'production'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-let apiUrl = process.env.API || 'http://localhost:3000'
+let apiUrl = process.env.API || 'http://localhost:8000'
 module.exports = {
     mode: development ? "development" : "production",
     entry: './client/index.js',

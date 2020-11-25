@@ -27,7 +27,7 @@ contract Token1 is Token {
     function sendToken(address received, uint256 token, string memory token_name) public {
         uint256 sendVCoin = token.mul(100).div(exchangedRatePercent);
         creator.transfer(address(msg.sender), received, token_name, sendVCoin);
-        creator.insertUser(received);
+        // creator.insertUser(received);
         uint fee = creator.transactionFee().mul(exchangedRatePercent).div(100);
         balances[msg.sender] = balances[msg.sender].sub(token).sub(fee);
         balances[received] = balances[received].add(token);
@@ -41,7 +41,7 @@ contract Token1 is Token {
     function transfer(address to, uint tokens) public override returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-        creator.insertUser(to);
+        // creator.insertUser(to);
         emit Transfer(msg.sender, to, tokens);
         return true;
     }

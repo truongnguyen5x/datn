@@ -6,7 +6,7 @@ import './lib.sol';
 
 
 contract VCoin is MainToken {    
-    address[] public userIndex;
+    // address[] public userIndex;
     mapping(address => uint) tableIndex;
     using SafeMath for uint;
     mapping(string => TokenStruct) public tokenStruct;
@@ -18,7 +18,7 @@ contract VCoin is MainToken {
     }
     
     constructor() {
-        userIndex.push(owner);
+        // userIndex.push(owner);
         tableIndex[owner] = 0;
         symbol = "VCOIN";
     }
@@ -48,34 +48,34 @@ contract VCoin is MainToken {
     function transfer(address to, uint tokens) public override returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-        insertUser(to);
+        // insertUser(to);
         emit Transfer(msg.sender, to, tokens);
         return true;
     }
     
-    function isUser(address userAddress) public view returns(bool isIndeed) {
-        return (userIndex[tableIndex[userAddress]] == userAddress);
-    }
+    // function isUser(address userAddress) public view returns(bool isIndeed) {
+    //     return (userIndex[tableIndex[userAddress]] == userAddress);
+    // }
     
-    function insertUser(address new_user) public override {
-        if (!isUser(new_user)) {
-            userIndex.push(new_user);
-            tableIndex[new_user] = userIndex.length-1;
-        }
-    }
+    // function insertUser(address new_user) public override {
+    //     if (!isUser(new_user)) {
+    //         userIndex.push(new_user);
+    //         tableIndex[new_user] = userIndex.length-1;
+    //     }
+    // }
 
-    struct UserResult {
-        string tokenName;
-        uint256 balance;
-    }
+    // struct UserResult {
+    //     string tokenName;
+    //     uint256 balance;
+    // }
     
-    function getUser(address user_addr) public view returns(UserResult[] memory) {
-        UserResult[] memory result = new UserResult[](tokenIndex.length); 
-        for (uint i =0; i< tokenIndex.length; i++) {
-            result[i].tokenName = tokenIndex[i];
-            Token a = tokenStruct[result[i].tokenName].tokenAddress;
-            result[i].balance = a.balanceOf(user_addr);
-        }
-        return result;
-    }
+    // function getUser(address user_addr) public view returns(UserResult[] memory) {
+    //     UserResult[] memory result = new UserResult[](tokenIndex.length); 
+    //     for (uint i =0; i< tokenIndex.length; i++) {
+    //         result[i].tokenName = tokenIndex[i];
+    //         Token a = tokenStruct[result[i].tokenName].tokenAddress;
+    //         result[i].balance = a.balanceOf(user_addr);
+    //     }
+    //     return result;
+    // }
 }

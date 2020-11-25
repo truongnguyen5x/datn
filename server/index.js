@@ -2,15 +2,17 @@ const express = require('express');
 const path = require('path')
 const app = express();
 const bodyParser = require('body-parser');
-const cookieParser = require( 'cookie-parser');
-const compression = require( 'compression');
-const session = require( 'express-session');
-const cors = require( 'cors')
+const cookieParser = require('cookie-parser');
+const compression = require('compression');
+const session = require('express-session');
+const cors = require('cors')
+const {constants} = require('./configs')
+
 app.use(bodyParser.json({ limit: '500mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '500mb' }));
 app.use(cookieParser());
 app.use(compression());
-
+const routes = require('./routes')
 app.use(cors({ origin: '*' }));
 
 const { isIP } = require('net');
@@ -37,10 +39,13 @@ app.use(express.static(path.resolve(__dirname, '../content')))
 app.use(express.static(path.resolve(__dirname, '../public')))
 app.use(express.static(path.resolve(__dirname, '../dist')))
 
+app.use('/api', routes)
+
+
 app.get('/*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })
-// Serve the files on port 3000.
-app.listen(3000, function () {
-    console.log('>> App listening on port 3000 <<');
+
+app.listen(constants.PORT, function () {
+    console.log(`>> App listening on port ${constants.PORT} <<`);
 });

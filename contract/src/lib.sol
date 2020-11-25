@@ -95,30 +95,30 @@ abstract contract ERC20 is ERC20Interface, Owned {
     
 
     function approve(address spender, uint tokens) public override returns (bool success) {
-        // allowed[msg.sender][spender] = tokens;
-        // emit Approval(msg.sender, spender, tokens);
-        // return true;
+        allowed[msg.sender][spender] = tokens;
+        emit Approval(msg.sender, spender, tokens);
+        return true;
     }
     
 
     function transferFrom(address from, address to, uint tokens) public override returns (bool success) {
-        // balances[from] = balances[from].sub(tokens);
-        // allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
-        // balances[to] = balances[to].add(tokens);
-        // emit Transfer(from, to, tokens);
-        // return true;
+        balances[from] = balances[from].sub(tokens);
+        allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
+        balances[to] = balances[to].add(tokens);
+        emit Transfer(from, to, tokens);
+        return true;
     }
 
     function allowance(address tokenOwner, address spender) public view  override returns (uint remaining) {
-        // return allowed[tokenOwner][spender];
+        return allowed[tokenOwner][spender];
     }
 
 
     function approveAndCall(address spender, uint tokens, bytes memory data) public  returns (bool success) {
-        // allowed[msg.sender][spender] = tokens;
-        // Approval(msg.sender, spender, tokens);
-        // ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);
-        // return true;
+        allowed[msg.sender][spender] = tokens;
+        Approval(msg.sender, spender, tokens);
+        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);
+        return true;
     }
     
 }
@@ -132,6 +132,6 @@ abstract contract Token is ERC20 {
 
 abstract contract MainToken is ERC20 {
     uint public transactionFee = 500000;
-    function insertUser(address new_user) public virtual;
+    // function insertUser(address new_user) public virtual;
     function transfer(address sender, address receiver, string memory token_name, uint256 value) public virtual;
 }

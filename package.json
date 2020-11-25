@@ -19,6 +19,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "draft-js": "^0.11.4",
     "express-session": "^1.17.1",
     "file-saver": "^2.0.2",
@@ -32,6 +33,7 @@
     "leaflet": "^1.6.0",
     "match-sorter": "~4.0.2",
     "moment": "~2.24.0",
+    "mysql2": "^2.2.5",
     "namor": "^2.0.2",
     "postcss-rtl": "^1.5.0",
     "prismjs": "^1.19.0",
@@ -80,6 +82,7 @@
     "redux": "^4.0.5",
     "redux-debounced": "~0.5.0",
     "redux-thunk": "~2.3.0",
+    "sequelize": "^6.3.5",
     "styled-components": "^5.0.1",
     "swiper": "^5.3.0",
     "xlsx": "^0.15.5",
@@ -100,7 +103,9 @@
   },
   "homepage": "",
   "nodemonConfig": {
-    "ignore": ["dist/*"],
+    "ignore": [
+      "dist/*"
+    ],
     "delay": "2500"
   }
 }
