@@ -13,8 +13,9 @@ export const loginWithJWT = user => {
       .then(response => {
         var loggedInUser
         if (response.data) {
-          loggedInUser = response.data.data.user
-          localStorage.setItem("token", response.data.data.accessToken)
+          loggedInUser = response.data.user
+          localStorage.setItem("accessToken", response.data.accessToken)
+          localStorage.setItem("refreshToken", response.data.user.refresh_token)
           dispatch({
             type: "LOGIN_WITH_JWT",
             payload: { loggedInUser, loggedInWith: "jwt" }
@@ -29,7 +30,8 @@ export const loginWithJWT = user => {
 
 export const logoutWithJWT = () => {
   return dispatch => {
-    localStorage.removeItem("token")
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem("refreshToken")
     dispatch({ type: "LOGOUT_WITH_JWT", payload: null })
     history.push("/pages/login")
   }
@@ -42,11 +44,28 @@ export const changeRole = role => {
 
 
 export const getProfile = () => dispatch => {
-  const token = localStorage.getItem('token')
-  if (!token) {
+  const accessToken = localStorage.getItem('accessToken')
+  const refreshToken = localStorage.getItem('refreshToken')
+  if (!accessToken) {
     console.log('no token')
   } else {
-    axios.get("/api/user/me", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => console.log(res.data))
+    axios.post("/api/user/me", { refreshToken }, { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then(response => {
+        var loggedInUser
+        if (response.data) {
+          loggedInUser = response.data.user
+          localStorage.setItem("accessToken", response.data.accessToken)
+          localStorage.setItem("refreshToken", response.data.user.refresh_token)
+          dispatch({
+            type: "LOGIN_WITH_JWT",
+            payload: { loggedInUser, loggedInWith: "jwt" }
+          })
+        }
+      })
+      .catch(error => {
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
+        history.push("/pages/login")
+      })
   }
 }

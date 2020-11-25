@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt')
 const { constants } = require('../configs')
 const authService = require('./auth')
 const randToken = require('rand-token')
-const { use } = require('../routes')
+
+const { verify } = require('jsonwebtoken')
 
 const getListUser = async (id) => {
     return User.findAll()
@@ -37,7 +38,7 @@ const signin = async (data) => {
     }
     const isPasswordValid = bcrypt.compareSync(password, user.hash_password);
     if (!isPasswordValid) {
-        return res.status(401).send('Mật khẩu không chính xác.');
+        throw new Error('Mật khẩu không chính xác.');
     }
 
     const accessTokenLife = constants.ACCESS_TOKEN_LIFE;
@@ -68,9 +69,7 @@ const signin = async (data) => {
     }
 
     return {
-        msg: 'Đăng nhập thành công.',
         accessToken,
-        refreshToken,
         user
     }
 }
@@ -131,11 +130,64 @@ const getUser = async (email) => {
     return User.findOne({ email })
 }
 
+const me = async (token, refreshToken) => {
+    const accessTokenLife = constants.ACCESS_TOKEN_LIFE;
+    const accessTokenSecret = constants.ACCESS_TOKEN_SECRET;
+
+    // Decode access token đó
+    const verify = await authService.verifyToken(
+        token,
+        accessTokenSecret,
+    );
+    let payload
+    if (!verify) {
+        // Decode access token đó
+        const decoded = await authService.decodeToken(
+            token,
+            accessTokenSecret,
+        );
+        if (!decoded) {
+            throw new Error('Access token không hợp lệ.')
+        }
+        payload = decoded.payload
+    } else {
+        payload = verify.payload
+    }
+    const email = payload.email; // Lấy username từ payload
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new Error('User không tồn tại.');
+    }
+
+    if (refreshToken !== user.refresh_token) {
+        throw new Error('Refresh token không hợp lệ.');
+    }
+    let accessToken = token
+    if (!verify) {
+        // Tạo access token mới
+        const dataForAccessToken = {
+            id: user.id,
+            email
+        }
+
+        accessToken = await authService.generateToken(
+            dataForAccessToken,
+            accessTokenSecret,
+            accessTokenLife,
+        );
+        if (!accessToken) {
+            throw new Error('Tạo access token không thành công, vui lòng thử lại.');
+        }
+    }
+    return { accessToken, user }
+}
+
 module.exports = {
     getListUser,
     signup,
     signin,
     refreshToken,
     getUser,
-    logout
+    logout,
+    me
 }

@@ -184,6 +184,30 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
     {...rest}
     render={props => {
+      return localStorage.getItem("accessToken") ? <ContextLayout.Consumer>
+        {context => {
+          let LayoutTag =
+            fullLayout === true
+              ? context.fullLayout
+              : context.state.activeLayout === "horizontal"
+                ? context.horizontalLayout
+                : context.VerticalLayout
+          return (
+            <LayoutTag {...props} permission={props.user}>
+              <Suspense fallback={<Spinner />}>
+                <Component {...props} />
+              </Suspense>
+            </LayoutTag>
+          )
+        }}
+      </ContextLayout.Consumer> : <Redirect to='/pages/login'/>
+    }}
+  />
+)
+const RouteNormalConfig = ({ component: Component, fullLayout, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => {
       return <ContextLayout.Consumer>
         {context => {
           let LayoutTag =
@@ -207,13 +231,12 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
 )
 const mapStateToProps = state => {
   return {
-    user: state.auth.login.userRole,
-    userData: state.auth.login.values
+    user: state.auth.login.userRole
   }
 }
 
 const AppRoute = connect(mapStateToProps)(RouteConfig)
-
+const AppRouteNormal = connect(mapStateToProps)(RouteNormalConfig)
 
 
 class AppRouter extends React.Component {
@@ -221,6 +244,7 @@ class AppRouter extends React.Component {
     this.props.getProfile()
   }
   render() {
+  
     return (
       // Set the directory path if you are deploying in sub-folder
       <Router history={history}>
@@ -349,9 +373,9 @@ class AppRouter extends React.Component {
             fullLayout
           />
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
-          <AppRoute path="/pages/login" component={Login} fullLayout />
-          <AppRoute path="/pages/register" component={register} fullLayout />
-          <AppRoute
+          <AppRouteNormal path="/pages/login" component={Login} fullLayout />
+          <AppRouteNormal path="/pages/register" component={register} fullLayout />
+          <AppRouteNormal
             path="/pages/forgot-password"
             component={forgotPassword}
             fullLayout
@@ -414,4 +438,4 @@ class AppRouter extends React.Component {
   }
 }
 
-export default connect(null, { getProfile })(AppRouter)
+export default connect(mapStateToProps, { getProfile })(AppRouter)

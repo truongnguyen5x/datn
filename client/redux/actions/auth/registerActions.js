@@ -16,11 +16,11 @@ export const signupWithJWT = (email, password, name) => {
       .then(response => {
         var loggedInUser
 
-        if(response.data){
+        if (response.data) {
 
           loggedInUser = response.data.user
 
-          localStorage.setItem("token", response.data.token)
+          localStorage.setItem("accessToken", response.data.token)
 
           dispatch({
             type: "LOGIN_WITH_JWT",
