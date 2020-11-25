@@ -59,11 +59,22 @@ const logout = async (req, res, next) => {
     }
 }
 
+const me = async (req, res, next) => {
+    try {
+        res.send({
+            data: req.user
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message: error.message})
+    }
+}
 
 module.exports = {
     getListUser,
     signup,
     signin,
     refreshToken,
-    logout
+    logout,
+    me
 }

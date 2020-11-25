@@ -7,6 +7,8 @@ import Spinner from "./components/@vuexy/spinner/Loading-spinner"
 import knowledgeBaseCategory from "./views/pages/knowledge-base/Category"
 import knowledgeBaseQuestion from "./views/pages/knowledge-base/Questions"
 import { ContextLayout } from "./utility/context/Layout"
+import { getProfile } from './redux/actions/auth/loginActions'
+
 
 // Route-based code splitting
 const analyticsDashboard = lazy(() =>
@@ -182,37 +184,42 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      return (
-        <ContextLayout.Consumer>
-          {context => {
-            let LayoutTag =
-              fullLayout === true
-                ? context.fullLayout
-                : context.state.activeLayout === "horizontal"
+      return <ContextLayout.Consumer>
+        {context => {
+          let LayoutTag =
+            fullLayout === true
+              ? context.fullLayout
+              : context.state.activeLayout === "horizontal"
                 ? context.horizontalLayout
                 : context.VerticalLayout
-            return (
-              <LayoutTag {...props} permission={props.user}>
-                <Suspense fallback={<Spinner />}>
-                  <Component {...props} />
-                </Suspense>
-              </LayoutTag>
-            )
-          }}
-        </ContextLayout.Consumer>
-      )
+          return (
+            <LayoutTag {...props} permission={props.user}>
+              <Suspense fallback={<Spinner />}>
+                <Component {...props} />
+              </Suspense>
+            </LayoutTag>
+          )
+        }}
+      </ContextLayout.Consumer>
+
     }}
   />
 )
 const mapStateToProps = state => {
   return {
-    user: state.auth.login.userRole
+    user: state.auth.login.userRole,
+    userData: state.auth.login.values
   }
 }
 
 const AppRoute = connect(mapStateToProps)(RouteConfig)
 
+
+
 class AppRouter extends React.Component {
+  componentDidMount() {
+    this.props.getProfile()
+  }
   render() {
     return (
       // Set the directory path if you are deploying in sub-folder
@@ -407,4 +414,4 @@ class AppRouter extends React.Component {
   }
 }
 
-export default AppRouter
+export default connect(null, { getProfile })(AppRouter)

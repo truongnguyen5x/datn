@@ -11,7 +11,6 @@ import "./@fake-db"
 
 const LazyApp = lazy(() => import("./App"))
 
-// configureDatabase()
 
 ReactDOM.render(
     <Provider store={store}>

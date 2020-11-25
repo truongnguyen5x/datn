@@ -6,16 +6,15 @@ import axios from "axios"
 export const loginWithJWT = user => {
   return dispatch => {
     axios
-      .post("/api/authenticate/login/user", {
+      .post("/api/user/signin", {
         email: user.email,
         password: user.password
       })
       .then(response => {
         var loggedInUser
-
         if (response.data) {
-          loggedInUser = response.data.user
-
+          loggedInUser = response.data.data.user
+          localStorage.setItem("token", response.data.data.accessToken)
           dispatch({
             type: "LOGIN_WITH_JWT",
             payload: { loggedInUser, loggedInWith: "jwt" }
@@ -30,7 +29,8 @@ export const loginWithJWT = user => {
 
 export const logoutWithJWT = () => {
   return dispatch => {
-    dispatch({ type: "LOGOUT_WITH_JWT", payload: {} })
+    localStorage.removeItem("token")
+    dispatch({ type: "LOGOUT_WITH_JWT", payload: null })
     history.push("/pages/login")
   }
 }
@@ -38,4 +38,15 @@ export const logoutWithJWT = () => {
 
 export const changeRole = role => {
   return dispatch => dispatch({ type: "CHANGE_ROLE", userRole: role })
+}
+
+
+export const getProfile = () => dispatch => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    console.log('no token')
+  } else {
+    axios.get("/api/user/me", { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => console.log(res.data))
+  }
 }
