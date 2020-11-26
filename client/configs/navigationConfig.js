@@ -10,7 +10,7 @@ const navigationConfig = [
     title: "Quản lý Template token",
     type: "item",
     icon: <Icon.Book size={16} />,
-    navLink: "/template",
+    navLink: "/",
     permissions: ["admin", "editor"]
   },
   {
@@ -55,7 +55,7 @@ const navigationConfig = [
         type: "item",
         icon: <Icon.Circle size={12} />,
         permissions: ["admin", "editor"],
-        navLink: "/"
+        navLink: "/analytics"
       },
       {
         id: "eCommerceDash",
