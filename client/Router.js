@@ -179,6 +179,10 @@ const register = lazy(() =>
 const accessControl = lazy(() =>
   import("./extensions/access-control/AccessControl")
 )
+const TemplateToken = lazy(() =>
+  import("./views/template/index"))
+const Token = lazy(() =>
+  import("./views/token/index"))
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -200,7 +204,7 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
             </LayoutTag>
           )
         }}
-      </ContextLayout.Consumer> : <Redirect to='/pages/login'/>
+      </ContextLayout.Consumer> : <Redirect to='/pages/login' />
     }}
   />
 )
@@ -244,12 +248,14 @@ class AppRouter extends React.Component {
     this.props.getProfile()
   }
   render() {
-  
+
     return (
       // Set the directory path if you are deploying in sub-folder
       <Router history={history}>
         <Switch>
           <AppRoute exact path="/" component={analyticsDashboard} />
+          <AppRoute path="/template" component={TemplateToken} />
+          <AppRoute path="/token" component={Token} />
           <AppRoute
             path="/ecommerce-dashboard"
             component={ecommerceDashboard}

@@ -2,6 +2,7 @@ import React from "react"
 import * as Icon from "react-feather"
 
 const horizontalMenuConfig = [
+
   {
     id: "dashboard",
     title: "Dashboard",

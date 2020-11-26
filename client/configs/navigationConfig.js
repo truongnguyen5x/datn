@@ -2,8 +2,48 @@ import React from "react"
 import * as Icon from "react-feather"
 const navigationConfig = [
   {
+    type: "groupHeader",
+    groupTitle: "Main"
+  },
+  {
+    id: "template",
+    title: "Quản lý Template token",
+    type: "item",
+    icon: <Icon.Book size={16} />,
+    navLink: "/template",
+    permissions: ["admin", "editor"]
+  },
+  {
+    id: "token",
+    title: "Quản lý Token",
+    type: "item",
+    icon: <Icon.DollarSign size={16} />,
+    navLink: "/token",
+    permissions: ["admin", "editor"]
+  },
+  {
+    id: "role",
+    title: "Phân quyền",
+    type: "item",
+    icon: <Icon.User size={16} />,
+    navLink: "/role",
+    permissions: ["admin", "editor"]
+  },
+  {
+    id: "dapp",
+    title: "Quản lý DAPP",
+    type: "item",
+    icon: <Icon.Package size={16} />,
+    navLink: "/dapp",
+    permissions: ["admin", "editor"]
+  },
+  {
+    type: "groupHeader",
+    groupTitle: "Dashboard"
+  },
+  {
     id: "dashboard",
-    title: "Dashboard",
+    title: "Dashboardd",
     type: "collapse",
     icon: <Icon.Home size={20} />,
     badge: "warning",
