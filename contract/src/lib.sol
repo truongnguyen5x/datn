@@ -66,7 +66,7 @@ contract Owned {
 }
 
 
-abstract contract ERC20 is ERC20Interface, Owned {
+ contract ERC20 is ERC20Interface, Owned {
     using SafeMath for uint;
     string public symbol;
     string public  name;
@@ -112,7 +112,14 @@ abstract contract ERC20 is ERC20Interface, Owned {
     function allowance(address tokenOwner, address spender) public view  override returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
-
+    
+    function transfer(address to, uint tokens) public override returns (bool success) {
+        balances[msg.sender] = balances[msg.sender].sub(tokens);
+        balances[to] = balances[to].add(tokens);
+        // insertUser(to);
+        emit Transfer(msg.sender, to, tokens);
+        return true;
+    }
 
     function approveAndCall(address spender, uint tokens, bytes memory data) public  returns (bool success) {
         allowed[msg.sender][spender] = tokens;
@@ -124,14 +131,40 @@ abstract contract ERC20 is ERC20Interface, Owned {
 }
 
 
-abstract contract Token is ERC20 {
-    uint public exchangedRatePercent;   // ? token = 1 vcoin
-    function setCreator() public virtual;
-    function receiveToken(address sender, address received, uint256 token) public virtual;
-}
-
 abstract contract MainToken is ERC20 {
     uint public transactionFee = 500000;
     // function insertUser(address new_user) public virtual;
     function transfer(address sender, address receiver, string memory token_name, uint256 value) public virtual;
 }
+
+
+abstract contract Token is ERC20 {
+    using SafeMath for uint;
+    MainToken public creator;
+    uint public exchangedRatePercent = 100;   // ? token = 1 vcoin
+    function setCreator() public {
+        creator = MainToken(address(msg.sender));
+        require(creator.owner() == owner);
+    }
+
+    modifier onlyCreator {
+        require(address(msg.sender) == address(creator));
+        _;
+    }
+        
+    // gui cho dia chi ben kia bao nhieu token
+    function sendToken(address received, uint256 token, string memory token_name) public {
+        uint256 sendVCoin = token.mul(100).div(exchangedRatePercent);
+        creator.transfer(address(msg.sender), received, token_name, sendVCoin);
+        // creator.insertUser(received);
+        uint fee = creator.transactionFee().mul(exchangedRatePercent).div(100);
+        balances[msg.sender] = balances[msg.sender].sub(token).sub(fee);
+        balances[received] = balances[received].add(token);
+    }
+    
+    function receiveToken(address sender, address received, uint256 token) public onlyCreator {
+        balances[received] = balances[received].sub(token);
+        balances[sender] = balances[sender].add(token);
+    }
+}
+

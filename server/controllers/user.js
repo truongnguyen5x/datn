@@ -1,5 +1,5 @@
 const { userService } = require('../services')
-const user = require('../services/user')
+
 
 const getListUser = async (req, res, next) => {
     const rs = await userService.getListUser(null)

@@ -1,4 +1,5 @@
 const User = require('./user')
+const Token = require('./token')
 const {sequelize} = require('../configs')
 
 sequelize
@@ -9,4 +10,4 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
-module.exports = { User }
+module.exports = { User, Token }

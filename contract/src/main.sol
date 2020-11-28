@@ -44,14 +44,7 @@ contract VCoin is MainToken {
         uint256 sendAmount = vcoin.mul(token.exchangedRatePercent()).div(100);
         token.receiveToken(sender, received, sendAmount);
     }
-    
-    function transfer(address to, uint tokens) public override returns (bool success) {
-        balances[msg.sender] = balances[msg.sender].sub(tokens);
-        balances[to] = balances[to].add(tokens);
-        // insertUser(to);
-        emit Transfer(msg.sender, to, tokens);
-        return true;
-    }
+
     
     // function isUser(address userAddress) public view returns(bool isIndeed) {
     //     return (userIndex[tableIndex[userAddress]] == userAddress);
