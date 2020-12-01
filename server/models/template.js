@@ -1,30 +1,25 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const Token = sequelize.define('Token', {
+const TemplateToken = sequelize.define('TemplateToken', {
+    // Model attributes are defined here
     id: {
         type: DataTypes.INTEGER(10).UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
         unique: true
     },
-    symbol: {
+    name: {
         type: DataTypes.STRING
     },
     code: {
         type: DataTypes.STRING
     },
-    del: {
-        type: DataTypes.BOOLEAN
-    },
-    deploy_status: {
-        type: DataTypes.INTEGER.UNSIGNED
-    },
-    exchange_rate: {
-        type: DataTypes.INTEGER.UNSIGNED
+    description: {
+        type: DataTypes.STRING
     }
 }, {
-    tableName: 'tokens'
+    tableName: 'templates'
 });
 
-module.exports = Token
+module.exports = TemplateToken

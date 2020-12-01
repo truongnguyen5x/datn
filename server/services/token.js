@@ -1,10 +1,9 @@
-const path = require("path"); //nodejs ’path’ module
-const solc = require("solc"); //solidity compiler module
-const fs = require("fs-extra"); //file system module
+const path = require("path");
+const solc = require("solc");
+const fs = require("fs-extra");
+const { Token } = require("../models");
 
 const createToken = async (code) => {
-    console.log('create token')
-
 
     // Feth path of build
     const buildPath = path.resolve(__dirname, "../../contract/build");
@@ -222,6 +221,8 @@ const createToken = async (code) => {
     //         }
     //     }
     // }
+
+    
     // input3.sources = input.sources
     // const output = JSON.parse(solc.compile(JSON.stringify(input3))) ;
     // console.log(output)
@@ -242,6 +243,26 @@ const createToken = async (code) => {
 
 }
 
+const getListToken = async () => {
+    return Token.findAll({})
+}
+
+const getTokenById = async (id) => {
+    return Token.findOne({ where: { id } })
+}
+
+const updateToken = async (data) => {
+    return Token.update(data, { where: { id: data.id } })
+}
+
+const deleteToken = async (id) => {
+    return Token.destroy({ where: { id } })
+}
+
 module.exports = {
-    createToken
+    createToken,
+    getListToken,
+    getTokenById,
+    updateToken,
+    deleteToken
 }
