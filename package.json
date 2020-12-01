@@ -82,6 +82,7 @@
     "redux-debounced": "~0.5.0",
     "redux-thunk": "~2.3.0",
     "sequelize": "^6.3.5",
+    "solc": "^0.7.5",
     "styled-components": "^5.0.1",
     "swiper": "^5.3.0",
     "validator": "^13.1.17",
