@@ -1,4 +1,5 @@
 const { tokenService } = require('../services')
+const ApiError = require("../middlewares/error")
 
 const getListToken = async (req, res, next) => {
     try {
@@ -36,7 +37,7 @@ const updateToken = async (req, res, next) => {
         const { id } = req.params
         const token = await tokenService.getTokenById(id)
         if (!token) {
-            throw new Error("Khong tim thay token ")
+            throw new ApiError(400, "Khong tim thay token ")
         }
         req.body.id = id
         const rs = await tokenService.updateToken(req.body)
@@ -52,7 +53,7 @@ const deleteToken = async (req, res, next) => {
         const { id } = req.params
         const token = await tokenService.getTokenById(id)
         if (!token) {
-            throw new Error("Khong tim thay token ")
+            throw new ApiError(400, "Khong tim thay token ")
         }
         await tokenService.deleteToken(id)
         res.send({ message: 'success' })

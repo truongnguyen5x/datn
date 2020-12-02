@@ -7,7 +7,7 @@ const navigationConfig = [
   },
   {
     id: "template",
-    title: "Quản lý Template token",
+    title: "Template token Manager",
     type: "item",
     icon: <Icon.Book size={16} />,
     navLink: "/",
@@ -15,7 +15,7 @@ const navigationConfig = [
   },
   {
     id: "token",
-    title: "Quản lý Token",
+    title: "Token Manager",
     type: "item",
     icon: <Icon.DollarSign size={16} />,
     navLink: "/token",
@@ -23,7 +23,7 @@ const navigationConfig = [
   },
   {
     id: "role",
-    title: "Phân quyền",
+    title: "Permission manager",
     type: "item",
     icon: <Icon.User size={16} />,
     navLink: "/role",
@@ -31,7 +31,7 @@ const navigationConfig = [
   },
   {
     id: "dapp",
-    title: "Quản lý DAPP",
+    title: "DAPP manager",
     type: "item",
     icon: <Icon.Package size={16} />,
     navLink: "/dapp",

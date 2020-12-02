@@ -1,13 +1,11 @@
-import axios from 'axios'
+import { FetchApi } from '../axios'
 
 export const getListTemplateToken = () => async dispatch => {
-    const accessToken = localStorage.getItem('accessToken')
-    axios.get('/api/templateToken', { headers: { Authorization: `Bearer ${accessToken}` } })
+    FetchApi('/api/templateToken')
         .then(res => {
-
             dispatch({
                 type: "GET_LIST_TEMPLATE_TOKEN",
-                payload: res.data
+                payload: res
             })
         })
         .catch(error => {
@@ -16,11 +14,10 @@ export const getListTemplateToken = () => async dispatch => {
 }
 
 export const updateTemplateToken = (data) => async dispatch => {
-    const accessToken = localStorage.getItem('accessToken')
     const { id } = data
-    axios.put(`/api/templateToken/${id}`, data, { headers: { Authorization: `Bearer ${accessToken}` } })
+    FetchApi(`/api/templateToken/${id}`, 'PUT', data)
         .then(res => {
-            
+
 
         })
         .catch(error => {
@@ -29,10 +26,9 @@ export const updateTemplateToken = (data) => async dispatch => {
 }
 
 export const createTemplateToken = (data) => async dispatch => {
-    const accessToken = localStorage.getItem('accessToken')
-    axios.post(`/api/templateToken`, data, { headers: { Authorization: `Bearer ${accessToken}` } })
+    FetchApi(`/api/templateToken`, 'POST', data)
         .then(res => {
-            
+
         })
         .catch(error => {
             console.log(error)
@@ -40,10 +36,9 @@ export const createTemplateToken = (data) => async dispatch => {
 }
 
 export const deleteTemplateToken = (id) => async dispatch => {
-    const accessToken = localStorage.getItem('accessToken')
-    axios.delete(`/api/templateToken/${id}`, { headers: { Authorization: `Bearer ${accessToken}` } })
+    FetchApi(`/api/templateToken/${id}`, 'DELETE')
         .then(res => {
-            
+
         })
         .catch(error => {
             console.log(error)

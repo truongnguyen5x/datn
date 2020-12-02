@@ -11,6 +11,9 @@ const Token = sequelize.define('Token', {
     symbol: {
         type: DataTypes.STRING
     },
+    name: {
+        type: DataTypes.STRING
+    },
     code: {
         type: DataTypes.STRING
     },
@@ -22,6 +25,15 @@ const Token = sequelize.define('Token', {
     },
     exchange_rate: {
         type: DataTypes.INTEGER.UNSIGNED
+    },
+    transaction_fee: {
+        type: DataTypes.INTEGER.UNSIGNED
+    },
+    address: {
+        type: DataTypes.STRING
+    },
+    description: {
+        type: DataTypes.STRING
     }
 }, {
     tableName: 'tokens'

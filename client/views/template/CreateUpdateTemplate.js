@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { createTemplateToken, updateTemplateToken, deleteTemplateToken, getListTemplateToken } from '../../redux/actions/template-token'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const ValidateSchema = Yup.object().shape({
     name: Yup.string()
@@ -19,12 +20,10 @@ const ValidateSchema = Yup.object().shape({
 
 const CreateUpdateTemplate = (props) => {
     const [formDisable, setFormDisable] = useState(false)
+    const [isConfirmDelete, setConfirmDelete] = useState(false)
     const formRef = useRef()
     useEffect(() => {
-        if (props.data) {
-            setFormDisable(true)
-        }
-
+        setFormDisable(!!props.data)
     }, [props.data])
 
     const editedMode = !!props.data
@@ -38,7 +37,7 @@ const CreateUpdateTemplate = (props) => {
         } else if (formDisable) {
             return <><Button color="primary" type="button" onClick={() => setFormDisable(false)}>
                 Update
-                </Button>{" "}<Button color="danger" onClick={() => onDeleteTemplateToken()} type="button">
+                </Button>{" "}<Button color="danger" onClick={() => setConfirmDelete(true)} type="button">
                     Delete
                 </Button>{" "}
             </>
@@ -47,6 +46,16 @@ const CreateUpdateTemplate = (props) => {
                 Save
              </Button>
             </>
+        }
+    }
+
+    const renderTitleModal = () => {
+        if (!editedMode) {
+            return "Create Template token"
+        } else if (formDisable) {
+            return "Detail Template token"
+        } else {
+            return "Update Template Token"
         }
     }
 
@@ -76,9 +85,11 @@ const CreateUpdateTemplate = (props) => {
     }
 
 
+
     return <React.Fragment>
         <ToastContainer />
         <Modal
+            onClosed={() => setFormDisable(!!props.data)}
             isOpen={props.visible}
             toggle={props.onClose}
             className={props.className + " modal-dialog-centered modal-lg"}
@@ -92,11 +103,11 @@ const CreateUpdateTemplate = (props) => {
                 {({ errors, touched }) =>
                     <Form>
                         <ModalHeader toggle={props.onClose}>
-                            Tạo Template token
+                            {renderTitleModal()}
                         </ModalHeader>
                         <ModalBody>
                             <FormGroup>
-                                <Label for="name">Tên template:</Label>
+                                <Label for="name">Name:</Label>
                                 <Field
                                     className={`form-control ${errors.name &&
                                         touched.name &&
@@ -104,7 +115,7 @@ const CreateUpdateTemplate = (props) => {
                                     disabled={formDisable}
                                     type="text"
                                     name="name"
-                                    placeholder="Tên template"
+                                    placeholder="Template's name"
                                 />
                                 <ErrorMessage
                                     name="name"
@@ -113,7 +124,7 @@ const CreateUpdateTemplate = (props) => {
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <Label for="description">Mô tả:</Label>
+                                <Label for="description">Description:</Label>
                                 <Field
                                     name="description"
                                     className={`form-control ${errors.description &&
@@ -121,7 +132,7 @@ const CreateUpdateTemplate = (props) => {
                                         "is-invalid"}`}
                                     disabled={formDisable}
                                     type="text"
-                                    placeholder="Mô tả"
+                                    placeholder="Template's description"
                                 />
                                 <ErrorMessage
                                     name="description"
@@ -159,6 +170,25 @@ const CreateUpdateTemplate = (props) => {
 
             </Formik>
         </Modal>
+        <SweetAlert title="Are you sure?"
+            warning
+            show={isConfirmDelete}
+            showCancel
+            reverseButtons
+            cancelBtnBsStyle="danger"
+            confirmBtnText="Yes, delete it!"
+            cancelBtnText="Cancel"
+            onConfirm={() => {
+                setConfirmDelete(false)
+                onDeleteTemplateToken()
+                
+            }}
+            onCancel={() => {
+                setConfirmDelete(false)
+            }}
+        >
+            You won't be able to revert this!
+        </SweetAlert>
     </React.Fragment>
 }
 

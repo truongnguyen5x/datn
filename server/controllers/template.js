@@ -1,5 +1,5 @@
 const { templateTokenService } = require('../services')
-
+const ApiError = require("../middlewares/error")
 
 const getListTemplateToken = async (req, res, next) => {
     try {
@@ -34,7 +34,7 @@ const updateTemplateToken = async (req, res, next) => {
         const { id } = req.params
         const templateToken = await templateTokenService.getTemplateTokenById(id)
         if (!templateToken) {
-            throw new Error('khong tim thay template')
+            throw new ApiError(400, 'khong tim thay template')
         }
         req.body.id = id
         const rs = await templateTokenService.updateTemplateToken(req.body)
@@ -49,7 +49,7 @@ const deleteTemplateToken = async (req, res, next) => {
         const { id } = req.params
         const templateToken = await templateTokenService.getTemplateTokenById(id)
         if (!templateToken) {
-            throw new Error('khong tim thay template')
+            throw new ApiError(400, 'khong tim thay template')
         }
         await templateTokenService.deleteTemplateToken(id)
         res.send({ message: 'success' })

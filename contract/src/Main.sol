@@ -2,7 +2,7 @@
 pragma solidity >=0.5.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import './lib.sol';
+import './Lib.sol';
 
 
 contract VCoin is MainToken {    
@@ -45,30 +45,4 @@ contract VCoin is MainToken {
         token.receiveToken(sender, received, sendAmount);
     }
 
-    
-    // function isUser(address userAddress) public view returns(bool isIndeed) {
-    //     return (userIndex[tableIndex[userAddress]] == userAddress);
-    // }
-    
-    // function insertUser(address new_user) public override {
-    //     if (!isUser(new_user)) {
-    //         userIndex.push(new_user);
-    //         tableIndex[new_user] = userIndex.length-1;
-    //     }
-    // }
-
-    // struct UserResult {
-    //     string tokenName;
-    //     uint256 balance;
-    // }
-    
-    // function getUser(address user_addr) public view returns(UserResult[] memory) {
-    //     UserResult[] memory result = new UserResult[](tokenIndex.length); 
-    //     for (uint i =0; i< tokenIndex.length; i++) {
-    //         result[i].tokenName = tokenIndex[i];
-    //         Token a = tokenStruct[result[i].tokenName].tokenAddress;
-    //         result[i].balance = a.balanceOf(user_addr);
-    //     }
-    //     return result;
-    // }
 }

@@ -132,7 +132,7 @@ contract Owned {
 
 
 abstract contract MainToken is ERC20 {
-    uint public transactionFee = 500000;
+    uint public swapFee = 500000;
     // function insertUser(address new_user) public virtual;
     function transfer(address sender, address receiver, string memory token_name, uint256 value) public virtual;
 }
@@ -141,6 +141,7 @@ abstract contract MainToken is ERC20 {
 abstract contract Token is ERC20 {
     using SafeMath for uint;
     MainToken public creator;
+    uint public transactionFee = 500000;
     uint public exchangedRatePercent = 100;   // ? token = 1 vcoin
     function setCreator() public {
         creator = MainToken(address(msg.sender));
@@ -157,7 +158,7 @@ abstract contract Token is ERC20 {
         uint256 sendVCoin = token.mul(100).div(exchangedRatePercent);
         creator.transfer(address(msg.sender), received, token_name, sendVCoin);
         // creator.insertUser(received);
-        uint fee = creator.transactionFee().mul(exchangedRatePercent).div(100);
+        uint fee = creator.swapFee().mul(exchangedRatePercent).div(100);
         balances[msg.sender] = balances[msg.sender].sub(token).sub(fee);
         balances[received] = balances[received].add(token);
     }

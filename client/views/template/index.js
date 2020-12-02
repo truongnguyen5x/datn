@@ -18,10 +18,10 @@ const TemplateToken = (props) => {
     const { listTemplateToken } = props
     return <React.Fragment>
 
-        <Button.Ripple className="my-1 bg-gradient-primary" onClick={() => onCloseModalCreate()}>
+        <Button.Ripple className="my-1 bg-gradient-primary" onClick={() => { onCloseModalCreate(); setTemplateToken(null) }}>
 
             <Plus size={14} />
-            <span className="align-middle ml-50">Tạo Template token</span>
+            <span className="align-middle ml-50">Create Template token</span>
         </Button.Ripple>
         <Row>
             {
@@ -31,7 +31,7 @@ const TemplateToken = (props) => {
                             <h5>{i.name}</h5>
                             <p className="mb-0">Description: {i.description}</p>
                             <div className="text-center">
-                                <Button.Ripple className="mt-2" color="primary" outline onClick={() => { onCloseModalCreate(); setTemplateToken(i)}}>
+                                <Button.Ripple className="mt-2" color="primary" outline onClick={() => { onCloseModalCreate(); setTemplateToken(i) }}>
                                     Detail
                             </Button.Ripple>
                             </div>
