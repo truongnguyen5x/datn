@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap'
 import Select from "react-select"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import UpdateToken from "./UpdateToken"
@@ -42,8 +42,7 @@ const DetailToken = (props) => {
         }
     }
 
-
-
+    
     return <React.Fragment>
         <ToastContainer />
         <Modal
@@ -70,36 +69,47 @@ const DetailToken = (props) => {
                                     placeholder="Token's name"
                                 />
                             </FormGroup>
-                            <FormGroup>
-                                <Label for="symbol">Symbol:</Label>
-                                <Field
-                                    className={`form-control`}
-                                    disabled
-                                    type="text"
-                                    name="symbol"
-                                    placeholder="Token's symbol"
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="exchange_rate">Exchange Rate:</Label>
-                                <Field
-                                    className={`form-control`}
-                                    disabled
-                                    type="number"
-                                    name="exchange_rate"
-                                    placeholder="Token's exchange rate"
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="transaction_fee">Transaction Fee:</Label>
-                                <Field
-                                    className={`form-control`}
-                                    disabled
-                                    type="number"
-                                    name="transaction_fee"
-                                    placeholder="Token's Transaction Fee"
-                                />
-                            </FormGroup>
+                            <Row>
+                                <Col md={4}>
+                                    <FormGroup>
+                                        <Label for="symbol">Symbol:</Label>
+                                        <Field
+                                            className={`form-control`}
+                                            disabled
+                                            type="text"
+                                            name="symbol"
+                                            placeholder="Token's symbol"
+                                        />
+                                    </FormGroup>
+
+                                </Col>
+                                <Col md={4}>
+                                    <FormGroup>
+                                        <Label for="exchange_rate">Exchange Rate:</Label>
+                                        <Field
+                                            className={`form-control`}
+                                            disabled
+                                            type="number"
+                                            name="exchange_rate"
+                                            placeholder="Token's exchange rate"
+                                        />
+                                    </FormGroup>
+
+                                </Col>
+                                <Col md={4}>
+                                    <FormGroup>
+                                        <Label for="transaction_fee">Transaction Fee:</Label>
+                                        <Field
+                                            className={`form-control`}
+                                            disabled
+                                            type="number"
+                                            name="transaction_fee"
+                                            placeholder="Token's Transaction Fee"
+                                        />
+                                    </FormGroup>
+
+                                </Col>
+                            </Row>
                             <FormGroup>
                                 <Label for="description">Description:</Label>
                                 <Field
