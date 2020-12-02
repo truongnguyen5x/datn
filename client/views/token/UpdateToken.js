@@ -5,6 +5,7 @@ import Select from "react-select"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { connect } from 'react-redux'
+import _ from 'lodash'
 import { updateToken, getListToken } from '../../redux/actions/token'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,9 +49,12 @@ const UpdateToken = (props) => {
 
     const onFormSubmit = async (e) => {
         try {
-
-            await props.updateToken(e)
-
+            const data = _.pick(e, ["name", "exchange_rate", "transaction_fee", "description", "id"])
+            const res = await props.updateToken(data)
+            if (!res.code) {
+                toast.error("Error")
+                return
+            }
             props.onClose()
             props.getListToken()
             toast.success("Success!")

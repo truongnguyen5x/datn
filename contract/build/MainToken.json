@@ -372,7 +372,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.7.5+commit.eb77ed08\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"acceptOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"remaining\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"newOwner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"swapFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"token_name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/truong5x/Documents/lab/project/contract/src/Lib.sol\":\"MainToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/truong5x/Documents/lab/project/contract/src/Lib.sol\":{\"keccak256\":\"0x55c0f47811b9ec4f8cac09ac2a816a8b992086a26347c025aa53d6bdea148b1f\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://05ab36dde6067379b322b7d05a2532b747963f6b1cb196e71a2521bc0cac9da2\",\"dweb:/ipfs/QmcYHjy8nQPDcLPVbbGrDbDu2BxCnCj8PUFmterDxUcJb4\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.5+commit.eb77ed08\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"acceptOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"remaining\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenOwner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"newOwner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"swapFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"token_name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokens\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/truong5x/Documents/lab/project/contract/src/Lib.sol\":\"MainToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/truong5x/Documents/lab/project/contract/src/Lib.sol\":{\"keccak256\":\"0x92f117481a2bf5e1f087e8037f0a73f3f04fa80c430c416973b5964d31aa0041\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://4f93304ded93f0939da3fc68a0fb968903610470d8c43f5b483d6364bf0a6362\",\"dweb:/ipfs/QmdVG2nVKQQYJx249wea2c6wsRR1FoejM7AV7ouzq7fSct\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -380,7 +380,7 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.5.0 <0.8.0;\npragma experimental ABIEncoderV2;\n\ninterface ERC20Interface {\n    function totalSupply() external view returns (uint);\n    function balanceOf(address tokenOwner) external view  returns (uint balance);\n    function allowance(address tokenOwner, address spender) external view returns (uint remaining);\n    function transfer(address to, uint tokens) external returns (bool success);\n    function approve(address spender, uint tokens) external returns (bool success);\n    function transferFrom(address from, address to, uint tokens) external returns (bool success);\n\n    event Transfer(address indexed from, address indexed to, uint tokens);\n    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);\n}\n\ninterface ApproveAndCallFallBack {\n    function receiveApproval(address from, uint256 tokens, address token, bytes calldata data) external;\n}\n\n\nlibrary SafeMath {\n    function add(uint a, uint b) internal pure returns (uint c) {\n        c = a + b;\n        require(c >= a);\n    }\n    function sub(uint a, uint b) internal pure returns (uint c) {\n        require(b <= a);\n        c = a - b;\n    }\n    function mul(uint a, uint b) internal pure returns (uint c) {\n        c = a * b;\n        require(a == 0 || c / a == b);\n    }\n    function div(uint a, uint b) internal pure returns (uint c) {\n        require(b > 0);\n        c = a / b;\n    }\n}\n\n\ncontract Owned {\n    address public  owner;\n    address public  newOwner;\n\n    event OwnershipTransferred(address indexed _from, address indexed _to);\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    modifier onlyOwner {\n        require(msg.sender == owner);\n        _;\n    }\n\n    function transferOwnership(address _newOwner) public onlyOwner {\n        newOwner = _newOwner;\n    }\n    function acceptOwnership() public {\n        require(msg.sender == newOwner);\n        emit OwnershipTransferred(owner, newOwner);\n        owner = newOwner;\n        newOwner = address(0);\n    }\n}\n\n\n contract ERC20 is ERC20Interface, Owned {\n    using SafeMath for uint;\n    string public symbol;\n    string public  name;\n    uint8 public decimals;\n    uint public _totalSupply;\n\n    \n    constructor() {\n        decimals = 6;\n        _totalSupply = 1000000 * 10**uint(decimals);\n        balances[owner] = _totalSupply;\n        Transfer(address(0), owner, _totalSupply);\n    }\n\n    \n    mapping(address => uint256) balances;\n    mapping(address => mapping (address => uint256))allowed;\n\n    function totalSupply() public view override returns (uint a) {\n        return _totalSupply  - balances[address(0)];\n    }\n\n    function balanceOf(address tokenOwner) public view override returns (uint balance) {\n        return balances[tokenOwner];\n    }\n    \n\n    function approve(address spender, uint tokens) public override returns (bool success) {\n        allowed[msg.sender][spender] = tokens;\n        emit Approval(msg.sender, spender, tokens);\n        return true;\n    }\n    \n\n    function transferFrom(address from, address to, uint tokens) public override returns (bool success) {\n        balances[from] = balances[from].sub(tokens);\n        allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);\n        balances[to] = balances[to].add(tokens);\n        emit Transfer(from, to, tokens);\n        return true;\n    }\n\n    function allowance(address tokenOwner, address spender) public view  override returns (uint remaining) {\n        return allowed[tokenOwner][spender];\n    }\n    \n    function transfer(address to, uint tokens) public override returns (bool success) {\n        balances[msg.sender] = balances[msg.sender].sub(tokens);\n        balances[to] = balances[to].add(tokens);\n        // insertUser(to);\n        emit Transfer(msg.sender, to, tokens);\n        return true;\n    }\n\n    function approveAndCall(address spender, uint tokens, bytes memory data) public  returns (bool success) {\n        allowed[msg.sender][spender] = tokens;\n        Approval(msg.sender, spender, tokens);\n        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);\n        return true;\n    }\n    \n}\n\n\nabstract contract MainToken is ERC20 {\n    uint public swapFee = 500000;\n    // function insertUser(address new_user) public virtual;\n    function transfer(address sender, address receiver, string memory token_name, uint256 value) public virtual;\n}\n\n\nabstract contract Token is ERC20 {\n    using SafeMath for uint;\n    MainToken public creator;\n    uint public transactionFee = 500000;\n    uint public exchangedRatePercent = 100;   // ? token = 1 vcoin\n    function setCreator() public {\n        creator = MainToken(address(msg.sender));\n        require(creator.owner() == owner);\n    }\n\n    modifier onlyCreator {\n        require(address(msg.sender) == address(creator));\n        _;\n    }\n        \n    // gui cho dia chi ben kia bao nhieu token\n    function sendToken(address received, uint256 token, string memory token_name) public {\n        uint256 sendVCoin = token.mul(100).div(exchangedRatePercent);\n        creator.transfer(address(msg.sender), received, token_name, sendVCoin);\n        // creator.insertUser(received);\n        uint fee = creator.swapFee().mul(exchangedRatePercent).div(100);\n        balances[msg.sender] = balances[msg.sender].sub(token).sub(fee);\n        balances[received] = balances[received].add(token);\n    }\n    \n    function receiveToken(address sender, address received, uint256 token) public onlyCreator {\n        balances[received] = balances[received].sub(token);\n        balances[sender] = balances[sender].add(token);\n    }\n}\n\n",
+  "source": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.5.0 <0.8.0;\npragma experimental ABIEncoderV2;\n\ninterface ERC20Interface {\n    function totalSupply() external view returns (uint);\n    function balanceOf(address tokenOwner) external view  returns (uint balance);\n    function allowance(address tokenOwner, address spender) external view returns (uint remaining);\n    function transfer(address to, uint tokens) external returns (bool success);\n    function approve(address spender, uint tokens) external returns (bool success);\n    function transferFrom(address from, address to, uint tokens) external returns (bool success);\n\n    event Transfer(address indexed from, address indexed to, uint tokens);\n    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);\n}\n\ninterface ApproveAndCallFallBack {\n    function receiveApproval(address from, uint256 tokens, address token, bytes calldata data) external;\n}\n\n\nlibrary SafeMath {\n    function add(uint a, uint b) internal pure returns (uint c) {\n        c = a + b;\n        require(c >= a);\n    }\n    function sub(uint a, uint b) internal pure returns (uint c) {\n        require(b <= a);\n        c = a - b;\n    }\n    function mul(uint a, uint b) internal pure returns (uint c) {\n        c = a * b;\n        require(a == 0 || c / a == b);\n    }\n    function div(uint a, uint b) internal pure returns (uint c) {\n        require(b > 0);\n        c = a / b;\n    }\n}\n\n\ncontract Owned {\n    address public  owner;\n    address public  newOwner;\n\n    event OwnershipTransferred(address indexed _from, address indexed _to);\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    modifier onlyOwner {\n        require(msg.sender == owner);\n        _;\n    }\n\n    function transferOwnership(address _newOwner) public onlyOwner {\n        newOwner = _newOwner;\n    }\n    function acceptOwnership() public {\n        require(msg.sender == newOwner);\n        emit OwnershipTransferred(owner, newOwner);\n        owner = newOwner;\n        newOwner = address(0);\n    }\n}\n\n\n contract ERC20 is ERC20Interface, Owned {\n    using SafeMath for uint;\n    string public symbol;\n    string public  name;\n    uint8 public decimals;\n    uint public _totalSupply;\n\n    \n    constructor() {\n        decimals = 6;\n        _totalSupply = 1000000 * 10**uint(decimals);\n        balances[owner] = _totalSupply;\n        Transfer(address(0), owner, _totalSupply);\n    }\n\n    \n    mapping(address => uint256) balances;\n    mapping(address => mapping (address => uint256))allowed;\n\n    function totalSupply() public view override returns (uint a) {\n        return _totalSupply  - balances[address(0)];\n    }\n\n    function balanceOf(address tokenOwner) public view override returns (uint balance) {\n        return balances[tokenOwner];\n    }\n    \n\n    function approve(address spender, uint tokens) public override returns (bool success) {\n        allowed[msg.sender][spender] = tokens;\n        emit Approval(msg.sender, spender, tokens);\n        return true;\n    }\n    \n\n    function transferFrom(address from, address to, uint tokens) public override returns (bool success) {\n        balances[from] = balances[from].sub(tokens);\n        allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);\n        balances[to] = balances[to].add(tokens);\n        emit Transfer(from, to, tokens);\n        return true;\n    }\n\n    function allowance(address tokenOwner, address spender) public view  override returns (uint remaining) {\n        return allowed[tokenOwner][spender];\n    }\n    \n    function transfer(address to, uint tokens) public override returns (bool success) {\n        balances[msg.sender] = balances[msg.sender].sub(tokens);\n        balances[to] = balances[to].add(tokens);\n        // insertUser(to);\n        emit Transfer(msg.sender, to, tokens);\n        return true;\n    }\n\n    function approveAndCall(address spender, uint tokens, bytes memory data) public  returns (bool success) {\n        allowed[msg.sender][spender] = tokens;\n        Approval(msg.sender, spender, tokens);\n        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);\n        return true;\n    }\n    \n}\n\n\nabstract contract MainToken is ERC20 {\n    uint public swapFee = 500000;\n    // function insertUser(address new_user) public virtual;\n    function transfer(address sender, address receiver, string memory token_name, uint256 value) public virtual;\n}\n\n\nabstract contract Token is ERC20 {\n    using SafeMath for uint;\n    MainToken public creator;\n    uint public transactionFee = 500000;\n    uint public exchangedRatePercent = 100;   // ? token = 1 vcoin\n    function setCreator() public {\n        creator = MainToken(address(msg.sender));\n        require(creator.owner() == owner);\n    }\n\n    modifier onlyCreator {\n        require(address(msg.sender) == address(creator));\n        _;\n    }\n        \n    // gui cho dia chi ben kia bao nhieu token\n    function sendToken(address received, uint256 token, string memory token_name) public {\n        uint256 sendVCoin = token.mul(100).div(exchangedRatePercent);\n        creator.transfer(address(msg.sender), received, token_name, sendVCoin);\n        // creator.insertUser(received);\n        uint fee = creator.swapFee().mul(exchangedRatePercent).div(100);\n        balances[msg.sender] = balances[msg.sender].sub(token).sub(fee);\n        balances[received] = balances[received].add(token);\n    }\n    \n    function receiveToken(address sender, address received, uint256 token) public onlyCreator {\n        balances[received] = balances[received].sub(token);\n        balances[sender] = balances[sender].add(token);\n    }\n        \n    function setFee(uint transaction_fee, uint exchange_rate) public {\n        transactionFee = transaction_fee;\n        exchangedRatePercent = exchange_rate;\n    }\n}\n\n",
   "sourcePath": "/home/truong5x/Documents/lab/project/contract/src/Lib.sol",
   "ast": {
     "absolutePath": "/home/truong5x/Documents/lab/project/contract/src/Lib.sol",
@@ -404,10 +404,10 @@
         176
       ],
       "Token": [
-        705
+        721
       ]
     },
-    "id": 706,
+    "id": 722,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -1232,7 +1232,7 @@
             "src": "711:81:0"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "103:691:0"
       },
       {
@@ -1382,7 +1382,7 @@
             "visibility": "external"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "796:141:0"
       },
       {
@@ -2581,7 +2581,7 @@
             "visibility": "internal"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "940:497:0"
       },
       {
@@ -3397,7 +3397,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "1440:590:0"
       },
       {
@@ -6908,7 +6908,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "2034:2132:0"
       },
       {
@@ -7125,7 +7125,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "4169:248:0"
       },
       {
@@ -7155,9 +7155,9 @@
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 705,
+        "id": 721,
         "linearizedBaseContracts": [
-          705,
+          721,
           529,
           246,
           69
@@ -7198,7 +7198,7 @@
             "mutability": "mutable",
             "name": "creator",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4488:24:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7226,7 +7226,7 @@
             "mutability": "mutable",
             "name": "transactionFee",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4518:35:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7269,7 +7269,7 @@
             "mutability": "mutable",
             "name": "exchangedRatePercent",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4559:38:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7588,7 +7588,7 @@
               "parameters": [],
               "src": "4655:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "4626:129:0",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -8797,7 +8797,7 @@
               "parameters": [],
               "src": "5004:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "4919:489:0",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -9217,18 +9217,190 @@
               "parameters": [],
               "src": "5508:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "5418:213:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 719,
+              "nodeType": "Block",
+              "src": "5710:95:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 713,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 711,
+                      "name": "transactionFee",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 556,
+                      "src": "5720:14:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 712,
+                      "name": "transaction_fee",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 706,
+                      "src": "5737:15:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "5720:32:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 714,
+                  "nodeType": "ExpressionStatement",
+                  "src": "5720:32:0"
+                },
+                {
+                  "expression": {
+                    "id": 717,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 715,
+                      "name": "exchangedRatePercent",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 559,
+                      "src": "5762:20:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 716,
+                      "name": "exchange_rate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 708,
+                      "src": "5785:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "5762:36:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 718,
+                  "nodeType": "ExpressionStatement",
+                  "src": "5762:36:0"
+                }
+              ]
+            },
+            "functionSelector": "52f7c988",
+            "id": 720,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setFee",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 709,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 706,
+                  "mutability": "mutable",
+                  "name": "transaction_fee",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 720,
+                  "src": "5661:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 705,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5661:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 708,
+                  "mutability": "mutable",
+                  "name": "exchange_rate",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 720,
+                  "src": "5683:18:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 707,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5683:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5660:42:0"
+            },
+            "returnParameters": {
+              "id": 710,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5710:0:0"
+            },
+            "scope": 721,
+            "src": "5645:160:0",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 706,
-        "src": "4420:1213:0"
+        "scope": 722,
+        "src": "4420:1387:0"
       }
     ],
-    "src": "36:5599:0"
+    "src": "36:5773:0"
   },
   "legacyAST": {
     "absolutePath": "/home/truong5x/Documents/lab/project/contract/src/Lib.sol",
@@ -9252,10 +9424,10 @@
         176
       ],
       "Token": [
-        705
+        721
       ]
     },
-    "id": 706,
+    "id": 722,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -10080,7 +10252,7 @@
             "src": "711:81:0"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "103:691:0"
       },
       {
@@ -10230,7 +10402,7 @@
             "visibility": "external"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "796:141:0"
       },
       {
@@ -11429,7 +11601,7 @@
             "visibility": "internal"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "940:497:0"
       },
       {
@@ -12245,7 +12417,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "1440:590:0"
       },
       {
@@ -15756,7 +15928,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "2034:2132:0"
       },
       {
@@ -15973,7 +16145,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 706,
+        "scope": 722,
         "src": "4169:248:0"
       },
       {
@@ -16003,9 +16175,9 @@
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 705,
+        "id": 721,
         "linearizedBaseContracts": [
-          705,
+          721,
           529,
           246,
           69
@@ -16046,7 +16218,7 @@
             "mutability": "mutable",
             "name": "creator",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4488:24:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -16074,7 +16246,7 @@
             "mutability": "mutable",
             "name": "transactionFee",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4518:35:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -16117,7 +16289,7 @@
             "mutability": "mutable",
             "name": "exchangedRatePercent",
             "nodeType": "VariableDeclaration",
-            "scope": 705,
+            "scope": 721,
             "src": "4559:38:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -16436,7 +16608,7 @@
               "parameters": [],
               "src": "4655:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "4626:129:0",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -17645,7 +17817,7 @@
               "parameters": [],
               "src": "5004:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "4919:489:0",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -18065,18 +18237,190 @@
               "parameters": [],
               "src": "5508:0:0"
             },
-            "scope": 705,
+            "scope": 721,
             "src": "5418:213:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 719,
+              "nodeType": "Block",
+              "src": "5710:95:0",
+              "statements": [
+                {
+                  "expression": {
+                    "id": 713,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 711,
+                      "name": "transactionFee",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 556,
+                      "src": "5720:14:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 712,
+                      "name": "transaction_fee",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 706,
+                      "src": "5737:15:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "5720:32:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 714,
+                  "nodeType": "ExpressionStatement",
+                  "src": "5720:32:0"
+                },
+                {
+                  "expression": {
+                    "id": 717,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 715,
+                      "name": "exchangedRatePercent",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 559,
+                      "src": "5762:20:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 716,
+                      "name": "exchange_rate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 708,
+                      "src": "5785:13:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "5762:36:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 718,
+                  "nodeType": "ExpressionStatement",
+                  "src": "5762:36:0"
+                }
+              ]
+            },
+            "functionSelector": "52f7c988",
+            "id": 720,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setFee",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 709,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 706,
+                  "mutability": "mutable",
+                  "name": "transaction_fee",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 720,
+                  "src": "5661:20:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 705,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5661:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 708,
+                  "mutability": "mutable",
+                  "name": "exchange_rate",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 720,
+                  "src": "5683:18:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 707,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5683:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5660:42:0"
+            },
+            "returnParameters": {
+              "id": 710,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5710:0:0"
+            },
+            "scope": 721,
+            "src": "5645:160:0",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 706,
-        "src": "4420:1213:0"
+        "scope": 722,
+        "src": "4420:1387:0"
       }
     ],
-    "src": "36:5599:0"
+    "src": "36:5773:0"
   },
   "compiler": {
     "name": "solc",
@@ -18084,7 +18428,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-02T03:14:54.550Z",
+  "updatedAt": "2020-12-02T08:44:20.381Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

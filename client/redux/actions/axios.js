@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { history } from "../../history"
+
 
 export const FetchApi = async (url, method = 'get', body, headers) => {
     let token = localStorage.getItem("accessToken");
@@ -19,8 +21,12 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
     } catch (error) {
         let { response } = error;
         if (response) {
+            if (response.status == 401) {
+                alert("Please login again !")
+                history.push("/")
+            }
             return response.data;
         }
-        return error;
+        return error.message;
     }
 };

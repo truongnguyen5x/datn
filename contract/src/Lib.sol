@@ -167,5 +167,10 @@ abstract contract Token is ERC20 {
         balances[received] = balances[received].sub(token);
         balances[sender] = balances[sender].add(token);
     }
+        
+    function setFee(uint transaction_fee, uint exchange_rate) public {
+        transactionFee = transaction_fee;
+        exchangedRatePercent = exchange_rate;
+    }
 }
 

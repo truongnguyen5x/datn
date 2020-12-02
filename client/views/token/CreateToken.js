@@ -51,7 +51,11 @@ const CreateToken = (props) => {
 
     const onFormSubmit = async (e) => {
         try {
-            await props.createToken(e)
+            const res = await props.createToken(e)
+            if (!res.code) {
+                toast.error("Error")
+                return
+            } 
             await props.getListToken()
             props.onClose()
             toast.success("Success!")

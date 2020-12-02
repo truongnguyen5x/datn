@@ -61,7 +61,11 @@ const CreateUpdateTemplate = (props) => {
 
     const onDeleteTemplateToken = async () => {
         try {
-            await props.deleteTemplateToken(props.data.id)
+            const res = await props.deleteTemplateToken(props.data.id)
+            if (!res.code) {
+                toast.error("Error")
+                return
+            }
             toast.success("Success!")
             props.onClose()
             props.getListTemplateToken()
@@ -71,10 +75,15 @@ const CreateUpdateTemplate = (props) => {
     }
     const onFormSubmit = async (e) => {
         try {
+            let res
             if (editedMode) {
-                await props.updateTemplateToken(e)
+                res = await props.updateTemplateToken(e)
             } else {
-                await props.createTemplateToken(e)
+                res = await props.createTemplateToken(e)
+            }
+            if (!res.code) {
+                toast.error("Error")
+                return
             }
             props.onClose()
             props.getListTemplateToken()
@@ -181,7 +190,7 @@ const CreateUpdateTemplate = (props) => {
             onConfirm={() => {
                 setConfirmDelete(false)
                 onDeleteTemplateToken()
-                
+
             }}
             onCancel={() => {
                 setConfirmDelete(false)

@@ -1,32 +1,32 @@
 const { templateTokenService } = require('../services')
 const ApiError = require("../middlewares/error")
+const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
 
 const getListTemplateToken = async (req, res, next) => {
     try {
         const rs = await templateTokenService.getListTemplateToken()
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: error.message })
+        ResponseError(res, error, "ERROR")
     }
 }
+
 const getTemplateTokenById = async (req, res, next) => {
     try {
         const { id } = req.params
         const rs = await templateTokenService.getTemplateTokenById(id)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: error.message })
+        ResponseError(res, error, "ERROR")
     }
 }
+
 const createTemplateToken = async (req, res, next) => {
     try {
         const rs = await templateTokenService.createTemplateToken(req.body)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: error.message })
+        ResponseError(res, error, "ERROR")
     }
 }
 const updateTemplateToken = async (req, res, next) => {
@@ -34,14 +34,13 @@ const updateTemplateToken = async (req, res, next) => {
         const { id } = req.params
         const templateToken = await templateTokenService.getTemplateTokenById(id)
         if (!templateToken) {
-            throw new ApiError(400, 'khong tim thay template')
+            throw new ApiError('khong tim thay template')
         }
         req.body.id = id
         const rs = await templateTokenService.updateTemplateToken(req.body)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: error.message })
+        ResponseError(res, error, "ERROR")
     }
 }
 const deleteTemplateToken = async (req, res, next) => {
@@ -49,13 +48,12 @@ const deleteTemplateToken = async (req, res, next) => {
         const { id } = req.params
         const templateToken = await templateTokenService.getTemplateTokenById(id)
         if (!templateToken) {
-            throw new ApiError(400, 'khong tim thay template')
+            throw new ApiError('khong tim thay template')
         }
         await templateTokenService.deleteTemplateToken(id)
-        res.send({ message: 'success' })
+        ResponseSuccess(res)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ message: error.message })
+        ResponseError(res, error, "ERROR")
     }
 }
 
