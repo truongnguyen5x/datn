@@ -9,6 +9,7 @@ import navbar from "./navbar/Index"
 import dataList from "./data-list/"
 import templateToken from "./template-token"
 import token from "./token"
+import dapp from "./dapp"
 
 const rootReducer = combineReducers({
   calendar: calenderReducer,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   navbar: navbar,
   dataList: dataList,
   templateToken: templateToken,
-  token: token
+  token: token,
+  dapp: dapp
 })
 
 export default rootReducer

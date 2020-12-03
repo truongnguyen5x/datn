@@ -183,6 +183,9 @@ const TemplateToken = lazy(() =>
   import("./views/template/index"))
 const Token = lazy(() =>
   import("./views/token/index"))
+
+const Dapp = lazy(()=> import("./views/dapp/index"))
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -256,6 +259,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/analytics" component={analyticsDashboard} />
           <AppRoute exact path="/" component={TemplateToken} />
           <AppRoute path="/token" component={Token} />
+          <AppRoute path="/dapp" component={Dapp} />
           <AppRoute
             path="/ecommerce-dashboard"
             component={ecommerceDashboard}
