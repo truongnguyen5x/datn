@@ -1,7 +1,8 @@
 const User = require('./user')
 const Token = require('./token')
 const TemplateToken = require('./template')
-const Config = require("./configs")
+const Config = require("./config")
+const Dapp = require("./dapp")
 const { sequelize } = require('../configs')
 
 sequelize
@@ -12,4 +13,4 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
-module.exports = { User, Token, TemplateToken, Config }
+module.exports = { User, Token, TemplateToken, Config, Dapp }

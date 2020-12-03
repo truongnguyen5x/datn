@@ -29,6 +29,7 @@ const createTemplateToken = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
+
 const updateTemplateToken = async (req, res, next) => {
     try {
         const { id } = req.params
@@ -43,6 +44,7 @@ const updateTemplateToken = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
+
 const deleteTemplateToken = async (req, res, next) => {
     try {
         const { id } = req.params

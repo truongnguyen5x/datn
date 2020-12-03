@@ -16026,10 +16026,86 @@
       "links": {},
       "address": "0xB30B9aD6432C90519d7eD0159D19d782f3210De5",
       "transactionHash": "0xe4c21291b3b554a472e3166dcbb3a109cc35ebbf66f6231a459191491db946ba"
+    },
+    "1606992465164": {
+      "events": {
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "tokens",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_to",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "tokens",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xf2f7dC12543Bf641D341BA470fdfD8E0aB117b6a",
+      "transactionHash": "0x5c9ac873b0ff2963fc504781195c454df7f1add10b6344bf39dcb8d9f39dd5bc"
     }
   },
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-02T15:19:59.607Z",
+  "updatedAt": "2020-12-03T10:49:24.649Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

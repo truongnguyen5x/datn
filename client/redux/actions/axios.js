@@ -23,7 +23,9 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
         if (response) {
             if (response.status == 401) {
                 alert("Please login again !")
-                history.push("/")
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                history.push("/pages/login")
             }
             return response.data;
         }

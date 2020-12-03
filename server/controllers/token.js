@@ -17,7 +17,7 @@ const getTokenById = async (req, res, next) => {
         const { id } = req.params
         const rs = await tokenService.getTokenById(id)
         ResponseSuccess(res, rs)
-    } catch (error) {
+    } catch  (error) {
         ResponseError(res, error, "ERROR")
     }
 }
