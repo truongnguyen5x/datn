@@ -30,7 +30,7 @@ const Token = (props) => {
         </Button.Ripple>
         <Row>
             {
-                listToken.map(i => <Col md={3}>
+                listToken.map(i => <Col md={3} key={i.id}>
                     <Card>
                         <CardHeader className="mx-auto">
                             <div className="avatar mr-1 avatar-xl">

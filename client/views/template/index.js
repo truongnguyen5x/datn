@@ -25,7 +25,7 @@ const TemplateToken = (props) => {
         </Button.Ripple>
         <Row>
             {
-                listTemplateToken.map(i => <Col md={3}>
+                listTemplateToken.map(i => <Col md={3} key={i.id}>
                     <Card>
                         <CardBody>
                             <h5>{i.name}</h5>

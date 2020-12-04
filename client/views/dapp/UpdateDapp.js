@@ -3,25 +3,53 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Button, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
+import Select from "react-select"
 import { connect } from 'react-redux'
 import { updateDapp, getListDapp } from '../../redux/actions/dapp'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getListToken } from '../../redux/actions/token'
+
 
 const ValidateSchema = Yup.object().shape({
     name: Yup.string()
         .required("Required").min(2, "Must be longer than 2 characters"),
     description: Yup.string()
-        .required("Required"),
-    code: Yup.string()
         .required("Required")
 })
 
 const UpdateDapp = (props) => {
     const formRef = useRef()
 
+    const tokenOption = props.listToken.map(i => ({ value: i.symbol, label: i.symbol }))
 
-    const initData = props.data || { name: "", description: "", code: "" }
+    const [selectedTokens, setTokens] = useState([])
+    useEffect(() => {
+        props.getListToken()
+    }, [])
+
+    useEffect(() => {
+        if (props.listToken.length > 0) {
+            setTokens([props.listToken[0].symbol])
+        }
+    }, [props.listToken])
+
+    useEffect(() => {
+        if (props.data) {
+            // console.log(props.data)
+            setTokens(props.data.Tokens.map(i => i.symbol))
+        }
+    }, [props.data])
+
+    const initData = props.data || { name: "", description: "" }
+
+
+
+    const onChangeToken = (e) => {
+        const temp = (e || []).map(i => i.value)
+        setTokens(temp)
+        formRef.current.setFieldValue("tokens", temp)
+    }
 
     const renderButton = () => {
 
@@ -38,23 +66,11 @@ const UpdateDapp = (props) => {
 
     }
 
-    const onDeleteDapp = async () => {
-        try {
-            const res = await props.deleteDapp(props.data.id)
-            if (!res.code) {
-                toast.error("Error")
-                return
-            }
-            toast.success("Success!")
-            props.onClose()
-            props.getListDapp()
-        } catch (error) {
-            toast.error("Error")
-        }
-    }
     const onFormSubmit = async (e) => {
         try {
-            let res = await props.updateDapp(e)
+            const { name, description } = e
+            const sendData = { name, description, tokens: selectedTokens, id: props.data.id }
+            let res = await props.updateDapp(sendData)
 
             if (!res.code) {
                 toast.error("Error")
@@ -67,13 +83,10 @@ const UpdateDapp = (props) => {
             toast.error("Error")
         }
     }
-
-
 
     return <React.Fragment>
         <ToastContainer />
         <Modal
-
             isOpen={props.visible}
             toggle={props.onClose}
             className={props.className + " modal-dialog-centered modal-lg"}
@@ -122,25 +135,18 @@ const UpdateDapp = (props) => {
                                     className="field-error text-danger"
                                 />
                             </FormGroup>
+
                             <FormGroup>
-                                <Label for="code">Code solidity:</Label>
-                                <Field
-                                    className={`form-control ${errors.code &&
-                                        touched.code &&
-                                        "is-invalid"}`}
-                                    rows={15}
-                                    type="text"
-                                    as="textarea"
-                                    name="code"
-                                    placeholder="Code solidity"
-                                />
-                                <ErrorMessage
-                                    name="code"
-                                    component="div"
-                                    className="field-error text-danger"
+                                <Label for="list_token">List token:</Label>
+                                <Select
+                                    value={tokenOption.filter(i => selectedTokens.includes(i.value))}
+                                    isMulti
+                                    options={tokenOption}
+                                    className="React"
+                                    classNamePrefix="select"
+                                    onChange={onChangeToken}
                                 />
                             </FormGroup>
-
                         </ModalBody>
 
                         <ModalFooter>
@@ -159,7 +165,16 @@ const UpdateDapp = (props) => {
 const mapDispatchToProps = {
     updateDapp,
     getListDapp,
+    getListToken
 }
 
 
-export default connect(null, mapDispatchToProps)(UpdateDapp)
+const mapStateToProps = state => {
+    return {
+        listToken: state.token.listToken
+    }
+}
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateDapp)

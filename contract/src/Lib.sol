@@ -116,7 +116,6 @@ contract Owned {
     function transfer(address to, uint tokens) public override returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-        // insertUser(to);
         emit Transfer(msg.sender, to, tokens);
         return true;
     }
@@ -167,10 +166,48 @@ abstract contract Token is ERC20 {
         balances[received] = balances[received].sub(token);
         balances[sender] = balances[sender].add(token);
     }
-        
+    
     function setFee(uint transaction_fee, uint exchange_rate) public {
         transactionFee = transaction_fee;
         exchangedRatePercent = exchange_rate;
     }
 }
+
+
+abstract contract DAPP is Owned {
+    using SafeMath for uint;
+    address[] public tokens;
+    string public name;
+    
+    struct TokenStruct {
+        Token tokenAddress;
+        uint index;
+    }
+    
+    constructor() {
+        name = "DAPP";
+    }
+    
+ 
+    function setTokens(address[] memory _tokens) public {
+        tokens = _tokens;
+    }
+    
+    
+    struct Result{
+        string token_name;
+        uint balance;
+    }
+    
+    function getBalance(address user_address) public view returns (Result[] memory) {
+        Result[] memory result = new Result[](tokens.length);
+        for (uint i = 0; i< tokens.length; i++) {
+            Token temp = Token(tokens[i]);
+            result[i].token_name = temp.symbol();
+            result[i].balance = temp.balanceOf(user_address);
+        }
+        return result;
+    }
+}
+
 

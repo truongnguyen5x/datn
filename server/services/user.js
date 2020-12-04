@@ -15,7 +15,7 @@ const signup = async (data) => {
     email = email.toLowerCase().trim()
     password = password.trim()
     const user = await User.findOne({ where: { email } })
-    if (!user) {
+    if (user) {
         throw new Error('Tên tài khoản đã tồn tại.')
     }
     const hash_password = bcrypt.hashSync(password, 8);

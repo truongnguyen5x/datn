@@ -1,10 +1,12 @@
 
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Input } from 'reactstrap'
+import Select from "react-select"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import { connect } from 'react-redux'
-import { createDapp, getListDapp } from '../../redux/actions/dapp'
+import { createDapp, getListDapp, getTemplateDapp } from '../../redux/actions/dapp'
+import { getListToken } from '../../redux/actions/token'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SweetAlert from 'react-bootstrap-sweetalert'
@@ -20,26 +22,43 @@ const ValidateSchema = Yup.object().shape({
 
 const CreateDapp = (props) => {
     const formRef = useRef()
+    const tokenOption = props.listToken.map(i => ({ value: i.symbol, label: i.symbol }))
 
-    const initData = { name: "", description: "", code: "" }
+
+    const [selectedTokens, setTokens] = useState([])
+
+    const initData = {
+        name: "",
+        description: "",
+        code: props.listTemplateDapp?.[0]?.code || "",
+    }
 
     const renderButton = () => {
-
         return <Button color="primary" type="submit">
             Create
             </Button>
-
     }
+
+    useEffect(() => {
+        props.getTemplateDapp()
+        props.getListToken()
+    }, [])
+
+    useEffect(() => {
+        if (props.listToken.length > 0) {
+            setTokens([props.listToken[0].symbol])
+        }
+    }, [props.listToken])
+
 
     const renderTitleModal = () => {
-
         return "Create DAPP"
-
     }
+
 
     const onFormSubmit = async (e) => {
         try {
-
+            e.tokens = selectedTokens
             const res = await props.createDapp(e)
             if (!res.code) {
                 toast.error("Error")
@@ -53,7 +72,11 @@ const CreateDapp = (props) => {
         }
     }
 
-
+    const onChangeToken = (e) => {
+        const temp = (e || []).map(i => i.value)
+        setTokens(temp)
+        formRef.current.setFieldValue("tokens", temp)
+    }
 
     return <React.Fragment>
         <ToastContainer />
@@ -89,6 +112,17 @@ const CreateDapp = (props) => {
                                     name="name"
                                     component="div"
                                     className="field-error text-danger"
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="list_token">List token:</Label>
+                                <Select
+                                    value={tokenOption.filter(i => selectedTokens.includes(i.value))}
+                                    isMulti
+                                    options={tokenOption}
+                                    className="React"
+                                    classNamePrefix="select"
+                                    onChange={onChangeToken}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -143,8 +177,16 @@ const CreateDapp = (props) => {
 
 const mapDispatchToProps = {
     createDapp,
-    getListDapp
+    getListDapp,
+    getTemplateDapp,
+    getListToken
 }
 
+const mapStateToProps = state => {
+    return {
+        listTemplateDapp: state.dapp.listTemplateDapp,
+        listToken: state.token.listToken
+    }
+}
 
-export default connect(null, mapDispatchToProps)(CreateDapp)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateDapp)

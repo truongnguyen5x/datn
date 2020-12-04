@@ -7,6 +7,7 @@ const getListDapp = async (req, res, next) => {
         const rs = await dappService.getListDapp()
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -17,6 +18,7 @@ const getDappById = async (req, res, next) => {
         const rs = await dappService.getDappById(id)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -26,6 +28,7 @@ const createDapp = async (req, res, next) => {
         const rs = await dappService.createDapp(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -41,6 +44,7 @@ const updateDapp = async (req, res, next) => {
         const rs = await dappService.updateDapp(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

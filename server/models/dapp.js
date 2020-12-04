@@ -2,12 +2,6 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const Dapp = sequelize.define('Dapp', {
-    id: {
-        type: DataTypes.INTEGER(10).UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-        unique: true
-    },
     name: {
         type: DataTypes.STRING
     },
@@ -16,7 +10,17 @@ const Dapp = sequelize.define('Dapp', {
     },
     description: {
         type: DataTypes.STRING
-    }
+    },
+    del: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    image: {
+        type: DataTypes.STRING
+    },
+    address: {
+        type: DataTypes.STRING
+    },
 }, {
     tableName: 'dapps'
 });

@@ -2,13 +2,6 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const User = sequelize.define('User', {
-    // Model attributes are defined here
-    id: {
-        type: DataTypes.INTEGER(10).UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-        unique: true
-    },
     email: {
         type: DataTypes.STRING,
         unique: true,

@@ -2,12 +2,6 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const Token = sequelize.define('Token', {
-    id: {
-        type: DataTypes.INTEGER(10).UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-        unique: true
-    },
     symbol: {
         type: DataTypes.STRING
     },
@@ -18,7 +12,11 @@ const Token = sequelize.define('Token', {
         type: DataTypes.STRING
     },
     del: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    image: {
+        type: DataTypes.STRING
     },
     deploy_status: {
         type: DataTypes.INTEGER.UNSIGNED

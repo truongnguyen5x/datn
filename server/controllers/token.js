@@ -27,6 +27,7 @@ const createToken = async (req, res, next) => {
         const rs = await tokenService.createToken(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

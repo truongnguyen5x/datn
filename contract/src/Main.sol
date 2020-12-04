@@ -22,7 +22,7 @@ contract VCoin is MainToken {
     function addToken(address token_addr) external onlyOwner{
         Token added = Token(token_addr);
         added.setCreator();
-        require(!this.isToken(added.symbol()));
+        require(!isToken(added.symbol()));
         tokenStruct[added.symbol()].tokenAddress = added;
         tokenIndex.push(added.symbol());
         tokenStruct[added.symbol()].index = tokenIndex.length-1;
@@ -46,6 +46,7 @@ contract VCoin is MainToken {
         uint256 sendAmount = vcoin.mul(token.exchangedRatePercent()).div(100);
         token.receiveToken(sender, received, sendAmount);
     }
+    
     
     function deleteAllToken() public {
         delete tokenIndex;

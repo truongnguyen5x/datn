@@ -59,12 +59,32 @@ const createToken = async (data) => {
 
 
 const getListToken = async () => {
-    return Token.findAll({})
+    return Token.findAll({
+        where: {
+            del: false
+        }
+    })
 }
 
 const getTokenById = async (id) => {
-    return Token.findOne({ where: { id } })
+    return Token.findOne({
+        where: {
+            id,
+            del: false
+        }
+    })
 }
+const getTokenBySymbol = async (symbol) => {
+    return Token.findOne({
+        where: {
+            symbol,
+            del: false
+        }
+    })
+}
+
+
+
 
 const updateToken = async (data, oldData) => {
     const { transaction_fee, exchange_rate } = data
@@ -76,7 +96,7 @@ const updateToken = async (data, oldData) => {
             .then(res => {
                 return Token.update(data, { where: { id: data.id } })
             })
-            .catch(error=>{
+            .catch(error => {
                 return error
             })
 
@@ -93,7 +113,7 @@ const deleteToken = async (data) => {
         .send({ from: account, gas: 4700000 })
         .then(res => {
             console.log('Delete token success')
-            return Token.destroy({ where: { id } })
+            return Token.update({ del: true }, { where: { id } })
         })
 }
 
@@ -140,5 +160,6 @@ module.exports = {
     getProvider,
     getMainConstract,
     getMainAccount,
-    getTokenContract
+    getTokenContract,
+    getTokenBySymbol
 }

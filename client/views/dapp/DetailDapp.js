@@ -86,6 +86,12 @@ const DetailDapp = (props) => {
                                 </div>
                                 <div>{props?.data?.description}</div>
                             </div>
+                            <div className="d-flex dapp-info">
+                                <div className="dapp-info-title font-weight-bold">
+                                    Tokens: 
+                                </div>
+                                <div>{props?.data?.Tokens?.map(i=>i.symbol)?.join(", ")}</div>
+                            </div>
 
                         </div>
 
@@ -95,6 +101,7 @@ const DetailDapp = (props) => {
 
                 <hr />
                 <Input
+                    style={{height: "400px"}}
                     disabled
                     type="textarea"
                     value={props?.data?.code}

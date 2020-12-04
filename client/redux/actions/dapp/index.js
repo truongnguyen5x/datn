@@ -27,3 +27,18 @@ export const createDapp = (data) => async dispatch => {
 export const deleteDapp = (id) => async dispatch => {
     return FetchApi(`/api/dapp/${id}`, 'DELETE')
 }
+
+export const getTemplateDapp = () => async dispatch => {
+    return FetchApi(`/api/templateDapp`)
+        .then(res => {
+            if (res.code) {
+                dispatch({
+                    type: "GET_LIST_TEMPLATE_DAPP",
+                    payload: res.data
+                })
+
+            } else {
+                return res
+            }
+        })
+}

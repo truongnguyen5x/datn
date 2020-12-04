@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react'
-import { Button, Row, Col, Card, CardBody } from 'reactstrap'
+import { Button, Row, Col, Card, CardBody, CardHeader } from 'reactstrap'
 import CreateDapp from './CreateDapp'
 import DetailDapp from './DetailDapp'
 import { Plus } from 'react-feather'
 import { connect } from "react-redux"
 import { getListDapp } from '../../redux/actions/dapp'
+import avatarImg from "../../assets/img/coin/ether.png"
+
 const Dapp = (props) => {
     const [openModalCreate, showModalCreate] = useState(false)
     const [openModalDetail, showModalDetail] = useState(false)
@@ -30,9 +32,14 @@ const Dapp = (props) => {
         </Button.Ripple>
         <Row>
             {
-                listDapp.map(i => <Col md={3}>
+                listDapp.map(i => <Col md={3} key={i.id}>
                     <Card>
-                        <CardBody>
+                        <CardHeader className="mx-auto">
+                            <div className="avatar mr-1 avatar-xl">
+                                <img src={avatarImg} alt="avatarImg" />
+                            </div>
+                        </CardHeader>
+                        <CardBody className="text-center">
                             <h5>{i.name}</h5>
                             <p className="mb-0">Description: {i.description}</p>
                             <div className="text-center">
