@@ -1,14 +1,14 @@
 const { Router } = require("express");
-const { isAuth } = require('../middlewares/auth')
+const { checkRole } = require('../middlewares/auth')
 
 const routes = new Router()
 const { tokenController } = require('../controllers')
 
-routes.post('/', isAuth, tokenController.createToken)
-routes.get('/', isAuth, tokenController.getListToken)
-routes.get('/:id', isAuth, tokenController.getTokenById)
-routes.put('/:id', isAuth, tokenController.updateToken)
-routes.delete('/:id', isAuth, tokenController.deleteToken)
+routes.post('/', checkRole(0,1), tokenController.createToken)
+routes.get('/', checkRole(0,1), tokenController.getListToken)
+routes.get('/:id', checkRole(0,1), tokenController.getTokenById)
+routes.put('/:id', checkRole(0,1), tokenController.updateToken)
+routes.delete('/:id', checkRole(0,1), tokenController.deleteToken)
 
 
 module.exports = routes

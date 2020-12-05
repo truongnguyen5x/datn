@@ -1,29 +1,34 @@
 const { userService } = require('../services')
-
+const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
 
 const getListUser = async (req, res, next) => {
-    const rs = await userService.getListUser(null)
-    res.send(rs)
+    try {
+        const rs = await userService.getListUser(null)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        console.log(error)
+        ResponseError(res, error, "ERROR")
+    }
 }
 
 const signup = async (req, res, next) => {
     try {
         const rs = await userService.signup(req.body)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        res.status(400).send({message: error.message})
+        ResponseError(res, error, "ERROR")
     }
 }
 
 const signin = async (req, res, next) => {
     try {
         const rs = await userService.signin(req.body)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        res.status(400).send({message: error.message})
+        ResponseError(res, error, "ERROR")
     }
 }
+
 const refreshToken = async (req, res, next) => {
     try {
         const token  = req.header('Authorization').replace('Bearer ', '')
@@ -31,18 +36,18 @@ const refreshToken = async (req, res, next) => {
             throw new Error('Khong tim thay token')
         }
         const rs = await userService.refreshToken(token, req.body.refreshToken)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        res.status(400).send({message: error.message})
+        ResponseError(res, error, "ERROR")
     }
 }
 const logout = async (req, res, next) => {
     try {
         
         const rs = await userService.logout(req.user)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        res.status(400).send({message: error.message})
+        ResponseError(res, error, "ERROR")
     }
 }
 
@@ -53,9 +58,9 @@ const me = async (req, res, next) => {
             throw new Error('Khong tim thay token')
         }
         const rs = await userService.me(token, req.body.refreshToken)
-        res.send(rs)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        res.status(400).send({message: error.message})
+        ResponseError(res, error, "ERROR")
     }
 }
 

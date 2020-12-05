@@ -13,12 +13,23 @@ const User = sequelize.define('User', {
     hash_password: {
         type: DataTypes.STRING
     },
-    private_key: {
-        type: DataTypes.BLOB,
-        allowNull: true
-    },
     refresh_token: {
         type: DataTypes.STRING
+    },
+    role: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    image: {
+        type: DataTypes.STRING
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
     }
 }, {
     tableName: 'users'

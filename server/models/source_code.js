@@ -1,13 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const TemplateToken = sequelize.define('TemplateToken', {
-    name: {
-        type: DataTypes.STRING
-    },
-    description: {
-        type: DataTypes.STRING
-    },
+const SourceCode = sequelize.define('SourceCode', {
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: new Date()
@@ -17,7 +11,7 @@ const TemplateToken = sequelize.define('TemplateToken', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'template_tokens'
+    tableName: 'source_codes'
 });
 
-module.exports = TemplateToken
+module.exports = SourceCode

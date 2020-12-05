@@ -14,7 +14,7 @@ const horizontalMenuConfig = [
         title: "Analytics",
         type: "item",
         icon: <Icon.Circle size={10} />,
-        navLink: "/analytics",
+        navLink: "/",
         permissions: ["admin", "editor"]
       },
       {

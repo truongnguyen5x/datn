@@ -1,18 +1,16 @@
 import { history } from "../../../history"
-import axios from "axios"
-
+import { FetchApi } from "../axios"
 
 // const initAuth0 = new auth0.WebAuth(configAuth)
 export const loginWithJWT = user => {
   return dispatch => {
-    axios
-      .post("/api/user/signin", {
-        email: user.email,
-        password: user.password
-      })
+    FetchApi("/api/user/signin", "POST", {
+      email: user.email,
+      password: user.password
+    })
       .then(response => {
         var loggedInUser
-        if (response.data) {
+        if (response.code) {
           loggedInUser = response.data.user
           localStorage.setItem("accessToken", response.data.accessToken)
           localStorage.setItem("refreshToken", response.data.user.refresh_token)
@@ -20,7 +18,8 @@ export const loginWithJWT = user => {
             type: "LOGIN_WITH_JWT",
             payload: { loggedInUser, loggedInWith: "jwt" }
           })
-
+          const userRole = response.data.user.role == 0 ? "admin" : "editor"
+          dispatch({ type: "CHANGE_ROLE", userRole })
           history.push("/")
         }
       })
@@ -30,6 +29,7 @@ export const loginWithJWT = user => {
 
 export const logoutWithJWT = () => {
   return dispatch => {
+    FetchApi("/api/user/logout", "POST")
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")
     dispatch({ type: "LOGOUT_WITH_JWT", payload: null })
@@ -44,28 +44,26 @@ export const changeRole = role => {
 
 
 export const getProfile = () => dispatch => {
-  const accessToken = localStorage.getItem('accessToken')
   const refreshToken = localStorage.getItem('refreshToken')
-  if (!accessToken) {
-    console.log('no token')
-  } else {
-    axios.post("/api/user/me", { refreshToken }, { headers: { Authorization: `Bearer ${accessToken}` } })
-      .then(response => {
-        var loggedInUser
-        if (response.data) {
-          loggedInUser = response.data.user
-          localStorage.setItem("accessToken", response.data.accessToken)
-          localStorage.setItem("refreshToken", response.data.user.refresh_token)
-          dispatch({
-            type: "LOGIN_WITH_JWT",
-            payload: { loggedInUser, loggedInWith: "jwt" }
-          })
-        }
-      })
-      .catch(error => {
-        localStorage.removeItem("accessToken")
-        localStorage.removeItem("refreshToken")
-        history.push("/pages/login")
-      })
-  }
+  FetchApi("/api/user/me", "POST", { refreshToken })
+    .then(response => {
+      var loggedInUser
+      if (response.code) {
+        loggedInUser = response.data.user
+        localStorage.setItem("accessToken", response.data.accessToken)
+        localStorage.setItem("refreshToken", response.data.user.refresh_token)
+        dispatch({
+          type: "LOGIN_WITH_JWT",
+          payload: { loggedInUser, loggedInWith: "jwt" }
+        })
+        const userRole = response.data.user.role == 0 ? "admin" : "editor"
+        dispatch({ type: "CHANGE_ROLE", userRole })
+      }
+    })
+    .catch(error => {
+      localStorage.removeItem("accessToken")
+      localStorage.removeItem("refreshToken")
+      history.push("/pages/login")
+    })
+
 }

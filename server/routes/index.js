@@ -4,15 +4,14 @@ var siteApp = express.Router();
 const user = require('./user')
 const token = require('./token')
 const templateToken = require('./template_token')
-const templateDapp = require('./template_dapp')
-const dapp = require("./dapp")
+const config = require("./config")
 
 // define route here
 
 siteApp.use('/user', user)
 siteApp.use('/token', token)
 siteApp.use('/templateToken', templateToken)
-siteApp.use("/dapp", dapp)
-siteApp.use("/templateDapp", templateDapp)
+siteApp.use("/config", config)
+
 
 module.exports = siteApp

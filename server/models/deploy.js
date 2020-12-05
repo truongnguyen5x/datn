@@ -1,12 +1,12 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const TemplateToken = sequelize.define('TemplateToken', {
-    name: {
-        type: DataTypes.STRING
+const Deploy = sequelize.define('Deploy', {
+    address: {
+        type: DataTypes.STRING,
     },
-    description: {
-        type: DataTypes.STRING
+    deploy_status: {
+        type: DataTypes.INTEGER,
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -17,7 +17,7 @@ const TemplateToken = sequelize.define('TemplateToken', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'template_tokens'
+    tableName: 'deploys'
 });
 
-module.exports = TemplateToken
+module.exports = Deploy

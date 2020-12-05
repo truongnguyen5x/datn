@@ -7,6 +7,7 @@ const getListTemplateToken = async (req, res, next) => {
         const rs = await templateTokenService.getListTemplateToken()
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

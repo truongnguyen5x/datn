@@ -10,6 +10,14 @@ const Config = sequelize.define('Config', {
     value: {
         type: DataTypes.STRING
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
+    }
 }, {
     tableName: 'configs'
 });

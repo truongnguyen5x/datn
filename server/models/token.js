@@ -8,18 +8,8 @@ const Token = sequelize.define('Token', {
     name: {
         type: DataTypes.STRING
     },
-    code: {
-        type: DataTypes.STRING
-    },
-    del: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
     image: {
         type: DataTypes.STRING
-    },
-    deploy_status: {
-        type: DataTypes.INTEGER.UNSIGNED
     },
     exchange_rate: {
         type: DataTypes.INTEGER.UNSIGNED
@@ -27,11 +17,16 @@ const Token = sequelize.define('Token', {
     transaction_fee: {
         type: DataTypes.INTEGER.UNSIGNED
     },
-    address: {
-        type: DataTypes.STRING
-    },
     description: {
         type: DataTypes.STRING
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date()
     }
 }, {
     tableName: 'tokens'

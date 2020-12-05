@@ -1,12 +1,14 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const TemplateToken = sequelize.define('TemplateToken', {
-    name: {
-        type: DataTypes.STRING
+const Account = sequelize.define('Account', {
+    address: {
+        type: DataTypes.STRING,
     },
-    description: {
-        type: DataTypes.STRING
+    key: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        unique: true
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -17,7 +19,7 @@ const TemplateToken = sequelize.define('TemplateToken', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'template_tokens'
+    tableName: 'accounts'
 });
 
-module.exports = TemplateToken
+module.exports = Account

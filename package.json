@@ -101,6 +101,7 @@
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
+    "kill-port": "^1.6.1",
     "node-sass": "^4.13.1",
     "webpack-cli": "^4.2.0"
   },
@@ -109,6 +110,9 @@
     "ignore": [
       "dist/*"
     ],
+    "events": {
+      "crash": "kill-port 8000"
+    },
     "delay": "2500"
   }
 }

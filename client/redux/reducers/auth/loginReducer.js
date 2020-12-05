@@ -1,4 +1,4 @@
-export const login = (state = { userRole: "admin" }, action) => {
+export const login = (state = { userRole: "editor" }, action) => {
   switch (action.type) {
     case "LOGIN_WITH_EMAIL": {
       return { ...state, values: action.payload }

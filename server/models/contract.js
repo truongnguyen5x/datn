@@ -1,12 +1,10 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const TemplateToken = sequelize.define('TemplateToken', {
-    name: {
-        type: DataTypes.STRING
-    },
-    description: {
-        type: DataTypes.STRING
+const SmartContract = sequelize.define('SmartContract', {
+    del: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -17,7 +15,7 @@ const TemplateToken = sequelize.define('TemplateToken', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'template_tokens'
+    tableName: 'smart_contracts'
 });
 
-module.exports = TemplateToken
+module.exports = SmartContract

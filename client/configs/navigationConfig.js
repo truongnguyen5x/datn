@@ -2,40 +2,12 @@ import React from "react"
 import * as Icon from "react-feather"
 const navigationConfig = [
   {
-    type: "groupHeader",
-    groupTitle: "Main"
-  },
-  {
-    id: "template",
-    title: "Template token Manager",
+    id: "homepage",
+    title: "Homepage",
     type: "item",
-    icon: <Icon.Book size={16} />,
-    navLink: "/",
-    permissions: ["admin", "editor"]
-  },
-  {
-    id: "token",
-    title: "Token Manager",
-    type: "item",
-    icon: <Icon.DollarSign size={16} />,
-    navLink: "/token",
-    permissions: ["admin", "editor"]
-  },
-  {
-    id: "role",
-    title: "Permission manager",
-    type: "item",
-    icon: <Icon.User size={16} />,
-    navLink: "/role",
-    permissions: ["admin", "editor"]
-  },
-  {
-    id: "dapp",
-    title: "DAPP manager",
-    type: "item",
-    icon: <Icon.Package size={16} />,
-    navLink: "/dapp",
-    permissions: ["admin", "editor"]
+    icon: <Icon.Mail size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/"
   },
   {
     type: "groupHeader",
@@ -43,7 +15,7 @@ const navigationConfig = [
   },
   {
     id: "dashboard",
-    title: "Dashboardd",
+    title: "Dashboard",
     type: "collapse",
     icon: <Icon.Home size={20} />,
     badge: "warning",
@@ -85,7 +57,7 @@ const navigationConfig = [
     title: "Chat",
     type: "item",
     icon: <Icon.MessageSquare size={20} />,
-    permissions: ["admin", "editor"],
+    permissions: ["admin"],
     navLink: "/chat"
   },
   {
