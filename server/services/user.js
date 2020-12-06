@@ -29,7 +29,7 @@ const signup = async (data) => {
 
     const dataForAccessToken = {
         id: userCreated.id,
-        email: userCreated.username,
+        email: userCreated.email,
     }
     const accessToken = await authService.generateToken(
         dataForAccessToken,
@@ -65,7 +65,7 @@ const signin = async (data) => {
 
     const dataForAccessToken = {
         id: user.id,
-        email: user.username,
+        email: user.email,
     }
     const accessToken = await authService.generateToken(
         dataForAccessToken,
