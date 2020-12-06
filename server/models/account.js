@@ -5,9 +5,11 @@ const Account = sequelize.define('Account', {
     address: {
         type: DataTypes.STRING,
     },
+    name: {
+        type: DataTypes.STRING,
+    },
     key: {
         type: DataTypes.STRING,
-        primaryKey: true,
         unique: true
     },
     createdAt: {

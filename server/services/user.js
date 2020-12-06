@@ -138,6 +138,10 @@ const getUser = async (email) => {
     return User.findOne({ where: { email } })
 }
 
+const getUserById = async (id) => {
+    return User.findOne({ where: { id } })
+}
+
 const me = async (token, refreshToken) => {
     const accessTokenLife = constants.ACCESS_TOKEN_LIFE;
     const accessTokenSecret = constants.ACCESS_TOKEN_SECRET;
@@ -194,5 +198,6 @@ module.exports = {
     refreshToken,
     getUser,
     logout,
-    me
+    me,
+    getUserById
 }
