@@ -58,12 +58,10 @@ export const getProfile = () => dispatch => {
         })
         const userRole = response.data.user.role == 0 ? "admin" : "editor"
         dispatch({ type: "CHANGE_ROLE", userRole })
+      } else {
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
+        history.push("/pages/login")
       }
     })
-    .catch(error => {
-      localStorage.removeItem("accessToken")
-      localStorage.removeItem("refreshToken")
-      history.push("/pages/login")
-    })
-
 }

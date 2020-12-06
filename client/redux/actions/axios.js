@@ -7,7 +7,7 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
     try {
         let opts = {
             method,
-            url: `${url}`,
+            url: `${process.env.REACT_APP_API}${url}`,
             timeout: 1 * 1000 * 60,//1phut
             headers: { Authorization: `Bearer ${token}` }
         }

@@ -5,7 +5,7 @@ const getListTemplateToken = async () => {
 }
 
 const getTemplateTokenById = async (id) => {
-    return TemplateToken.findOne({ id })
+    return TemplateToken.findOne({ where: { id } })
 }
 
 const createTemplateToken = async (data) => {

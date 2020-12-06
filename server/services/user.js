@@ -101,7 +101,7 @@ const refreshToken = async (token, refreshToken) => {
         throw new Error('Access token không hợp lệ.')
     }
     const email = decoded.payload.email; // Lấy username từ payload
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ where: { email } })
     if (!user) {
         throw new Error('User không tồn tại.');
     }
@@ -125,7 +125,7 @@ const refreshToken = async (token, refreshToken) => {
 }
 
 const logout = async (data) => {
-    const user = await User.findOne({ email: data.email })
+    const user = await User.findOne({ where: { email: data.email } })
     if (!user) {
         throw new Error('khong tim thay user')
     }
@@ -135,7 +135,7 @@ const logout = async (data) => {
 }
 
 const getUser = async (email) => {
-    return User.findOne({ email })
+    return User.findOne({ where: { email } })
 }
 
 const me = async (token, refreshToken) => {
@@ -160,7 +160,7 @@ const me = async (token, refreshToken) => {
         payload = verify.payload
     }
     const email = payload.email; // Lấy username từ payload
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ where: { email } })
     if (!user) {
         throw new Error('User không tồn tại.');
     }

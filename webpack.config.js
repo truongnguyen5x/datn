@@ -4,7 +4,8 @@ const path = require('path')
 const webpack = require('webpack')
 const development = process.env.NODE_ENV != 'production'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-let apiUrl = process.env.API || 'http://localhost:8000'
+require("dotenv").config()
+
 module.exports = {
     mode: development ? "development" : "production",
     entry: './client/index.js',
@@ -45,7 +46,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env': {
-                API_URL: JSON.stringify(`${apiUrl}`)
+                REACT_APP_API: JSON.stringify(process.env.HOST + ':' + process.env.PORT)
             }
         })
     ]
