@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useReducer } from 'react'
 import { connect } from "react-redux"
 import { Button, FormGroup, Row, Col } from "reactstrap"
 import { Plus, ArrowLeft, X } from 'react-feather'
@@ -13,22 +13,24 @@ const FormSchema = Yup.object().shape({
     name: Yup.string()
         .required("Required"),
     key: Yup.string()
-        .matches(/^(0x){0,1}[\w]{64}$/g, "Private key wrong format")
+        .matches(/^(0x){0,1}[a-fA-F_0-9]{64}$/g, "Private key wrong format")
         .required("Required"),
 })
 
 const CreateAccount = (props) => {
-
+    const formRef = useRef()
     useEffect(() => {
 
     }, [])
 
-    const onSubmit = async (value) => {
+    const onSubmit = async (value , {resetForm}) => {
         const res = await props.createAccount(value);
         if (res.code) {
             toast.success("Create success !")
+            formRef.current.setFieldValue
             props.getListAccount()
             props.onClose()
+            resetForm({})
         } else {
             toast.error("Create unsuccessfully !")
             return
@@ -48,6 +50,7 @@ const CreateAccount = (props) => {
                 <Row>
                     <Col md={6} sm={12}>
                         <Formik
+                            innerRef={formRef}
                             initialValues={{ name: "", key: "" }}
                             validationSchema={FormSchema}
                             onSubmit={onSubmit}
