@@ -5,9 +5,33 @@ const navigationConfig = [
     id: "homepage",
     title: "Homepage",
     type: "item",
-    icon: <Icon.Mail size={20} />,
+    icon: <Icon.Home size={20} />,
     permissions: ["admin", "editor"],
     navLink: "/"
+  },
+  {
+    id: "account",
+    title: "Account",
+    type: "item",
+    icon: <Icon.CreditCard size={20} />,
+    permissions: ["admin", "editor"],
+    navLink: "/accounts"
+  },
+  {
+    id: "token-dev",
+    title: "Token",
+    type: "item",
+    icon: <Icon.DollarSign size={20} />,
+    permissions: ["editor"],
+    navLink: "/token-dev"
+  },
+  {
+    id: "token-admin",
+    title: "Token",
+    type: "item",
+    icon: <Icon.DollarSign size={20} />,
+    permissions: ["admin"],
+    navLink: "/token-admin"
   },
   {
     type: "groupHeader",
@@ -57,7 +81,7 @@ const navigationConfig = [
     title: "Chat",
     type: "item",
     icon: <Icon.MessageSquare size={20} />,
-    permissions: ["admin", "editor"],
+    permissions: ["admin"],
     navLink: "/chat"
   },
   {

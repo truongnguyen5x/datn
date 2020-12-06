@@ -180,6 +180,9 @@ const accessControl = lazy(() =>
   import("./extensions/access-control/AccessControl")
 )
 const HomePage = lazy(() => import("./views/home/Index"))
+const Account = lazy(() => import("./views/accounts/ListAccount"))
+const TokenDev = lazy(()=> import("./views/token-dev/ListToken"))
+const TokenAdmin = lazy(()=> import("./views/token-admin/ListToken"))
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
@@ -253,7 +256,9 @@ class AppRouter extends React.Component {
         <Switch>
           <AppRoute exact path="/" component={HomePage} />
           <AppRoute path="/analytics" component={analyticsDashboard} />
-
+          <AppRoute path="/accounts" component={Account} />
+          <AppRoute path="/token-dev" component={TokenDev} />
+          <AppRoute path="/token-admin" component={TokenAdmin} />
           <AppRoute
             path="/ecommerce-dashboard"
             component={ecommerceDashboard}
