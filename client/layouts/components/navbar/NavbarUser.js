@@ -233,6 +233,7 @@ class NavbarUser extends React.PureComponent {
           {context => {
             let langArr = {
               "en" : "English",
+              "vn" : "Tiếng Việt",
               "de" : "German",
               "fr" : "French",
               "pt" : "Portuguese"
@@ -271,6 +272,13 @@ class NavbarUser extends React.PureComponent {
                     <span className="ml-1">English</span>
                   </DropdownItem>
                   <DropdownItem
+                    tag="a"
+                    onClick={e => context.switchLanguage("vn")}
+                  >
+                    <ReactCountryFlag className="country-flag" countryCode="vn" svg />
+                    <span className="ml-1">Tiếng Việt</span>
+                  </DropdownItem>
+                                    <DropdownItem
                     tag="a"
                     onClick={e => context.switchLanguage("fr")}
                   >

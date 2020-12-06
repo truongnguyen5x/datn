@@ -34,7 +34,7 @@ const navigationConfig = [
         title: "eCommerce",
         type: "item",
         icon: <Icon.Circle size={12} />,
-        permissions: ["admin"],
+        permissions: ["admin", "editor"],
         navLink: "/ecommerce-dashboard"
       }
     ]
@@ -57,7 +57,7 @@ const navigationConfig = [
     title: "Chat",
     type: "item",
     icon: <Icon.MessageSquare size={20} />,
-    permissions: ["admin"],
+    permissions: ["admin", "editor"],
     navLink: "/chat"
   },
   {

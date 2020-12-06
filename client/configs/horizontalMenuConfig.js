@@ -23,7 +23,7 @@ const horizontalMenuConfig = [
         type: "item",
         icon: <Icon.Circle size={10} />,
         navLink: "/ecommerce-dashboard",
-        permissions: ["admin"]
+        permissions: ["admin", "editor"]
       }
     ]
   },
