@@ -13,7 +13,7 @@ export const signupWithJWT = (email, password, name) => {
         var loggedInUser
         if (response.code) {
           loggedInUser = response.data.user
-          localStorage.setItem("accessToken", response.data.token)
+          localStorage.setItem("accessToken", response.data.accessToken)
           localStorage.setItem("refreshToken", response.data.user.refresh_token)
           dispatch({
             type: "LOGIN_WITH_JWT",
