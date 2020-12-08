@@ -23,3 +23,7 @@ export const createAccount = (data) => dispatch => {
 export const deleteAccount = (id) => dispatch => {
     return FetchApi(`/api/account/${id}`, 'DELETE')
 }
+
+export const getBalance = (data) => dispatch => {
+    return FetchApi("/api/account/balance", "POST", data)
+}

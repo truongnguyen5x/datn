@@ -3,11 +3,13 @@ const tokenController = require('./token')
 const vcoinController = require('./vcoin')
 const configController = require("./config")
 const accountController = require("./account")
+const networkController = require("./network")
 
 module.exports = {
     userController,
     tokenController,
     configController,
     accountController,
-    vcoinController
+    vcoinController,
+    networkController
 }

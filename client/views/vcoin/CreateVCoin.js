@@ -1,41 +1,35 @@
 import React, { useEffect, useState, useRef, useReducer } from 'react'
 import { connect } from "react-redux"
-import { Button, FormGroup, Row, Col } from "reactstrap"
+import { Button, FormGroup, Row, Col, TabContent, TabPane, Nav, NavItem, NavLink, Label } from "reactstrap"
 import { Plus, ArrowLeft, X } from 'react-feather'
 import { getListVCoin, createVCoin } from "../../redux/actions/vcoin/index"
+import { getListNetwork } from "../../redux/actions/network"
 import * as Yup from "yup"
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import "react-toastify/dist/ReactToastify.css"
 import "../../assets/scss/pages/vcoin.scss"
 import { toast, ToastContainer } from "react-toastify"
-
-const FormSchema = Yup.object().shape({
-    name: Yup.string()
-        .required("Required"),
-    key: Yup.string()
-        .matches(/^(0x){0,1}[a-fA-F_0-9]{64}$/g, "Private key wrong format")
-        .required("Required"),
-})
+import classnames from "classnames"
+import Select from 'react-select'
+import Editor from './Editor'
 
 const CreateVCoin = (props) => {
+    const [activeTab, setActiveTab] = useState("1")
+    const [network, setNetwork] = useState()
     const formRef = useRef()
-    useEffect(() => {
 
+    useEffect(() => {
+        props.getListNetwork()
     }, [])
 
-    const onSubmit = async (value , {resetForm}) => {
-        const res = await props.createVCoin(value);
-        if (res.code) {
-            toast.success("Create success !")
-            formRef.current.setFieldValue
-            props.getListVCoin()
-            props.onClose()
-            resetForm({})
-        } else {
-            toast.error("Create unsuccessfully !")
-            return
+    const toggle = tab => {
+        if (activeTab !== tab) {
+            setActiveTab(tab)
         }
     }
+
+
+    const colourOptions = props.listNetwork.map(i => ({ value: i.id, label: i.path }))
 
     return <React.Fragment>
         <div className={`vcoin-detail ${props.visible ? "show" : ""}`}>
@@ -47,57 +41,60 @@ const CreateVCoin = (props) => {
                 <h4 className="mb-0">Create VCoin</h4>
             </div>
             <div className="m-2">
-                <Row>
-                    <Col md={6} sm={12}>
-                        <Formik
-                            innerRef={formRef}
-                            initialValues={{ name: "", key: "" }}
-                            validationSchema={FormSchema}
-                            onSubmit={onSubmit}
+                <Nav tabs>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({
+                                active: activeTab === "1"
+                            })}
+                            onClick={() => {
+                                toggle("1")
+                            }}
                         >
-                            {() => <Form>
-                                <FormGroup>
-                                    <label htmlFor="name">Name</label>
-                                    <Field
-                                        autoComplete="off"
-                                        className="form-control"
-                                        name="name"
-                                        placeholder="Account's name"
-                                        type="text"
-                                    />
-                                    <ErrorMessage
-                                        name="name"
-                                        component="div"
-                                        className="field-error text-danger"
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <label htmlFor="key">Private key</label>
-                                    <Field
-                                        autoComplete="off"
-                                        className="form-control"
-                                        name="key"
-                                        placeholder="Private key"
-                                        type="text"
-                                    />
-                                    <ErrorMessage
-                                        name="key"
-                                        component="div"
-                                        className="field-error text-danger"
-                                    />
-                                </FormGroup>
-                                <Button
-                                    type="submit"
-                                    color="primary"
-                                >Add
-                        </Button>
-                            </Form>}
-                        </Formik>
+                            Infomation
+                     </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({
+                                active: activeTab === "2"
+                            })}
+                            onClick={() => {
+                                toggle("2")
+                            }}
+                        >
+                            Source code
+                            </NavLink>
+                    </NavItem>
+                </Nav>
+                <Formik >
+                    {(formProps) => <Form>
 
-                    </Col>
-                    <Col md={6} sm={12}>
-                    </Col>
-                </Row>
+                        <TabContent activeTab={activeTab}>
+                            <TabPane tabId="1">
+                                <Row>
+                                    <Col sm={12} md={6}>
+                                        <FormGroup>
+                                            <Label for="network">Select one network:</Label>
+                                            <Field
+                                                name="network"
+                                            >
+                                                {() => <Select options={colourOptions} />
+
+                                                }
+                                            </Field>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                            </TabPane>
+                            <TabPane tabId="2">
+                                <Editor />
+                            </TabPane>
+                        </TabContent>
+                    </Form>}
+
+                </Formik>
+
             </div>
         </div>
         <ToastContainer />
@@ -106,7 +103,15 @@ const CreateVCoin = (props) => {
 
 const mapDispatchToProps = {
     getListVCoin,
-    createVCoin
+    createVCoin,
+    getListNetwork
 }
 
-export default connect(null, mapDispatchToProps)(CreateVCoin)
+const mapStateToProps = state => {
+    return {
+        listNetwork: state.network.listNetwork,
+        listAccount: state.account.listAccount
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateVCoin)

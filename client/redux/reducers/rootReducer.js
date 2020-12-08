@@ -10,6 +10,7 @@ import dataList from "./data-list/"
 import account from "./account"
 import vcoin from "./vcoin"
 import token from "./token"
+import network from "./network"
 
 const rootReducer = combineReducers({
   calendar: calenderReducer,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   dataList: dataList,
   account: account,
   vcoin: vcoin,
-  token: token
+  token: token,
+  network: network
 })
 
 export default rootReducer
