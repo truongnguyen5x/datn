@@ -8,7 +8,7 @@ const Config = sequelize.define('Config', {
         unique: true
     },
     value: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     createdAt: {
         type: DataTypes.DATE,

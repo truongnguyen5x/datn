@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef, useReducer } from 'react'
 import { connect } from "react-redux"
 import { Button, FormGroup, Row, Col } from "reactstrap"
 import { Plus, ArrowLeft, X } from 'react-feather'
-import { getListVChain, createVChain } from "../../redux/actions/vchain/index"
+import { getListVCoin, createVCoin } from "../../redux/actions/vcoin/index"
 import * as Yup from "yup"
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import "react-toastify/dist/ReactToastify.css"
-import "../../assets/scss/pages/vchain.scss"
+import "../../assets/scss/pages/vcoin.scss"
 import { toast, ToastContainer } from "react-toastify"
 
 const FormSchema = Yup.object().shape({
@@ -17,18 +17,18 @@ const FormSchema = Yup.object().shape({
         .required("Required"),
 })
 
-const CreateVChain = (props) => {
+const CreateVCoin = (props) => {
     const formRef = useRef()
     useEffect(() => {
 
     }, [])
 
     const onSubmit = async (value , {resetForm}) => {
-        const res = await props.createVChain(value);
+        const res = await props.createVCoin(value);
         if (res.code) {
             toast.success("Create success !")
             formRef.current.setFieldValue
-            props.getListVChain()
+            props.getListVCoin()
             props.onClose()
             resetForm({})
         } else {
@@ -38,13 +38,13 @@ const CreateVChain = (props) => {
     }
 
     return <React.Fragment>
-        <div className={`vchain-detail ${props.visible ? "show" : ""}`}>
-            <div className="vchain-detail-header">
+        <div className={`vcoin-detail ${props.visible ? "show" : ""}`}>
+            <div className="vcoin-detail-header">
                 <X onClick={props.onClose}
                     size={20}
                     className="mr-1 cursor-pointer"
                 />
-                <h4 className="mb-0">Create VChain</h4>
+                <h4 className="mb-0">Create VCoin</h4>
             </div>
             <div className="m-2">
                 <Row>
@@ -105,8 +105,8 @@ const CreateVChain = (props) => {
 }
 
 const mapDispatchToProps = {
-    getListVChain,
-    createVChain
+    getListVCoin,
+    createVCoin
 }
 
-export default connect(null, mapDispatchToProps)(CreateVChain)
+export default connect(null, mapDispatchToProps)(CreateVCoin)

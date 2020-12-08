@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const VChain = sequelize.define('VChain', {
-    del: {
+const VCoin = sequelize.define('VCoin', {
+    used: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
@@ -15,7 +15,7 @@ const VChain = sequelize.define('VChain', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'vchains'
+    tableName: 'vcoins'
 });
 
-module.exports = VChain
+module.exports = VCoin

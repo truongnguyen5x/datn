@@ -20,7 +20,7 @@
 // Overrides user variable
 @import "../core/variables/components-variables";
 
-.vchain-list {
+.vcoin-list {
   border-radius: $border-radius-sm;
   height: calc(100vh - 12rem);
   border: 1px solid $gray-300;
@@ -33,7 +33,7 @@
     margin: 20px;
   }
 
-  .vchain-detail {
+  .vcoin-detail {
     position: absolute;
     display: block;
     z-index: 2;
@@ -56,7 +56,7 @@
       transition: all 0.3s ease;
       width: 100%;
     }
-    .vchain-detail-header {
+    .vcoin-detail-header {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
@@ -67,22 +67,22 @@
       padding: 1.5rem 2rem 1.5rem 2rem;
       background-color: $white;
     }
-    .vchain-info {
+    .vcoin-info {
       margin: 10px;
-      .vchain-info-title {
+      .vcoin-info-title {
         min-width: 180px;
       }
     }
-    .vchain-info-action {
+    .vcoin-info-action {
       margin: 20px 10px 10px;
     }
   }
-  .vchain-list-scroll {
+  .vcoin-list-scroll {
     position: relative;
     border-top: 1px solid $gray-300;
     border-radius: 0;
     flex-basis: auto;
-    .vchain-list-wrapper {
+    .vcoin-list-wrapper {
       padding: 0;
       margin: 0;
       // Set delay per List Item

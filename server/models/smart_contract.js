@@ -1,9 +1,13 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const Deploy = sequelize.define('Deploy', {
+const SmartContract = sequelize.define('SmartContract', {
     address: {
         type: DataTypes.STRING,
+    },
+    del: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     deploy_status: {
         type: DataTypes.INTEGER,
@@ -17,7 +21,7 @@ const Deploy = sequelize.define('Deploy', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'deploys'
+    tableName: 'smart_contracts'
 });
 
-module.exports = Deploy
+module.exports = SmartContract

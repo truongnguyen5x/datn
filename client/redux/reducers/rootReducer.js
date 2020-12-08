@@ -8,7 +8,7 @@ import auth from "./auth/"
 import navbar from "./navbar/Index"
 import dataList from "./data-list/"
 import account from "./account"
-import vchain from "./vchain"
+import vcoin from "./vcoin"
 import token from "./token"
 
 const rootReducer = combineReducers({
@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
   navbar: navbar,
   dataList: dataList,
   account: account,
-  vchain: vchain,
+  vcoin: vcoin,
   token: token
 })
 

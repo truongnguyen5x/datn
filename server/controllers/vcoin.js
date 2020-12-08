@@ -1,10 +1,10 @@
-const { vchainService } = require('../services')
+const { vcoinService } = require('../services')
 const ApiError = require("../middlewares/error")
 const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
 
-const getListVChain = async (req, res, next) => {
+const getListVCoin = async (req, res, next) => {
     try {
-        const rs = await vchainService.getListVChain()
+        const rs = await vcoinService.getListVCoin()
         ResponseSuccess(res, rs)
     } catch (error) {
         console.log(error)
@@ -12,48 +12,48 @@ const getListVChain = async (req, res, next) => {
     }
 }
 
-const getVChainById = async (req, res, next) => {
+const getVCoinById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const rs = await vchainService.getVChainById(id)
+        const rs = await vcoinService.getVCoinById(id)
         ResponseSuccess(res, rs)
     } catch (error) {
         ResponseError(res, error, "ERROR")
     }
 }
 
-const createVChain = async (req, res, next) => {
+const createVCoin = async (req, res, next) => {
     try {
-        const rs = await vchainService.createVChain(req.body)
+        const rs = await vcoinService.createVCoin(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
         ResponseError(res, error, "ERROR")
     }
 }
 
-const updateVChain = async (req, res, next) => {
+const updateVCoin = async (req, res, next) => {
     try {
         const { id } = req.params
-        const vchain = await vchainService.getVChainById(id)
-        if (!vchain) {
+        const vcoin = await vcoinService.getVCoinById(id)
+        if (!vcoin) {
             throw new ApiError('khong tim thay template')
         }
         req.body.id = id
-        const rs = await vchainService.updateVChain(req.body)
+        const rs = await vcoinService.updateVCoin(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
         ResponseError(res, error, "ERROR")
     }
 }
 
-const deleteVChain = async (req, res, next) => {
+const deleteVCoin = async (req, res, next) => {
     try {
         const { id } = req.params
-        const vchain = await vchainService.getVChainById(id)
-        if (!vchain) {
+        const vcoin = await vcoinService.getVCoinById(id)
+        if (!vcoin) {
             throw new ApiError('khong tim thay template')
         }
-        await vchainService.deleteVChain(id)
+        await vcoinService.deleteVCoin(id)
         ResponseSuccess(res)
     } catch (error) {
         ResponseError(res, error, "ERROR")
@@ -62,9 +62,9 @@ const deleteVChain = async (req, res, next) => {
 
 
 module.exports = {
-    createVChain,
-    getListVChain,
-    getVChainById,
-    updateVChain,
-    deleteVChain
+    createVCoin,
+    getListVCoin,
+    getVCoinById,
+    updateVCoin,
+    deleteVCoin
 }

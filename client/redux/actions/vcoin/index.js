@@ -1,8 +1,8 @@
 
 import { FetchApi } from "../axios"
 
-export const getListVChain = () => dispatch => {
-    return FetchApi("/api/vchain")
+export const getListVCoin = () => dispatch => {
+    return FetchApi("/api/vcoin")
         .then(res => {
             if (res.code) {
                 dispatch({
@@ -16,10 +16,10 @@ export const getListVChain = () => dispatch => {
         })
 }
 
-export const createVChain = (data) => dispatch => {
-    return FetchApi("/api/vchain", 'POST', data)
+export const createVCoin = (data) => dispatch => {
+    return FetchApi("/api/vcoin", 'POST', data)
 }
 
-export const deleteVChain = (id) => dispatch => {
-    return FetchApi(`/api/vchain/${id}`, 'DELETE')
+export const deleteVCoin = (id) => dispatch => {
+    return FetchApi(`/api/vcoin/${id}`, 'DELETE')
 }

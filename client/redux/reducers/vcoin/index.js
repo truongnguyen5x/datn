@@ -1,10 +1,10 @@
 const initialState = {
-    listVChain: []
+    listVCoin: []
 }
-const vchain = (state = initialState, action) => {
+const vcoin = (state = initialState, action) => {
     switch (action.type) {
         case "GET_LIST_VCHAIN": {
-            return { ...state, listVChain: action.payload }
+            return { ...state, listVCoin: action.payload }
         }
         default: {
             return state
@@ -13,4 +13,4 @@ const vchain = (state = initialState, action) => {
 }
 
 
-export default vchain
+export default vcoin

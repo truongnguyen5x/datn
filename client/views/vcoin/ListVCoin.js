@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { Button } from "reactstrap"
 import { Plus } from 'react-feather'
-import { getListVChain } from "../../redux/actions/vchain/index"
-import CreateVChain from "./CreateVChain"
-import DetailVChain from "./DetailVChain"
+import { getListVCoin } from "../../redux/actions/vcoin/index"
+import CreateVCoin from "./CreateVCoin"
+import DetailVCoin from "./DetailVCoin"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import "../../assets/scss/pages/vchain.scss"
+import "../../assets/scss/pages/vcoin.scss"
 
-const ListVChain = (props) => {
+const ListVCoin = (props) => {
     const [isModalCreate, openModalCreate] = useState(false)
     const [isModalDetail, openModalDetail] = useState(false)
     const [isModalUpdate, openModalUpdate] = useState(false)
-    const [vchain, setVChain] = useState()
+    const [vcoin, setVCoin] = useState()
 
     useEffect(() => {
-        props.getListVChain()
+        props.getListVCoin()
     }, [])
 
     const onCloseModalCreate = () => {
@@ -25,22 +25,22 @@ const ListVChain = (props) => {
         openModalDetail(false)
     }
 
-    const renderListVChain = () => {
-        const { listVChain } = props
+    const renderListVCoin = () => {
+        const { listVCoin } = props
 
-        if (!listVChain.length) {
+        if (!listVCoin.length) {
             return <div className="no-results show">
                 <h5>No Items Found</h5>
             </div>
         }
-        return listVChain.map(i => <li key={i.id} onClick={() => { openModalDetail(true); setVChain(i) }}>
+        return listVCoin.map(i => <li key={i.id} onClick={() => { openModalDetail(true); setVCoin(i) }}>
             <h5>{i.name}</h5>
             <span>{i.address}</span>
         </li>)
     }
 
     return <React.Fragment>
-        <div className="vchain-list position-relative">
+        <div className="vcoin-list position-relative">
             <div>
                 <Button.Ripple
                     id="btn-add"
@@ -53,21 +53,21 @@ const ListVChain = (props) => {
                 </Button.Ripple>
             </div>
             <PerfectScrollbar
-                className="vchain-list-scroll list-group"
+                className="vcoin-list-scroll list-group"
                 options={{
                     wheelPropagation: false
                 }}
             >
-                <ul className="vchain-list-wrapper media-list">{renderListVChain()}</ul>
+                <ul className="vcoin-list-wrapper media-list">{renderListVCoin()}</ul>
             </PerfectScrollbar>
-            <CreateVChain
+            <CreateVCoin
                 visible={isModalCreate}
                 onClose={onCloseModalCreate}
             />
-            <DetailVChain
+            <DetailVCoin
                 visible={isModalDetail}
                 onClose={onCloseModalDetail}
-                data={vchain}
+                data={vcoin}
             />
         </div>
 
@@ -75,13 +75,13 @@ const ListVChain = (props) => {
 }
 
 const mapDispatchToProps = {
-    getListVChain
+    getListVCoin
 }
 
 const mapStateToProps = state => {
     return {
-        listVChain: state.vchain.listVChain
+        listVCoin: state.vcoin.listVCoin
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListVChain)
+export default connect(mapStateToProps, mapDispatchToProps)(ListVCoin)
