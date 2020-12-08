@@ -7,7 +7,11 @@ const Web3 = require('web3')
 const getListNetwork = async () => {
     return Network.findAll()
 }
+const getNetWorkById = async (id) => {
+    return Network.findOne({ where: { id } })
+}
 
 module.exports = {
-    getListNetwork
+    getListNetwork,
+    getNetWorkById
 }

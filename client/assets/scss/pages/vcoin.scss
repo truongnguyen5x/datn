@@ -67,14 +67,29 @@
       padding: 1.5rem 2rem 1.5rem 2rem;
       background-color: $white;
     }
-    .vcoin-info {
-      margin: 10px;
-      .vcoin-info-title {
-        min-width: 180px;
+    .network-select-option {
+      padding: 10px;
+      &:hover {
+        background-color: $light-blue;
+      }
+      .network-select-title {
+        width: 200px;
       }
     }
-    .vcoin-info-action {
-      margin: 20px 10px 10px;
+    .account-select-option {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &:hover {
+        background-color: $light-blue;
+      }
+      .right {
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
     }
   }
   .vcoin-list-scroll {

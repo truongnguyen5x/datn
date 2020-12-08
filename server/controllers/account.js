@@ -62,12 +62,23 @@ const deleteAccount = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
-
+const getListAccountBalance = async (req, res, next) => {
+    try {
+        const { user } = req
+        const { network_id } = req.body
+        const rs = await accountService.getListAccountBalance(user.id, network_id)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        console.log(error)
+        ResponseError(res, error, "ERROR")
+    }
+}
 
 module.exports = {
     createAccount,
     getListAccount,
     getAccountById,
     updateAccount,
-    deleteAccount
+    deleteAccount,
+    getListAccountBalance
 }

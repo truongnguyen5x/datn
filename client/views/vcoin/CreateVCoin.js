@@ -4,6 +4,8 @@ import { Button, FormGroup, Row, Col, TabContent, TabPane, Nav, NavItem, NavLink
 import { Plus, ArrowLeft, X } from 'react-feather'
 import { getListVCoin, createVCoin } from "../../redux/actions/vcoin/index"
 import { getListNetwork } from "../../redux/actions/network"
+import { getAccountBalance } from "../../redux/actions/account"
+
 import * as Yup from "yup"
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import "react-toastify/dist/ReactToastify.css"
@@ -12,11 +14,14 @@ import { toast, ToastContainer } from "react-toastify"
 import classnames from "classnames"
 import Select from 'react-select'
 import Editor from './Editor'
+import imgEther20 from "../../assets/img/coin/ether20x20.png"
 
 const CreateVCoin = (props) => {
     const [activeTab, setActiveTab] = useState("1")
     const [network, setNetwork] = useState()
+    const [account, setAccount] = useState()
     const formRef = useRef()
+    const [sourceCode, setSourceCode] = useState([])
 
     useEffect(() => {
         props.getListNetwork()
@@ -28,8 +33,56 @@ const CreateVCoin = (props) => {
         }
     }
 
+    const CustomOptionNetwork = (optionProps) => {
+        const { innerRef, innerProps, data } = optionProps
 
-    const colourOptions = props.listNetwork.map(i => ({ value: i.id, label: i.path }))
+        const { name, path } = data
+        return <div ref={innerRef} {...innerProps} className="d-flex network-select-option">
+            <div className="network-select-title font-weight-bold">{name}</div>
+            <div >{path}</div>
+        </div>
+    }
+
+    const validate = (value, props) => {
+        const errors = {}
+        // if (!value.network) {
+        errors.network = "Required !"
+        // }
+        // console.log(errors)
+        return errors
+    }
+
+
+    const CustomOptionAccount = (optionProps) => {
+        const { innerRef, innerProps, data } = optionProps
+
+        const { name, address, balance } = data
+        return <div ref={innerRef} {...innerProps} className="d-flex account-select-option">
+            <div>
+                <div className="account-select-title font-weight-bold">{name}</div>
+                <span >{address}</span>
+            </div>
+            <div className="right ont-weight-bold">
+                <span>{balance}</span><img src={imgEther20} />
+            </div>
+        </div>
+    }
+
+    const onSelectNetwork = (value) => {
+        setNetwork(value)
+        props.getAccountBalance({ network_id: value.id })
+    }
+
+    const onSelectAccount = (value) => {
+        setAccount(value);
+    }
+
+    const onCreateVCoin = () => {
+        console.log('on create')
+    }
+
+    const networkOptions = props.listNetwork.map(i => ({ ...i, value: i.id, label: i.name }))
+    const accountOptions = props.listAccount.map(i => ({ ...i, value: i.id, label: i.name }))
 
     return <React.Fragment>
         <div className={`vcoin-detail ${props.visible ? "show" : ""}`}>
@@ -67,8 +120,12 @@ const CreateVCoin = (props) => {
                             </NavLink>
                     </NavItem>
                 </Nav>
-                <Formik >
-                    {(formProps) => <Form>
+                <Formik
+                    validate={validate}
+                    innerRef={formRef}
+                    initialValues={{ network: null, account: null }}
+                >
+                    {(errors, touched, handleBlur) => <Form>
 
                         <TabContent activeTab={activeTab}>
                             <TabPane tabId="1">
@@ -78,12 +135,41 @@ const CreateVCoin = (props) => {
                                             <Label for="network">Select one network:</Label>
                                             <Field
                                                 name="network"
+                                                placeholder="Select network"
                                             >
-                                                {() => <Select options={colourOptions} />
+                                                {({ field, form, ...props }) => <Select
+                                                    options={networkOptions}
+                                                    value={network}
+                                                    onChange={onSelectNetwork}
+                                                    components={{ Option: CustomOptionNetwork }}
+                                                />
+                                                }
+                                            </Field>
 
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Label for="account">Select one account in wallets:</Label>
+                                            <Field
+                                                name="account"
+                                            >
+                                                {() => <Select
+                                                    value={account}
+                                                    placeholder="Select account"
+                                                    options={accountOptions}
+                                                    onChange={onSelectAccount}
+                                                    components={{ Option: CustomOptionAccount }}
+                                                />
                                                 }
                                             </Field>
                                         </FormGroup>
+                                        <Button.Ripple
+                                            color="primary"
+                                            className="d-sm-block d-none "
+                                            onClick={onCreateVCoin}
+                                        >
+                                            {" "}
+                                            <Plus size={15} /> <span className="align-middle">Add</span>
+                                        </Button.Ripple>
                                     </Col>
                                 </Row>
                             </TabPane>
@@ -104,7 +190,8 @@ const CreateVCoin = (props) => {
 const mapDispatchToProps = {
     getListVCoin,
     createVCoin,
-    getListNetwork
+    getListNetwork,
+    getAccountBalance
 }
 
 const mapStateToProps = state => {

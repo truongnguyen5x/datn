@@ -24,6 +24,17 @@ export const deleteAccount = (id) => dispatch => {
     return FetchApi(`/api/account/${id}`, 'DELETE')
 }
 
-export const getBalance = (data) => dispatch => {
+export const getAccountBalance = (data) => dispatch => {
     return FetchApi("/api/account/balance", "POST", data)
+    .then(res => {
+        if (res.code) {
+            dispatch({
+                type: "GET_LIST_ACCOUNT",
+                payload: res.data
+            })
+            return res.data
+        } else {
+            return res
+        }
+    })
 }
