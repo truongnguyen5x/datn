@@ -2,10 +2,10 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const TemplateToken = sequelize.define('TemplateToken', {
-    name: {
+    description: {
         type: DataTypes.STRING
     },
-    description: {
+    name: {
         type: DataTypes.STRING
     },
     createdAt: {

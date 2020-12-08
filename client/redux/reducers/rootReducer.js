@@ -8,6 +8,8 @@ import auth from "./auth/"
 import navbar from "./navbar/Index"
 import dataList from "./data-list/"
 import account from "./account"
+import vchain from "./vchain"
+import token from "./token"
 
 const rootReducer = combineReducers({
   calendar: calenderReducer,
@@ -18,7 +20,9 @@ const rootReducer = combineReducers({
   auth: auth,
   navbar: navbar,
   dataList: dataList,
-  account: account
+  account: account,
+  vchain: vchain,
+  token: token
 })
 
 export default rootReducer

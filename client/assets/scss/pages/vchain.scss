@@ -1,0 +1,133 @@
+// ================================================================================================
+// 	File Name: email-application.scss
+// 	Description: SCC file for email application page.
+// 	----------------------------------------------------------------------------------------------
+// 	Item Name: Vuexy React Admin Template
+// 	Version: 1.0
+// 	Author: PIXINVENT
+// 	Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+// Core variables and mixins
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/mixins";
+@import "../bootstrap-extended/mixins";
+
+// Load variable overrides
+@import "../core/variables/variables";
+@import "~bootstrap/scss/_variables.scss";
+
+// Overrides user variable
+@import "../core/variables/components-variables";
+
+.vchain-list {
+  border-radius: $border-radius-sm;
+  height: calc(100vh - 12rem);
+  border: 1px solid $gray-300;
+  position: relative;
+  background-color: $white;
+  display: flex;
+  flex-direction: column;
+
+  #btn-add {
+    margin: 20px;
+  }
+
+  .vchain-detail {
+    position: absolute;
+    display: block;
+    z-index: 2;
+    visibility: hidden;
+    opacity: 0;
+    top: 0;
+    width: calc(100% - #{$menu-expanded-width});
+    background-color: $body-bg;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid $gray-300;
+    border-left: 0;
+    height: calc(100vh - 13rem);
+    &.show {
+      visibility: visible;
+      transition: all 0.3s ease;
+      opacity: 1;
+      transform: translateX(0%);
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .vchain-detail-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba($pure_black, 0.04);
+      border-bottom: 1px solid $kbd-bg;
+      position: relative;
+      padding: 1.5rem 2rem 1.5rem 2rem;
+      background-color: $white;
+    }
+    .vchain-info {
+      margin: 10px;
+      .vchain-info-title {
+        min-width: 180px;
+      }
+    }
+    .vchain-info-action {
+      margin: 20px 10px 10px;
+    }
+  }
+  .vchain-list-scroll {
+    position: relative;
+    border-top: 1px solid $gray-300;
+    border-radius: 0;
+    flex-basis: auto;
+    .vchain-list-wrapper {
+      padding: 0;
+      margin: 0;
+      // Set delay per List Item
+      @for $i from 1 through 5000 {
+        li:nth-child(#{$i}) {
+          animation-delay: 0.1s * $i;
+        }
+      }
+      li {
+        cursor: pointer;
+        border: 1px solid $gray-300;
+        background-color: $body-bg;
+        transition: all 0.2s;
+        animation: fadeIn 0.25s linear;
+        animation-fill-mode: both;
+        position: relative;
+        padding: ($spacer + 0.5) $spacer;
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 3px 10px 0 #ccc;
+          transition: all 0.2s;
+        }
+      }
+    }
+    .no-results {
+      display: none;
+      padding: 1.5rem;
+      text-align: center;
+      &.show {
+        display: block;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    top: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    top: 0px;
+  }
+  100% {
+    opacity: 1;
+  }
+}

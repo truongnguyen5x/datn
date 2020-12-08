@@ -2,11 +2,11 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const File = sequelize.define('File', {
-    path: {
-        type: DataTypes.STRING,
-    },
     code: {
         type: DataTypes.TEXT,
+    },
+    path: {
+        type: DataTypes.STRING,
     },
     createdAt: {
         type: DataTypes.DATE,

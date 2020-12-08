@@ -10,10 +10,13 @@ const User = sequelize.define('User', {
             isEmail: true
         }
     },
-    name: {
+    hash_password: {
         type: DataTypes.STRING
     },
-    hash_password: {
+    image: {
+        type: DataTypes.STRING
+    },
+    name: {
         type: DataTypes.STRING
     },
     refresh_token: {
@@ -22,9 +25,6 @@ const User = sequelize.define('User', {
     role: {
         type: DataTypes.INTEGER,
         defaultValue: 1
-    },
-    image: {
-        type: DataTypes.STRING
     },
     createdAt: {
         type: DataTypes.DATE,

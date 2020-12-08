@@ -2,23 +2,23 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const Token = sequelize.define('Token', {
-    symbol: {
-        type: DataTypes.STRING
-    },
-    name: {
-        type: DataTypes.STRING
-    },
-    image: {
+    description: {
         type: DataTypes.STRING
     },
     exchange_rate: {
         type: DataTypes.INTEGER.UNSIGNED
     },
+    image: {
+        type: DataTypes.STRING
+    },
+    name: {
+        type: DataTypes.STRING
+    },
+    symbol: {
+        type: DataTypes.STRING
+    },
     transaction_fee: {
         type: DataTypes.INTEGER.UNSIGNED
-    },
-    description: {
-        type: DataTypes.STRING
     },
     createdAt: {
         type: DataTypes.DATE,

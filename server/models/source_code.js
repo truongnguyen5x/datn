@@ -2,6 +2,9 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const SourceCode = sequelize.define('SourceCode', {
+    contract_name: {
+        type: DataTypes.STRING
+    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: new Date()

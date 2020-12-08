@@ -2,8 +2,9 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const VChain = sequelize.define('VChain', {
-    name: {
-        type: DataTypes.STRING
+    del: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     createdAt: {
         type: DataTypes.DATE,
