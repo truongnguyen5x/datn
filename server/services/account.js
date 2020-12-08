@@ -4,7 +4,7 @@ const networkService = require("./network")
 const ApiError = require("../middlewares/error")
 const _ = require('lodash')
 const Web3 = require('web3')
-const { getWeb3Instance } = require("../utils/network_util")
+const { getWeb3Instance, getListAccount: web3GetAcc} = require("../utils/network_util")
 const { User } = require('react-feather')
 
 const getListAccount = async (userId) => {
@@ -44,6 +44,9 @@ const getListAccountBalance = async (user_id, network_id) => {
     const user = await userService.getUserById(user_id)
     const accounts = await user.getWallets()
     const web3 = await getWeb3Instance({ provider: network.path })
+
+    await web3GetAcc(web3)
+    
     const pm = accounts.map(async i => {
         let balance = await web3.eth.getBalance(i.address)
         balance = web3.utils.fromWei(balance)

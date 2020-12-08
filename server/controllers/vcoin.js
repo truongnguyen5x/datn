@@ -1,6 +1,7 @@
 const { vcoinService } = require('../services')
 const ApiError = require("../middlewares/error")
 const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
+const {sequelize} = require("../configs")
 
 const getListVCoin = async (req, res, next) => {
     try {
@@ -23,10 +24,14 @@ const getVCoinById = async (req, res, next) => {
 }
 
 const createVCoin = async (req, res, next) => {
+    const t = await sequelize.transaction();
     try {
-        const rs = await vcoinService.createVCoin(req.body)
+        const { user } = req
+        const rs = await vcoinService.createVCoin(req.body, user.id, t)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
+        await t.rollback();
         ResponseError(res, error, "ERROR")
     }
 }
