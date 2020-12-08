@@ -18,6 +18,14 @@ const navigationConfig = [
     navLink: "/accounts"
   },
   {
+    id: "vchain",
+    title: "VChain",
+    type: "item",
+    icon: <Icon.Cpu size={20} />,
+    permissions: ["admin"],
+    navLink: "/vchain"
+  },
+  {
     id: "token-dev",
     title: "Token",
     type: "item",
