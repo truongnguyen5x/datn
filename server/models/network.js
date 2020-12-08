@@ -2,6 +2,9 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const Network = sequelize.define('Network', {
+    name: {
+        type: DataTypes.STRING,
+    },
     path: {
         type: DataTypes.STRING,
     },
