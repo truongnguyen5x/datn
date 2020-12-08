@@ -5,7 +5,7 @@ import { Plus, ArrowLeft, X } from 'react-feather'
 import { getListVCoin, createVCoin } from "../../redux/actions/vcoin/index"
 import { getListNetwork } from "../../redux/actions/network"
 import { getAccountBalance } from "../../redux/actions/account"
-
+import Wizard from "../../components/@vuexy/wizard/WizardComponent"
 import * as Yup from "yup"
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import "react-toastify/dist/ReactToastify.css"
@@ -77,12 +77,90 @@ const CreateVCoin = (props) => {
         setAccount(value);
     }
 
-    const onCreateVCoin = () => {
-        console.log('on create')
+    const onCreateVCoin = async () => {
+        const dataCreate = {
+            network: network.id,
+            account: account.id,
+            source: sourceCode,
+            contract: 'VCoin'
+        }
+        const res = await props.createVCoin(dataCreate)
+        if (res.code) {
+            toast.success("Create success!")
+            // props.getListVCoin()
+            // props.onClose()
+        } else {
+            toast.error("Create fail !")
+            return
+        }
     }
 
     const networkOptions = props.listNetwork.map(i => ({ ...i, value: i.id, label: i.name }))
     const accountOptions = props.listAccount.map(i => ({ ...i, value: i.id, label: i.name }))
+    const contractOptions = [{ value: 'vcoin', label: "VCoin" }, { value: 'erc20', label: "ERC20" }]
+
+    const steps = [
+        {
+            title: 1,
+            content: <Editor onChange={e => setSourceCode(e)}/>
+        }, {
+            title: 2,
+            content: <Row>
+                <Col sm={12} md={6}>
+                    <FormGroup>
+                        <Label for="network">Select one contract:</Label>
+                        <Field
+                            name="network"
+                            placeholder="Select contract"
+                        >
+                            {({ field, form, ...props }) => <Select
+                                options={contractOptions}
+                            />
+                            }
+                        </Field>
+                    </FormGroup>
+                </Col>
+            </Row>
+        }, {
+            title: 3,
+            content: <Row>
+                <Col sm={12} md={6}>
+                    <FormGroup>
+                        <Label for="network">Select one network:</Label>
+                        <Field
+                            name="network"
+                            placeholder="Select network"
+                        >
+                            {({ field, form, ...props }) => <Select
+                                options={networkOptions}
+                                value={network}
+                                onChange={onSelectNetwork}
+                                components={{ Option: CustomOptionNetwork }}
+                            />
+                            }
+                        </Field>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="account">Select one account in wallets:</Label>
+                        <Field
+                            name="account"
+                        >
+                            {() => <Select
+                                value={account}
+                                placeholder="Select account"
+                                options={accountOptions}
+                                onChange={onSelectAccount}
+                                components={{ Option: CustomOptionAccount }}
+                            />
+                            }
+                        </Field>
+                    </FormGroup>
+                </Col>
+            </Row>
+
+        }
+    ]
+
 
     return <React.Fragment>
         <div className={`vcoin-detail ${props.visible ? "show" : ""}`}>
@@ -93,94 +171,15 @@ const CreateVCoin = (props) => {
                 />
                 <h4 className="mb-0">Create VCoin</h4>
             </div>
-            <div className="m-2">
-                <Nav tabs>
-                    <NavItem>
-                        <NavLink
-                            className={classnames({
-                                active: activeTab === "1"
-                            })}
-                            onClick={() => {
-                                toggle("1")
-                            }}
-                        >
-                            Infomation
-                     </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            className={classnames({
-                                active: activeTab === "2"
-                            })}
-                            onClick={() => {
-                                toggle("2")
-                            }}
-                        >
-                            Source code
-                            </NavLink>
-                    </NavItem>
-                </Nav>
-                <Formik
-                    validate={validate}
-                    innerRef={formRef}
-                    initialValues={{ network: null, account: null }}
-                >
-                    {(errors, touched, handleBlur) => <Form>
-
-                        <TabContent activeTab={activeTab}>
-                            <TabPane tabId="1">
-                                <Row>
-                                    <Col sm={12} md={6}>
-                                        <FormGroup>
-                                            <Label for="network">Select one network:</Label>
-                                            <Field
-                                                name="network"
-                                                placeholder="Select network"
-                                            >
-                                                {({ field, form, ...props }) => <Select
-                                                    options={networkOptions}
-                                                    value={network}
-                                                    onChange={onSelectNetwork}
-                                                    components={{ Option: CustomOptionNetwork }}
-                                                />
-                                                }
-                                            </Field>
-
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label for="account">Select one account in wallets:</Label>
-                                            <Field
-                                                name="account"
-                                            >
-                                                {() => <Select
-                                                    value={account}
-                                                    placeholder="Select account"
-                                                    options={accountOptions}
-                                                    onChange={onSelectAccount}
-                                                    components={{ Option: CustomOptionAccount }}
-                                                />
-                                                }
-                                            </Field>
-                                        </FormGroup>
-                                        <Button.Ripple
-                                            color="primary"
-                                            className="d-sm-block d-none "
-                                            onClick={onCreateVCoin}
-                                        >
-                                            {" "}
-                                            <Plus size={15} /> <span className="align-middle">Add</span>
-                                        </Button.Ripple>
-                                    </Col>
-                                </Row>
-                            </TabPane>
-                            <TabPane tabId="2">
-                                <Editor />
-                            </TabPane>
-                        </TabContent>
-                    </Form>}
-
+            <div className="m-2 vcoin-detail-body" >
+                <Formik >
+                    {() => <Wizard
+                        enableAllSteps
+                        onFinish={onCreateVCoin}
+                        steps={steps}
+                    />
+                    }
                 </Formik>
-
             </div>
         </div>
         <ToastContainer />

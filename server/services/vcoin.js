@@ -9,7 +9,8 @@ const getVCoinById = async (id) => {
 }
 
 const createVCoin = async (data) => {
-    return VCoin.create(data)
+    
+    return '1'
 }
 
 const updateVCoin = async (data) => {

@@ -7,6 +7,7 @@ const user = require('./user')
 const token = require('./token')
 const vcoin = require("./vcoin")
 const network = require("./network")
+const file = require("./file")
 
 // define route here
 siteApp.use("/account", account)
@@ -15,6 +16,7 @@ siteApp.use('/token', token)
 siteApp.use('/user', user)
 siteApp.use('/vcoin', vcoin)
 siteApp.use("/network", network)
+siteApp.use("/file", file)
 
 
 

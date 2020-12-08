@@ -5,6 +5,7 @@ const configService = require("./config")
 const accountService = require("./account")
 const vcoinService = require("./vcoin")
 const networkService = require("./network")
+const fileService = require("./file")
 
 module.exports = {
     userService,
@@ -13,5 +14,6 @@ module.exports = {
     configService,
     accountService,
     vcoinService,
-    networkService
+    networkService,
+    fileService
 }
