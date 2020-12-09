@@ -1,8 +1,12 @@
 
 import { FetchApi } from "../axios"
 
-export const getListVCoin = () => dispatch => {
-    return FetchApi("/api/vcoin")
+export const getListVCoin = (filter) => dispatch => {
+    dispatch({
+        type: "CHANGE_FILTER_VCOIN",
+        payload: filter
+    })
+    return FetchApi("/api/vcoin", 'get', { filter })
         .then(res => {
             if (res.code) {
                 dispatch({
@@ -23,3 +27,7 @@ export const createVCoin = (data) => dispatch => {
 export const deleteVCoin = (id) => dispatch => {
     return FetchApi(`/api/vcoin/${id}`, 'DELETE')
 }
+
+
+
+

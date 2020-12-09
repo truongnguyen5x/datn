@@ -6,6 +6,8 @@ import { getListVCoin } from "../../redux/actions/vcoin/index"
 import CreateVCoin from "./CreateVCoin"
 import DetailVCoin from "./DetailVCoin"
 import PerfectScrollbar from "react-perfect-scrollbar"
+import VCoinSidebar from "./VCoinSidebar"
+import { ContextLayout } from "../../utility/context/Layout"
 import "../../assets/scss/pages/vcoin.scss"
 
 const ListVCoin = (props) => {
@@ -15,7 +17,7 @@ const ListVCoin = (props) => {
     const [vcoin, setVCoin] = useState()
 
     useEffect(() => {
-        props.getListVCoin()
+        props.getListVCoin(props.filter)
     }, [])
 
     const onCloseModalCreate = () => {
@@ -80,7 +82,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => {
     return {
-        listVCoin: state.vcoin.listVCoin
+        listVCoin: state.vcoin.listVCoin,
+        filter: state.vcoin.filter
     }
 }
 
