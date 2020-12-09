@@ -58,7 +58,7 @@ const createToken = async (data, user_id, transaction) => {
     const myContract = new web3.eth.Contract(interface)
     const bytecode = constractCompile.evm.bytecode.object;
 
-    const newSmartContract = await SmartContract.create({ deploy_status: 0 })
+    const newSmartContract = await SmartContract.create({ deploy_status: 0, abi: JSON.stringify(interface) })
     await newSmartContract.setNetwork(networkSend)
     await newSmartContract.setOwner(accSend)
     await newSmartContract.setFiles(createdSources)
@@ -103,11 +103,7 @@ const createToken = async (data, user_id, transaction) => {
 
 
 const getListToken = async () => {
-    return Token.findAll({
-        where: {
-            del: false
-        }
-    })
+    return Token.findAll({})
 }
 
 const getTokenById = async (id) => {

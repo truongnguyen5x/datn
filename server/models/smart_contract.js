@@ -2,6 +2,9 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const SmartContract = sequelize.define('SmartContract', {
+    abi: {
+        type: DataTypes.TEXT
+    },
     address: {
         type: DataTypes.STRING,
     },

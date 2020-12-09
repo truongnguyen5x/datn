@@ -43,6 +43,10 @@ export const getVCoinById = (id) => dispatch => {
     })
 }
 
+export const exportSDK = (id) => dispatch => {
+    return FetchApi(`/api/vcoin/sdk/${id}`, "POST")
+}
+
 
 
 

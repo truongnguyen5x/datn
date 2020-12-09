@@ -66,11 +66,24 @@ const deleteVCoin = async (req, res, next) => {
     }
 }
 
+const exportSDK = async (req, res, next) =>{
+    try {
+        const { id } = req.params
+        const path = await vcoinService.exportSDK(id)
+
+        res.download(path)
+    } catch (error) {
+        console.log(error)
+        ResponseError(res, error, "ERROR")
+    }
+}
+
 
 module.exports = {
     createVCoin,
     getListVCoin,
     getVCoinById,
     updateVCoin,
-    deleteVCoin
+    deleteVCoin,
+    exportSDK
 }

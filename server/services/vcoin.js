@@ -4,6 +4,9 @@ const accountService = require("./account")
 const networkService = require("./network")
 const fileService = require("./file")
 const ApiError = require("../middlewares/error")
+const path = require('path')
+const AdmZip = require('adm-zip');
+// const a  = require("../")
 
 const solc = require("solc");
 const { getWeb3Instance, getListAccount } = require("../utils/network_util")
@@ -103,7 +106,7 @@ const createVCoin = async (data, user_id, transaction) => {
     const myContract = new web3.eth.Contract(interface)
     const bytecode = constractCompile.evm.bytecode.object;
 
-    const newSmartContract = await SmartContract.create({ deploy_status: 0 })
+    const newSmartContract = await SmartContract.create({ deploy_status: 0, abi: JSON.stringify(interface) })
     await newSmartContract.setNetwork(networkSend)
     await newSmartContract.setOwner(accSend)
     await newSmartContract.setFiles(createdSources)
@@ -149,10 +152,21 @@ const deleteVCoin = async (id) => {
     return VCoin.destroy({ where: { id } })
 }
 
+const exportSDK = async (id) => {
+    const zip = new AdmZip();
+    zip.addLocalFile(path.resolve(__dirname, "../sdk/index.js"));
+    zip.addLocalFile(path.resolve(__dirname, "../sdk/secret.js"));
+
+    zip.writeZip(path.resolve(__dirname, "../sdk/sdk.zip"))
+
+    return path.resolve(__dirname, "../sdk/sdk.zip")
+}
+
 module.exports = {
     getListVCoin,
     getVCoinById,
     createVCoin,
     updateVCoin,
-    deleteVCoin
+    deleteVCoin,
+    exportSDK
 }

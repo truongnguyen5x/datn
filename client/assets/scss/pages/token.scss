@@ -1,0 +1,234 @@
+// ================================================================================================
+// 	File Name: email-application.scss
+// 	Description: SCC file for email application page.
+// 	----------------------------------------------------------------------------------------------
+// 	Item Name: Vuexy React Admin Template
+// 	Version: 1.0
+// 	Author: PIXINVENT
+// 	Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+// Core variables and mixins
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/mixins";
+@import "../bootstrap-extended/mixins";
+
+// Load variable overrides
+@import "../core/variables/variables";
+@import "~bootstrap/scss/_variables.scss";
+
+// Overrides user variable
+@import "../core/variables/components-variables";
+
+.token-list {
+  border-radius: $border-radius-sm;
+  height: calc(100vh - 11.6rem);
+  position: relative;
+  background-color: $white;
+
+  .token-app-sidebar {
+    width: $menu-expanded-width;
+    height: 100%;
+    background-color: $white;
+    border-top-left-radius: $border-radius-sm;
+    border-bottom-left-radius: $border-radius-sm;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px 0 rgba($pure_black, 0.05) !important;
+    border: 1px solid $gray-300;
+    border-right: 0;
+    overflow-y: hidden !important;
+    // width: 100%;
+    padding-bottom: 0.5rem;
+    z-index: 3;
+
+    // remove default overlay had to get it like this because there's no class for that
+    & + div {
+      display: none;
+    }
+
+    // Close Icon
+    .sidebar-close-icon {
+      position: absolute;
+      right: 0.25rem;
+      top: 0.25rem;
+      cursor: pointer;
+      font-size: 1.25rem;
+      z-index: 5;
+      visibility: hidden;
+    }
+    .token-app-menu {
+      width: 100%;
+      // padding-bottom: 0.5rem;
+      // z-index: 3;
+      .compose-btn {
+        padding: 1px 1.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .sidebar-menu-list {
+        padding: 0 1.5rem;
+        // position: relative;
+        height: calc(100% - 6.4rem);
+        .folder-text {
+          color: $body-color;
+        }
+        // height: 100%;
+      }
+      .list-group .list-group-item i {
+        top: 3px;
+      }
+
+      hr {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+      }
+    }
+  }
+  .list-group .list-group-item {
+    padding-left: 0;
+    padding-right: 0;
+    &:hover,
+    &:focus {
+      background-color: transparent;
+      color: $body-color;
+    }
+    &.active {
+      background: transparent;
+      color: $primary;
+    }
+  }
+  .token-detail {
+    position: absolute;
+    display: block;
+    z-index: 2;
+    visibility: hidden;
+    opacity: 0;
+    top: 0;
+    width: calc(100% - #{$menu-expanded-width});
+    background-color: $white;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid $gray-300;
+    &.show {
+      visibility: visible;
+      transition: all 0.3s ease;
+      opacity: 1;
+      transform: translateX(0%);
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .token-detail-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba($pure_black, 0.04);
+      border-bottom: 1px solid $kbd-bg;
+      position: relative;
+      padding: 1.5rem 2rem 1.5rem 2rem;
+      background-color: $white;
+    }
+    .token-detail-body {
+      height: calc(100% - 108px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      .token-info {
+        margin: 10px;
+        .token-info-title {
+          width: 200px;
+        }
+      }
+      .token-info-action {
+        margin: 20px 10px 10px;
+      }
+    }
+
+    .network-select-option {
+      padding: 10px;
+      &:hover {
+        background-color: $light-blue;
+      }
+      .network-select-title {
+        width: 200px;
+      }
+    }
+    .account-select-option {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &:hover {
+        background-color: $light-blue;
+      }
+      .right {
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+  .content-right {
+    height: 100%;
+    .token-list-scroll {
+      position: relative;
+      flex-grow: 1;
+      border: 1px solid $gray-300;
+      border-radius: 0px;
+      .token-list-wrapper {
+        padding: 0;
+        margin: 0;
+        // Set delay per List Item
+        @for $i from 1 through 5000 {
+          li:nth-child(#{$i}) {
+            animation-delay: 0.1s * $i;
+          }
+        }
+        li {
+          cursor: pointer;
+          border: 1px solid $gray-300;
+          background-color: $body-bg;
+          transition: all 0.2s;
+          animation: fadeIn 0.25s linear;
+          animation-fill-mode: both;
+          position: relative;
+          padding: ($spacer + 0.5) $spacer;
+     
+          &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 3px 10px 0 #ccc;
+            transition: all 0.2s;
+          }
+          .left {
+            flex-grow: 1;
+          }
+          .right {
+            align-self: flex-end;
+          }
+        }
+      }
+      .no-results {
+        display: none;
+        padding: 1.5rem;
+        text-align: center;
+        &.show {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    top: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    top: 0px;
+  }
+  100% {
+    opacity: 1;
+  }
+}

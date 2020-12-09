@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { Button, FormGroup, Row, Col, NavLink, NavItem, TabContent, TabPane, Nav } from "reactstrap"
 import { Plus, ArrowLeft, X, Edit, Trash } from 'react-feather'
-import { getListVCoin, deleteVCoin } from "../../redux/actions/vcoin/index"
+import { getListVCoin, deleteVCoin, exportSDK } from "../../redux/actions/vcoin/index"
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import "react-toastify/dist/ReactToastify.css"
@@ -10,6 +10,7 @@ import classnames from "classnames"
 import { toast, ToastContainer } from "react-toastify"
 import moment from 'moment'
 import Editor from './Editor'
+import { saveAs } from 'file-saver';
 
 const DetailVCoin = (props) => {
     const [confirmDeleteModal, openModalConfirmDelete] = useState(false)
@@ -36,6 +37,15 @@ const DetailVCoin = (props) => {
         if (activeTab !== tab) {
             setActiveTab(tab)
         }
+    }
+
+    const onExportSDK = async () => {
+        const res = await props.exportSDK(props.data.smartContract.id)
+        const blob = new Blob([res], {
+            type: 'application/octet-stream'
+          })
+          const filename = 'download.zip'
+          saveAs(blob, filename)
     }
 
     return <React.Fragment>
@@ -123,6 +133,11 @@ const DetailVCoin = (props) => {
                                     <Edit size={15} />
                                     <span className="align-middle ml-50">Use for VChain</span>
                                 </Button.Ripple>
+                                <Button.Ripple color="info" outline className=" mr-1"
+                                    onClick={onExportSDK}>
+                                    <Trash size={15} />
+                                    <span className="align-middle ml-50">Export SDK</span>
+                                </Button.Ripple>
                                 <Button.Ripple color="danger" outline
                                     onClick={onDeleteVCoin}>
                                     <Trash size={15} />
@@ -170,7 +185,8 @@ const DetailVCoin = (props) => {
 
 const mapDispatchToProps = {
     getListVCoin,
-    deleteVCoin
+    deleteVCoin,
+    exportSDK
 }
 
 const mapStateToProps = state => {

@@ -8,6 +8,7 @@ const getListToken = async (req, res, next) => {
         const rs = await tokenService.getListToken()
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

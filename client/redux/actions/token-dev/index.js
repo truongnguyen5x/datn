@@ -2,7 +2,7 @@
 import { FetchApi } from "../axios"
 
 export const getListToken = () => dispatch => {
-    return FetchApi("/api/token-dev")
+    return FetchApi("/api/token")
         .then(res => {
             if (res.code) {
                 dispatch({
@@ -17,9 +17,9 @@ export const getListToken = () => dispatch => {
 }
 
 export const createToken = (data) => dispatch => {
-    return FetchApi("/api/token-dev", 'POST', data)
+    return FetchApi("/api/token", 'POST', data)
 }
 
 export const deleteToken = (id) => dispatch => {
-    return FetchApi(`/api/token-dev/${id}`, 'DELETE')
+    return FetchApi(`/api/token/${id}`, 'DELETE')
 }
