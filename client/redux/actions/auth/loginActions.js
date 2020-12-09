@@ -61,6 +61,7 @@ export const getProfile = () => dispatch => {
       } else {
         localStorage.removeItem("accessToken")
         localStorage.removeItem("refreshToken")
+        console.log('from get me')
         history.push("/pages/login")
       }
     })

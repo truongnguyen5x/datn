@@ -25,6 +25,7 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
                 alert("Please login again !")
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
+                console.log('from fetch api')
                 history.push("/pages/login")
             }
             return response.data;
