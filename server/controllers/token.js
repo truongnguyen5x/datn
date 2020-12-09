@@ -1,7 +1,7 @@
 const { tokenService } = require('../services')
 const ApiError = require("../middlewares/error")
 const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
-
+const { sequelize } = require("../configs")
 
 const getListToken = async (req, res, next) => {
     try {
@@ -23,11 +23,14 @@ const getTokenById = async (req, res, next) => {
 }
 
 const createToken = async (req, res, next) => {
+    const t = await sequelize.transaction();
     try {
-        const rs = await tokenService.createToken(req.body)
+        const { user } = req
+        const rs = await tokenService.createToken(req.body, user.id, t)
         ResponseSuccess(res, rs)
     } catch (error) {
         console.log(error)
+        await t.rollback();
         ResponseError(res, error, "ERROR")
     }
 }

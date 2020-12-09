@@ -1,4 +1,4 @@
-const { VCoin, SmartContract, Network, Account, File } = require('../models')
+const { VCoin, SmartContract, Network, Account, File, Token } = require('../models')
 const userService = require("./user")
 const accountService = require("./account")
 const networkService = require("./network")
@@ -57,7 +57,7 @@ const getVCoinById = async (id) => {
 }
 
 const createVCoin = async (data, user_id, transaction) => {
-    const { source, contract, network, account } = data
+    const { source, contract, network, account, symbol } = data
     const accSend = await accountService.getAccountById(account)
     const userSend = await userService.getUserById(user_id)
     if (accSend.user_id != user_id) {
