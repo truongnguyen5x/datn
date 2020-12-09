@@ -1,11 +1,12 @@
 const { vcoinService } = require('../services')
 const ApiError = require("../middlewares/error")
 const { ResponseError, ResponseSuccess } = require("../middlewares/Response")
-const {sequelize} = require("../configs")
+const { sequelize } = require("../configs")
 
 const getListVCoin = async (req, res, next) => {
     try {
-        const rs = await vcoinService.getListVCoin()
+        const { filter } = req.query
+        const rs = await vcoinService.getListVCoin(filter)
         ResponseSuccess(res, rs)
     } catch (error) {
         console.log(error)

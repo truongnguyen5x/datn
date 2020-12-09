@@ -1,4 +1,4 @@
-const { VCoin, SmartContract } = require('../models')
+const { VCoin, SmartContract, Network, Account, File } = require('../models')
 const userService = require("./user")
 const accountService = require("./account")
 const networkService = require("./network")
@@ -8,12 +8,52 @@ const ApiError = require("../middlewares/error")
 const solc = require("solc");
 const { getWeb3Instance, getListAccount } = require("../utils/network_util")
 
-const getListVCoin = async () => {
-    return VCoin.findAll({})
+const getListVCoin = async (filter) => {
+    const used = (filter == 'used')
+    return VCoin.findAll({
+        where: {
+            used
+        },
+        include: [{
+            model: SmartContract,
+            as: "smartContract",
+            where: {
+                del: 0
+            },
+            include: [{
+                model: Network,
+                as: 'network'
+            }, {
+                model: Account,
+                as: 'owner'
+            }]
+        }]
+    })
 }
 
 const getVCoinById = async (id) => {
-    return VCoin.findOne({ where: { id } })
+    return VCoin.findOne({
+        where: {
+            id
+        },
+        include: [{
+            model: SmartContract,
+            as: "smartContract",
+            where: {
+                del: 0
+            },
+            include: [{
+                model: Network,
+                as: 'network'
+            }, {
+                model: Account,
+                as: 'owner'
+            }, {
+                model: File,
+                as: "files"
+            }]
+        }]
+    })
 }
 
 const createVCoin = async (data, user_id, transaction) => {
@@ -68,7 +108,7 @@ const createVCoin = async (data, user_id, transaction) => {
     await newSmartContract.setOwner(accSend)
     await newSmartContract.setFiles(createdSources)
     const newVCoin = await VCoin.create({})
-    await newVCoin.addSmartContract(newSmartContract)
+    await newVCoin.setSmartContract(newSmartContract)
     await newVCoin.setOwner(userSend)
 
     myContract.deploy({

@@ -18,7 +18,7 @@ const VCoinSidebar = props => {
       >
         <X size={18} />
       </div>
-      <div className="email-app-menu">
+      <div className="vcoin-app-menu">
         <FormGroup className="form-group-compose text-center compose-btn">
           <Button.Ripple
             block
@@ -42,32 +42,31 @@ const VCoinSidebar = props => {
           <ListGroup className="list-group-messages font-medium-1">
             <ListGroupItem
               onClick={() => props.getListVCoin("used")}
-              active={true}
+              active={props.filter == 'used'}
               className="border-0 cursor-pointer pt-0"
             >
               <Mail size={21} />
-              <span className="align-middle ml-1">Inbox</span>
-              <div className="badge badge-pill badge-primary mt-25 float-right">
-                <span className="align-middle">3</span>
-              </div>
+              <span className="align-middle ml-1">Used</span>
             </ListGroupItem>
             <ListGroupItem
               onClick={() => props.getListVCoin("unused")}
-              active={false}
+              active={props.filter == 'unused'}
               className="border-0 cursor-pointer"
             >
               <Send size={21} />
-              <span className="align-middle ml-1">Sent</span>
+              <span className="align-middle ml-1">Unused</span>
             </ListGroupItem>
-
-
           </ListGroup>
-
-
         </PerfectScrollbar>
       </div>
     </React.Fragment>
   )
 }
 
-export default connect(null, { getListVCoin })(VCoinSidebar)
+const mapStateToProps = state => {
+    return {
+        filter: state.vcoin.filter
+    }
+}
+
+export default connect(mapStateToProps, { getListVCoin })(VCoinSidebar)

@@ -10,7 +10,7 @@ export const getListVCoin = (filter) => dispatch => {
         .then(res => {
             if (res.code) {
                 dispatch({
-                    type: "GET_LIST_ACCOUNT",
+                    type: "GET_LIST_VCOIN",
                     payload: res.data
                 })
                 return res.data
@@ -26,6 +26,21 @@ export const createVCoin = (data) => dispatch => {
 
 export const deleteVCoin = (id) => dispatch => {
     return FetchApi(`/api/vcoin/${id}`, 'DELETE')
+}
+
+export const getVCoinById = (id) => dispatch => {
+    return FetchApi(`/api/vcoin/${id}`)
+    .then(res => {
+        if (res.code) {
+            dispatch({
+                type: "GET_DETAIL_VCOIN",
+                payload: res.data
+            })
+            return res.data
+        } else {
+            return res
+        }
+    })
 }
 
 

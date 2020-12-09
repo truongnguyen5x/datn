@@ -18,14 +18,15 @@ SmartContract.belongsTo(Network, { as: "network", foreignKey: "network_id" })
 SmartContract.belongsTo(Account, { as: "owner", foreignKey: "account_id" })
 SmartContract.hasMany(File, { as: "files", foreignKey: "smart_contract_id" })
 
-VCoin.hasMany(SmartContract, { as: "smartContracts", foreignKey: "vcoin_id" })
+VCoin.belongsTo(SmartContract, { as: "smartContract", foreignKey: "smart_contract_id" })
 VCoin.belongsTo(User, { as: "owner", foreignKey: "user_id" })
+// VCoin.hasMany(Token, {as: "tokens", foreignKey: "vcoin_id"})
 
 Token.hasMany(SmartContract, { as: "smartContracts", foreignKey: "token_id" })
 Token.belongsTo(User, { as: "owner", foreignKey: "user_id" })
 
 // sequelize.sync({ force: true })
-// sequelize.sync({ alter: true })
+sequelize.sync({ alter: true })
 // sequelize.sync()
 
 sequelize

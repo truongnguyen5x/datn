@@ -27,12 +27,6 @@ const CreateVCoin = (props) => {
         props.getListNetwork()
     }, [])
 
-    const toggle = tab => {
-        if (activeTab !== tab) {
-            setActiveTab(tab)
-        }
-    }
-
     const CustomOptionNetwork = (optionProps) => {
         const { innerRef, innerProps, data } = optionProps
 
@@ -87,8 +81,8 @@ const CreateVCoin = (props) => {
         const res = await props.createVCoin(dataCreate)
         if (res.code) {
             toast.success("Create success!")
-            // props.getListVCoin()
-            // props.onClose()
+            props.getListVCoin()
+            props.onClose()
         } else {
             toast.error("Create fail !")
             return
