@@ -1,7 +1,6 @@
 {
-  "name": "vuexy-react-admin-dashboard",
+  "name": "vchain-management-token",
   "version": "1.0.0",
-  "private": true,
   "dependencies": {
     "adm-zip": "^0.5.1",
     "ag-grid-community": "^22.1.1",
