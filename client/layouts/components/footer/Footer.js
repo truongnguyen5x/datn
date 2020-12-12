@@ -21,7 +21,7 @@ const Footer = props => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Pixinvent,
+            Truong5x,
           </a>
           All rights reserved
         </span>

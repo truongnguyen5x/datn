@@ -1,23 +1,8 @@
-// ================================================================================================
-// 	File Name: email-application.scss
-// 	Description: SCC file for email application page.
-// 	----------------------------------------------------------------------------------------------
-// 	Item Name: Vuexy React Admin Template
-// 	Version: 1.0
-// 	Author: PIXINVENT
-// 	Author URL: http://www.themeforest.net/user/pixinvent
-// ================================================================================================
-
-// Core variables and mixins
 @import "~bootstrap/scss/_functions.scss";
 @import "~bootstrap/scss/mixins";
 @import "../bootstrap-extended/mixins";
-
-// Load variable overrides
 @import "../core/variables/variables";
 @import "~bootstrap/scss/_variables.scss";
-
-// Overrides user variable
 @import "../core/variables/components-variables";
 
 .account-list {
@@ -41,11 +26,10 @@
     opacity: 0;
     top: 0;
     width: calc(100% - #{$menu-expanded-width});
-    background-color: $body-bg;
+    background-color: $white;
     transform: translateX(100%);
     transition: all 0.3s ease;
     height: 100%;
-    border: 1px solid $gray-300;
     border-left: 0;
     &.show {
       visibility: visible;
@@ -60,11 +44,9 @@
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
-      box-shadow: 0 4px 6px rgba($pure_black, 0.04);
-      border-bottom: 1px solid $kbd-bg;
       position: relative;
       padding: 1.5rem 2rem 1.5rem 2rem;
-      background-color: $white;
+      background-color: $body-bg;
     }
     .account-info {
       margin: 10px;
