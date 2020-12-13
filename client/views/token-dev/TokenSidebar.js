@@ -1,8 +1,8 @@
 import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import { X, Edit, Mail, Send, Edit2, Star, Info, Trash } from "react-feather"
-import { changeFilter } from "../../redux/actions/email/index"
+import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, Plus } from "react-feather"
+import { changeFilter } from "../../redux/actions/token-dev/index"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
@@ -31,8 +31,8 @@ class TokenSidebar extends React.Component {
                 this.props.mainSidebar(false)
               }}
             >
-              <Edit size={14} />
-              <span className="align-middle ml-50">Compose</span>
+              <Plus size={14} />
+              <span className="align-middle ml-50">Create</span>
             </Button.Ripple>
           </FormGroup>
           <PerfectScrollbar
@@ -43,99 +43,28 @@ class TokenSidebar extends React.Component {
           >
             <ListGroup className="list-group-messages font-medium-1">
               <ListGroupItem
-                onClick={() => this.props.changeFilter("inbox")}
-                active={ "/email/inbox" === this.props.routerProps.location.pathname }
+                onClick={() => this.props.changeFilter("all")}
+                active={"all" === this.props.listType}
                 className="border-0 cursor-pointer pt-0"
               >
-                <Mail size={21} />
-                <span className="align-middle ml-1">Inbox</span>
-                <div className="badge badge-pill badge-primary mt-25 float-right">
-                  <span className="align-middle">3</span>
-                </div>
+                <List size={21} />
+                <span className="align-middle ml-1">All token</span>
               </ListGroupItem>
               <ListGroupItem
-                onClick={() => this.props.changeFilter("sent")}
-                active={ "/token-dev/sent" === this.props.routerProps.location.pathname }
+                onClick={() => this.props.changeFilter("in-vchain")}
+                active={"in-vchain" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
-                <Send size={21} />
-                <span className="align-middle ml-1">Sent</span>
-              </ListGroupItem>
+                <Globe size={21} />
+                <span className="align-middle ml-1">In Vchain</span>
+              </ListGroupItem>              
               <ListGroupItem
-                onClick={() => this.props.changeFilter("draft")}
-                active={ "/token-dev/draft" === this.props.routerProps.location.pathname }
+                onClick={() => this.props.changeFilter("requested")}
+                active={"requested" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
-                <Edit2 size={21} />
-                <span className="align-middle ml-1">Draft</span>
-                <div className="badge badge-pill badge-warning mt-25 float-right">
-                  <span className="align-middle">4</span>
-                </div>
-              </ListGroupItem>
-              <ListGroupItem
-                onClick={() => {
-                  this.props.changeFilter("starred")
-                }}
-                active={ "/token-dev/starred" === this.props.routerProps.location.pathname }
-                className="border-0 cursor-pointer"
-              >
-                <Star size={21} />
-                <span className="align-middle ml-1">Starred</span>
-              </ListGroupItem>
-              <ListGroupItem
-                onClick={() => this.props.changeFilter("spam")}
-                active={ "/token-dev/spam" === this.props.routerProps.location.pathname }
-                className="border-0 cursor-pointer"
-              >
-                <Info size={21} />
-                <span className="align-middle ml-1">Spam</span>
-                <div className="badge badge-pill badge-danger mt-25 float-right">
-                  <span className="align-middle">3</span>
-                </div>
-              </ListGroupItem>
-              <ListGroupItem
-                onClick={() => this.props.changeFilter("trash")}
-                active={ "/token-dev/trash" === this.props.routerProps.location.pathname }
-                className="border-0 cursor-pointer"
-              >
-                <Trash size={21} />
-                <span className="align-middle ml-1">Trash</span>
-              </ListGroupItem>
-            </ListGroup>
-            <hr />
-            <h5 className="my-2 pt-25">Labels</h5>
-            <ListGroup className="list-group-labels font-medium-1">
-              <ListGroupItem
-                className="border-0 d-flex align-items-center cursor-pointer"
-                onClick={() => this.props.changeFilter("personal")}
-                active={ "/token-dev/personal" === this.props.routerProps.location.pathname }
-              >
-                <span className="bullet bullet-success bullet-bordered mr-1" />
-                <span>Personal</span>
-              </ListGroupItem>
-              <ListGroupItem
-                className="border-0 d-flex align-items-center cursor-pointer"
-                onClick={() => this.props.changeFilter("company")}
-                active={ "/token-dev/company" === this.props.routerProps.location.pathname }
-              >
-                <span className="bullet bullet-primary bullet-bordered mr-1" />
-                <span>Company</span>
-              </ListGroupItem>
-              <ListGroupItem
-                className="border-0 d-flex align-items-center cursor-pointer"
-                onClick={() => this.props.changeFilter("important")}
-                active={ "/token-dev/important" === this.props.routerProps.location.pathname }
-              >
-                <span className="bullet bullet-warning bullet-bordered mr-1" />
-                <span>Important</span>
-              </ListGroupItem>
-              <ListGroupItem
-                className="border-0 d-flex align-items-center cursor-pointer"
-                onClick={() => this.props.changeFilter("private")}
-                active={ "/token-dev/private" === this.props.routerProps.location.pathname }
-              >
-                <span className="bullet bullet-danger bullet-bordered mr-1" />
-                <span>Private</span>
+                <Upload size={21} />
+                <span className="align-middle ml-1">Requested</span>
               </ListGroupItem>
             </ListGroup>
           </PerfectScrollbar>
@@ -145,4 +74,10 @@ class TokenSidebar extends React.Component {
   }
 }
 
-export default connect(null, { changeFilter })(TokenSidebar)
+const mapStateToProps = state => {
+  return {
+    listType: state.token.listType
+  }
+}
+
+export default connect(mapStateToProps, { changeFilter })(TokenSidebar)

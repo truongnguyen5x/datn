@@ -31,8 +31,7 @@ const navigationConfig = [
     type: "item",
     icon: <Icon.DollarSign size={20} />,
     permissions: ["editor"],
-    navLink: "/token-dev/:filter",
-    filterBase: "/token-dev/inbox"
+    navLink: "/token-dev",
   },
   {
     id: "token-admin",

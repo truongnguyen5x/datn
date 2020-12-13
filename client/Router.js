@@ -258,12 +258,7 @@ class AppRouter extends React.Component {
           <AppRoute exact path="/" component={HomePage} />
           <AppRoute path="/analytics" component={analyticsDashboard} />
           <AppRoute path="/accounts" component={Account} />
-          <AppRoute
-            path="/token-dev"
-            exact
-            component={() => <Redirect to="/token-dev/inbox" />}
-          />
-          <AppRoute path="/token-dev/:filter" component={TokenDev} />
+          <AppRoute path="/token-dev" component={TokenDev} />
 
           <AppRoute path="/token-admin" component={TokenAdmin} />
           <AppRoute path="/vcoin" component={VCoin} />

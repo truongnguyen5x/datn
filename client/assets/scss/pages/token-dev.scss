@@ -1,23 +1,8 @@
-// ================================================================================================
-// 	File Name: email-application.scss
-// 	Description: SCC file for email application page.
-// 	----------------------------------------------------------------------------------------------
-// 	Item Name: Vuexy React Admin Template
-// 	Version: 1.0
-// 	Author: PIXINVENT
-// 	Author URL: http://www.themeforest.net/user/pixinvent
-// ================================================================================================
-
-// Core variables and mixins
 @import "~bootstrap/scss/_functions.scss";
 @import "~bootstrap/scss/mixins";
 @import "../bootstrap-extended/mixins";
-
-// Load variable overrides
 @import "../core/variables/variables";
 @import "~bootstrap/scss/_variables.scss";
-
-// Overrides user variable
 @import "../core/variables/components-variables";
 
 .email-application {
@@ -113,33 +98,7 @@
     .content-wrapper {
       padding: 0;
     }
-    // .email-app-list-wrapper {
-    //   // border-left: 1px solid $gray-300;
-    // }
-    .app-fixed-search {
-      padding: 0.35rem 0.1rem;
-      border-bottom: 1px solid $gray-300;
-      background-color: $white;
-      border-top-right-radius: $border-radius;
-      .sidebar-toggle {
-        cursor: pointer;
-        margin: 0.5rem 0.99rem;
-        float: left;
-        line-height: 1;
-      }
-      .form-control-position {
-        font-size: calc(#{$spacer} * 1.1);
-        z-index: 1;
-      }
-      input {
-        border: 0;
-        background-color: transparent;
-        &:focus {
-          border-color: transparent;
-          box-shadow: none;
-        }
-      }
-    }
+
     .action-icon {
       cursor: pointer;
     }
@@ -157,31 +116,11 @@
       }
     }
   }
-  // Content area overlay
-  .app-content-overlay {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-    display: block;
-    z-index: 3;
-    visibility: hidden;
-    opacity: 0;
-    transition: all 0.3s ease;
-    height: calc(100% - 1rem);
-    &.show {
-      visibility: visible;
-      transition: all 0.3s ease;
-      opacity: 1;
-      background-color: rgba($pure_black, 0.2);
-      border-radius: $border-radius;
-    }
-  }
+
   // Email user list area
   .email-user-list {
     position: relative;
-    height: calc(100vh - 20.5rem);
+    height: calc(100vh - 13.2rem);
     .users-list-wrapper {
       padding: 0;
       margin: 0;
@@ -262,37 +201,7 @@
       }
     }
   }
-  // Action area of email list section
-  .app-action {
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid $gray-300;
-    .action-left {
-      .selectAll {
-        margin: 0.25rem 0 0.108rem;
-        .vs-checkbox {
-          margin-right: 1rem;
-        }
-      }
-    }
-    .action-right {
-      ul {
-        li:not(:last-child) {
-          margin-right: 1rem;
-        }
-      }
-      .dropdown-toggle {
-        color: $body-color;
-        &::after {
-          display: none;
-        }
-        white-space: normal;
-      }
-    }
-  }
-  // On click of mail Details section slide in from right
-  // Email details section starts
+
   .email-app-details {
     position: absolute;
     display: block;
@@ -301,7 +210,7 @@
     opacity: 0;
     top: 0;
     width: calc(100% - #{$menu-expanded-width});
-    background-color: $body-bg;
+    background-color: $white;
     transform: translateX(100%);
     transition: all 0.3s ease;
     height: 100%;
@@ -322,11 +231,9 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 6px rgba($pure_black, 0.04);
-      border-bottom: 1px solid $kbd-bg;
       position: relative;
       padding: 1.5rem 2rem 0.5rem 2rem;
-      background-color: $white;
+      background-color: $body-bg;
     }
     .email-header-right {
       .dropdown-toggle {
@@ -373,48 +280,36 @@
   // Compose Mail Sidebar
   .compose-email {
     position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 3;
-    width: 400px;
-    height: calc(100% - 1rem);
-    border-radius: 0;
-    transform: translateX(110%);
-    transition: all 0.25s ease-in-out;
+    display: block;
+    z-index: 2;
+    visibility: hidden;
     opacity: 0;
+    top: 0;
+    width: calc(100% - #{$menu-expanded-width});
+    background-color: $white;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    height: 100%;
+    // padding: 1.5rem 0;
+    border: 1px solid $gray-300;
+    border-left: 0;
+    height: calc(100vh - 13rem);
     &.open {
-      transform: translateX(0);
+      visibility: visible;
+      transition: all 0.3s ease;
       opacity: 1;
+      transform: translateX(0%);
+      transition: all 0.3s ease;
+      width: 100%;
     }
     .compose-mail-header {
-      background: $body-bg;
-      border-radius: 0;
-      padding: 1rem;
-      .close-compose-mail {
-        position: absolute;
-        top: 7px;
-        right: 7px;
-        cursor: pointer;
-      }
-    }
-    .rdw-editor-wrapper {
-      .rdw-editor-toolbar {
-        .rdw-embedded-wrapper {
-          .rdw-embedded-modal {
-            left: -35px;
-          }
-        }
-        .rdw-emoji-wrapper {
-          .rdw-emoji-modal {
-            left: -75px;
-          }
-        }
-        .rdw-image-wrapper {
-          .rdw-image-modal {
-            left: -110px;
-          }
-        }
-      }
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      padding: 1.5rem 2rem 0.5rem 2rem;
+      background-color: $body-bg;
     }
   }
 }

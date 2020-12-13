@@ -3,7 +3,6 @@ import Sidebar from "react-sidebar"
 import TokenList from "./TokenList"
 import TokenSidebarContent from "./TokenSidebar"
 import { ContextLayout } from "../../utility/context/Layout"
-import ComposeMail from "./ComposeToken"
 import "../../assets/scss/pages/token-dev.scss"
 const mql = window.matchMedia(`(min-width: 992px)`)
 class Email extends React.Component {
@@ -48,12 +47,7 @@ class Email extends React.Component {
   render() {
     return (
       <div className="email-application position-relative">
-        <div
-          className={`app-content-overlay ${
-            this.state.composeMailStatus || this.state.sidebarOpen ? "show" : ""
-          }`}
-          onClick={this.handleMainAndComposeSidebar}
-        />
+    
         <ContextLayout.Consumer>
           {context => (
             <Sidebar
@@ -61,7 +55,6 @@ class Email extends React.Component {
                 <TokenSidebarContent
                   handleComposeSidebar={this.handleComposeSidebar}
                   mainSidebar={this.onSetSidebarOpen}
-                  routerProps={this.props}
                 />
               }
               docked={this.state.sidebarDocked}
@@ -75,12 +68,11 @@ class Email extends React.Component {
           )}
         </ContextLayout.Consumer>
         <TokenList
+
+          handleComposeSidebar={this.handleComposeSidebar}
+          showCreateModal={this.state.composeMailStatus}
           mainSidebar={this.onSetSidebarOpen}
           routerProps={this.props}
-        />
-        <ComposeMail
-          handleComposeSidebar={this.handleComposeSidebar}
-          currentStatus={this.state.composeMailStatus}
         />
       </div>
     )
