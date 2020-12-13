@@ -46,7 +46,7 @@ class Email extends React.Component {
 
   render() {
     return (
-      <div className="email-application position-relative">
+      <div className="token-dev-application position-relative">
     
         <ContextLayout.Consumer>
           {context => (
