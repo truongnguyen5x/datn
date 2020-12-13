@@ -1,12 +1,14 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
-const VCoin = sequelize.define('VCoin', {
-    abi: {
-        type: DataTypes.TEXT
+const Request = sequelize.define('Request', {
+    accepted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
-    address: {
-        type: DataTypes.STRING,
+    del: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -17,7 +19,7 @@ const VCoin = sequelize.define('VCoin', {
         defaultValue: new Date()
     }
 }, {
-    tableName: 'vcoins'
+    tableName: 'requests'
 });
 
-module.exports = VCoin
+module.exports = Request

@@ -3,7 +3,7 @@ import Sidebar from "react-sidebar"
 import TokenList from "./TokenList"
 import TokenSidebarContent from "./TokenSidebar"
 import { ContextLayout } from "../../utility/context/Layout"
-import "../../assets/scss/pages/token-admin.scss"
+import "../../assets/scss/pages/token-dev.scss"
 const mql = window.matchMedia(`(min-width: 992px)`)
 class Email extends React.Component {
   state = {

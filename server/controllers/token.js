@@ -5,7 +5,14 @@ const { sequelize } = require("../configs")
 
 const getListToken = async (req, res, next) => {
     try {
-        const rs = await tokenService.getListToken()
+        const {user} = req
+        const {type} = req.query
+        let rs
+        if (user.role == 0) {
+            rs = await tokenService.getListToken(type)
+        } else {
+            rs = await tokenService.getListPersonalToken(user.id, type)
+        }
         ResponseSuccess(res, rs)
     } catch (error) {
         console.log(error)
@@ -65,11 +72,41 @@ const deleteToken = async (req, res, next) => {
     }
 }
 
+const validateSource = async (req, res, next) => {
+    try {
+        const rs = await tokenService.validateSource(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
+
+const createRequest = async (req, res, next) => {
+    try {
+        const rs = await tokenService.createRequest(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+const cancelRequest = async (req, res, next) => {
+    try {
+        const rs = await tokenService.cancelRequest(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
 
 module.exports = {
     createToken,
     getListToken,
     getTokenById,
     updateToken,
-    deleteToken
+    deleteToken,
+    validateSource,
+    createRequest,
+    cancelRequest
 }

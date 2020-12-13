@@ -14,7 +14,7 @@ const navigationConfig = [
     title: "Account",
     type: "item",
     icon: <Icon.CreditCard size={20} />,
-    permissions: ["admin", "editor"],
+    permissions: ["editor"],
     navLink: "/accounts"
   },
   {

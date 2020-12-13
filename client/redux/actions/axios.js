@@ -22,7 +22,6 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
         let { response } = error;
         if (response) {
             if (response.status == 401) {
-                alert("Please login again !")
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
                 console.log('from fetch api')

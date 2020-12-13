@@ -7,7 +7,7 @@ import Spinner from "./components/@vuexy/spinner/Loading-spinner"
 import knowledgeBaseCategory from "./views/pages/knowledge-base/Category"
 import knowledgeBaseQuestion from "./views/pages/knowledge-base/Questions"
 import { ContextLayout } from "./utility/context/Layout"
-import { getProfile } from './redux/actions/auth/loginActions'
+
 
 
 // Route-based code splitting
@@ -182,7 +182,7 @@ const accessControl = lazy(() =>
 const HomePage = lazy(() => import("./views/home/Index"))
 const Account = lazy(() => import("./views/accounts/ListAccount"))
 const TokenDev = lazy(()=> import("./views/token-dev/Token"))
-const TokenAdmin = lazy(()=> import("./views/token-admin/ListToken"))
+const TokenAdmin = lazy(()=> import("./views/token-admin/Token"))
 const VCoin = lazy(()=> import("./views/vcoin/ListVCoin"))
 
 // Set Layout and Component Using App Route
@@ -246,9 +246,7 @@ const AppRouteNormal = connect(mapStateToProps)(RouteNormalConfig)
 
 
 class AppRouter extends React.Component {
-  componentDidMount() {
-    this.props.getProfile()
-  }
+
   render() {
 
     return (
@@ -450,4 +448,4 @@ class AppRouter extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProfile })(AppRouter)
+export default connect(mapStateToProps)(AppRouter)

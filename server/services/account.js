@@ -19,10 +19,6 @@ const getAccountById = async (id) => {
 const createAccount = async (data, userId) => {
     const user = await userService.getUserById(userId)
     const { key, name } = data
-    let account = await Account.findOne({ where: { key } })
-    if (account) {
-        throw new ApiError("ERROR")
-    }
     const web3 = new Web3()
     const { address } = web3.eth.accounts.privateKeyToAccount(key);
     const dataCreated = { address, key, name }

@@ -3,35 +3,30 @@ const userService = require("./user")
 const accountService = require("./account")
 const networkService = require("./network")
 const fileService = require("./file")
+const configService = require("./config")
 const ApiError = require("../middlewares/error")
 const path = require('path')
 const AdmZip = require('adm-zip');
-// const a  = require("../")
+const Web3 = require('web3')
 
 const solc = require("solc");
 const { getWeb3Instance, getListAccount } = require("../utils/network_util")
 
-const getListVCoin = async (filter) => {
-    const used = (filter == 'used')
-    return VCoin.findAll({
-        where: {
-            used
-        },
-        include: [{
-            model: SmartContract,
-            as: "smartContract",
-            where: {
-                del: 0
-            },
-            include: [{
-                model: Network,
-                as: 'network'
-            }, {
-                model: Account,
-                as: 'owner'
-            }]
-        }]
+const getListVCoin = async () => {
+    const web3 = new Web3()
+    const config = await configService.getConfigByKey("KEY_ADMIN")
+    const { address } = web3.eth.accounts.privateKeyToAccount(config.value);
+
+    const rs = await Network.findAll({
+        include: {
+            model: VCoin,
+            as: "vcoins"
+        }
     })
+    return {
+        address_account: address,
+        address: rs
+    }
 }
 
 const getVCoinById = async (id) => {
@@ -59,31 +54,26 @@ const getVCoinById = async (id) => {
     })
 }
 
-const createVCoin = async (data, user_id, transaction) => {
-    const { source, contract, network, account, symbol } = data
-    const accSend = await accountService.getAccountById(account)
-    const userSend = await userService.getUserById(user_id)
-    if (accSend.user_id != user_id) {
-        console.log('khong trung user id')
-        throw new ApiError("ERROR")
-    }
-    const sourceSend = source.map(i => {
-        return {
-            path: i.name,
-            code: i.code
-        }
-    })
-    const createdSources = await fileService.bulkCreate(sourceSend)
+const createVCoin = async (data, transaction) => {
+    const { network, private_key } = data
+    const file1 = await fileService.getFileById(1)
+    const file2 = await fileService.getFileById(2)
+
     const networkSend = await networkService.getNetWorkById(network)
     const web3 = await getWeb3Instance({ provider: networkSend.path })
-    console.log(accSend.key)
-    await web3.eth.accounts.wallet.add(accSend.key);
+    const { address } = web3.eth.accounts.privateKeyToAccount(private_key);
+    await web3.eth.accounts.wallet.add(private_key);
     await getListAccount(web3)
 
     const input = {
         language: 'Solidity',
         sources: {
-
+            "Lib.sol": {
+                content: file1.code
+            },
+            "Main.sol": {
+                content: file2.code
+            }
         },
         settings: {
             outputSelection: {
@@ -93,72 +83,57 @@ const createVCoin = async (data, user_id, transaction) => {
             }
         }
     }
-    source.forEach(i => {
-        input.sources[i.name] = {
-            content: i.code
-        }
-    });
+
     var output = JSON.parse(
         solc.compile(JSON.stringify(input))
     );
-    const constractCompile = output.contracts["Main.sol"][contract]
+    const constractCompile = output.contracts["Main.sol"]["VCoin"]
     const interface = constractCompile.abi
     const myContract = new web3.eth.Contract(interface)
     const bytecode = constractCompile.evm.bytecode.object;
 
-    const newSmartContract = await SmartContract.create({ deploy_status: 0, abi: JSON.stringify(interface) })
-    await newSmartContract.setNetwork(networkSend)
-    await newSmartContract.setOwner(accSend)
-    await newSmartContract.setFiles(createdSources)
-    const newVCoin = await VCoin.create({})
-    await newVCoin.setSmartContract(newSmartContract)
-    await newVCoin.setOwner(userSend)
+    const newVCoin = await VCoin.create({ abi: JSON.stringify(interface) })
+    await newVCoin.setNetwork(networkSend)
 
     myContract.deploy({
         data: bytecode,
         arguments: [1000000, "vcoin", "vcn"]
-    }).send({
-        from: accSend.address,
-        gas: 3000000
-    })
-        .on('error', function (error) {
-            console.log('error', error)
+    }).estimateGas({ gas: 5000000 })
+        .then(gas => {
+            myContract.deploy({
+                data: bytecode,
+                arguments: [1000000, "vcoin", "vcn"]
+            }).send({
+                from: address,
+                gas: gas
+            })
+                .on('receipt', async (receipt) => {
+                    newVCoin.update({ address: receipt.contractAddress })
+                    console.log('receipt', receipt.contractAddress) // contains the new contract address
+                })
         })
-        .on('transactionHash', async (transactionHash) => {
-            newSmartContract.update({ deploy_status: 1 })
-            console.log('transactionHash', transactionHash)
-        })
-        .on('receipt', async (receipt) => {
-            newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
-            console.log('receipt', receipt.contractAddress) // contains the new contract address
-        })
-        .on('confirmation', async (confirmationNumber, receipt) => {
-            newSmartContract.update({ deploy_status: 4 })
-            console.log('confirm', confirmationNumber, receipt)
-        })
-        .then(async (newContractInstance) => {
-            newSmartContract.update({ deploy_status: 3 })
-            console.log('then', newContractInstance.options.address) // instance with the new contract address
-        });
+
 
     return newVCoin
 }
 
 const updateVCoin = async (data) => {
-    return VCoin.update(data, { where: { id: data.id } })
+    const { network, address } = data
+    const sendNetwork = await networkService.getNetWorkById(network)
+    const coin = await VCoin.create({ address })
+    await coin.setNetwork(sendNetwork)
+    return coin
 }
 
 const deleteVCoin = async (id) => {
     return VCoin.destroy({ where: { id } })
 }
 
-const exportSDK = async (id) => {
+const exportSDK = async () => {
     const zip = new AdmZip();
     zip.addLocalFile(path.resolve(__dirname, "../sdk/index.js"));
     zip.addLocalFile(path.resolve(__dirname, "../sdk/secret.js"));
-
     zip.writeZip(path.resolve(__dirname, "../sdk/sdk.zip"))
-
     return path.resolve(__dirname, "../sdk/sdk.zip")
 }
 

@@ -6,7 +6,7 @@ import Wizard from "../../components/@vuexy/wizard/WizardCustom"
 import classnames from "classnames"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
-import { getFileById, getListToken, validateSource, createToken } from "../../redux/actions/token"
+import { getFileById, getListTokenAdmin, validateSource, createToken } from "../../redux/actions/token"
 import { getAccountBalance } from '../../redux/actions/account'
 import { getListNetwork } from "../../redux/actions/network"
 import { connect } from "react-redux"
@@ -273,7 +273,7 @@ const mapDispatchToProps = {
   getListNetwork,
   getAccountBalance,
   createToken,
-  getListToken
+  getListTokenAdmin
 }
 
 

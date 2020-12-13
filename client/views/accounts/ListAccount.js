@@ -7,6 +7,7 @@ import CreateAccount from "./CreateAccount"
 import DetailAccount from "./DetailAccount"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import "../../assets/scss/pages/account.scss"
+import { getProfile } from '../../redux/actions/auth/loginActions'
 
 const ListAccount = (props) => {
     const [isModalCreate, openModalCreate] = useState(false)
@@ -16,6 +17,7 @@ const ListAccount = (props) => {
 
     useEffect(() => {
         props.getListAccount()
+        props.getProfile()
     }, [])
 
     const onCloseModalCreate = () => {
@@ -75,7 +77,8 @@ const ListAccount = (props) => {
 }
 
 const mapDispatchToProps = {
-    getListAccount
+    getListAccount,
+    getProfile
 }
 
 const mapStateToProps = state => {

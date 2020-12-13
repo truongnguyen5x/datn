@@ -1,5 +1,5 @@
 const path = require("path");
-const { VCoin, SmartContract, Network, Account, File, Token } = require('../models')
+const { SmartContract, Network, Account, File, Token, User, Request } = require('../models')
 const fs = require("fs-extra");
 const Web3 = require('web3')
 const configService = require("./config")
@@ -11,24 +11,19 @@ const solc = require("solc");
 const { getWeb3Instance, getListAccount } = require("../utils/network_util")
 
 const createToken = async (data, user_id, transaction) => {
-    const { source, contract, network, account, symbol } = data
+    const { source, contract, network, account, constructor } = data
     const accSend = await accountService.getAccountById(account)
     const userSend = await userService.getUserById(user_id)
     if (accSend.user_id != user_id) {
         console.log('khong trung user id')
         throw new ApiError("ERROR")
     }
-    const sourceSend = source.map(i => {
-        return {
-            path: i.name,
-            code: i.code
-        }
-    })
-    console.log(sourceSend)
-    const createdSources = await fileService.bulkCreate(sourceSend)
+
+
+    const createdSources = await fileService.bulkCreate(source)
     const networkSend = await networkService.getNetWorkById(network)
     const web3 = await getWeb3Instance({ provider: networkSend.path })
-    console.log(accSend.key)
+
     await web3.eth.accounts.wallet.add(accSend.key);
     await getListAccount(web3)
 
@@ -46,14 +41,14 @@ const createToken = async (data, user_id, transaction) => {
         }
     }
     source.forEach(i => {
-        input.sources[i.name] = {
+        input.sources[i.path] = {
             content: i.code
         }
     });
     var output = JSON.parse(
         solc.compile(JSON.stringify(input))
     );
-    const constractCompile = output.contracts["Token.sol"][contract]
+    const constractCompile = output.contracts[contract.file][contract.contract]
     const interface = constractCompile.abi
     const myContract = new web3.eth.Contract(interface)
     const bytecode = constractCompile.evm.bytecode.object;
@@ -62,63 +57,107 @@ const createToken = async (data, user_id, transaction) => {
     await newSmartContract.setNetwork(networkSend)
     await newSmartContract.setOwner(accSend)
     await newSmartContract.setFiles(createdSources)
-    let tokenCreated = await Token.findOne({
-        where: {symbol}
-    })
-    if (!tokenCreated) {
-        tokenCreated = await Token.create({symbol})
-    }
-    tokenCreated.addSmartContract(newSmartContract)
-  
 
     myContract.deploy({
         data: bytecode,
-        arguments: [1000000]
-    }).send({
-        from: accSend.address,
-        gas: 3000000
-    })
-        .on('error', function (error) {
-            console.log('error', error)
+        arguments: constructor
+    }).estimateGas({ gas: 5000000 })
+        .then(gas => {
+            myContract.deploy({
+                data: bytecode,
+                arguments: constructor
+            }).send({
+                from: accSend.address,
+                gas
+            })
+                .on('error', function (error) {
+                    console.log('error', error)
+                })
+                .on('transactionHash', async (transactionHash) => {
+                    newSmartContract.update({ deploy_status: 1 })
+                    console.log('transactionHash', transactionHash)
+                })
+                .on('receipt', async (receipt) => {
+                    newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
+                    console.log('receipt', receipt.contractAddress) // contains the new contract address
+                })
+                .on('confirmation', async (confirmationNumber, receipt) => {
+                    newSmartContract.update({ deploy_status: 4 })
+                    console.log('confirm', confirmationNumber, receipt)
+                })
+                .then(async (newContractInstance) => {
+                    newSmartContract.update({ deploy_status: 3 })
+                    console.log('then', newContractInstance.options.address) // instance with the new contract address
+                    return newContractInstance.methods.symbol().call({ from: accSend.address })
+                })
+                .then(async symbol => {
+                    let tokenCreated = await Token.findOne({
+                        where: { symbol }
+                    })
+                    if (!tokenCreated) {
+                        tokenCreated = await Token.create({ symbol })
+                        tokenCreated.setOwner(userSend)
+                    }
+                    tokenCreated.addSmartContract(newSmartContract)
+                })
         })
-        .on('transactionHash', async (transactionHash) => {
-            newSmartContract.update({ deploy_status: 1 })
-            console.log('transactionHash', transactionHash)
-        })
-        .on('receipt', async (receipt) => {
-            newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
-            console.log('receipt', receipt.contractAddress) // contains the new contract address
-        })
-        .on('confirmation', async (confirmationNumber, receipt) => {
-            newSmartContract.update({ deploy_status: 4 })
-            console.log('confirm', confirmationNumber, receipt)
-        })
-        .then(async (newContractInstance) => {
-            newSmartContract.update({ deploy_status: 3 })
-            console.log('then', newContractInstance.options.address) // instance with the new contract address
-        });
-
-    return tokenCreated
+    return newSmartContract
 }
 
 
-const getListToken = async () => {
+const getListToken = async (type) => {
     return Token.findAll({})
 }
+
+const getListPersonalToken = async (user_id, type) => {
+    const user = await userService.getUserById(user_id)
+    switch (type) {
+        case "all":
+            return user.getTokens()
+        case "requested":
+
+        case "in-vchain":
+        case "deploying":
+            return []
+    }
+}
+
 
 const getTokenById = async (id) => {
     return Token.findOne({
         where: {
-            id,
-            del: false
-        }
+            id
+        },
+        include: [{
+            model: User,
+            as: "owner"
+        }, {
+            model: SmartContract,
+            as: 'smartContracts',
+            include: [{
+                model: Network,
+                as: 'network'
+            }, {
+                model: File,
+                as: 'files'
+            }, {
+                model: Account,
+                as: 'owner'
+            }, {
+                model: Request,
+                as: "request",
+                where: {
+                    del: 0
+                },
+                required: false
+            }]
+        }]
     })
 }
 const getTokenBySymbol = async (symbol) => {
     return Token.findOne({
         where: {
-            symbol,
-            del: false
+            symbol
         }
     })
 }
@@ -191,6 +230,62 @@ const getMainAccount = async () => {
     return account.value
 }
 
+const validateSource = async (data) => {
+    const input = {
+        language: 'Solidity',
+        sources: {
+
+        },
+        settings: {
+            outputSelection: {
+                '*': {
+                    '*': ['*']
+                }
+            }
+        }
+    }
+    data.forEach(i => {
+        input.sources[i.path] = {
+            content: i.code
+        }
+    });
+    var output = JSON.parse(
+        solc.compile(JSON.stringify(input))
+    );
+
+    const responses = []
+    Object.keys(output.contracts).forEach(i => {
+        Object.keys(output.contracts[i]).forEach(j => {
+            let constructor = output.contracts[i][j].abi.find(k => k.type == 'constructor')
+            if (constructor) {
+                constructor = constructor.inputs
+            }
+            responses.push({ file: i, contract: j, inputs: constructor })
+        })
+    })
+
+    return responses
+}
+
+const createRequest = async (data) => {
+    const smartContract = await SmartContract.findOne({
+        where: { id: data.id }
+    })
+    const requestNew = await Request.create({})
+    await requestNew.setSmartContract(smartContract)
+    return requestNew
+}
+
+const cancelRequest = async (data) => {
+    const requestNew = await Request.findOne({
+        where: {
+            smart_contract_id: data.id
+        }
+    })
+    await requestNew.destroy()
+    return 'success'
+}
+
 module.exports = {
     createToken,
     getListToken,
@@ -201,5 +296,9 @@ module.exports = {
     getMainConstract,
     getMainAccount,
     getTokenContract,
-    getTokenBySymbol
+    getTokenBySymbol,
+    validateSource,
+    getListPersonalToken,
+    createRequest,
+    cancelRequest
 }

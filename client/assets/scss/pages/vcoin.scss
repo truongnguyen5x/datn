@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/mixins";
+@import "../bootstrap-extended/mixins";
+@import "../core/variables/variables";
+@import "~bootstrap/scss/_variables.scss";
+@import "../core/variables/components-variables";
+
+.vcoin-application {
+  // border: 1px solid $gray-300;
+  border-radius: $border-radius-sm;
+  height: calc(100vh - 12rem);
+  // Sidebar area starts
+  .address-admin {
+    margin: 10px;
+    align-items: center;
+    .address-admin-title {
+      width: 230px;
+    }
+  }
+  .enter-key {
+    margin: 0 10px 0 0;
+    flex-grow: 1;
+  }
+}
