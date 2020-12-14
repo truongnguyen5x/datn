@@ -185,13 +185,17 @@
       padding: 1.5rem 2rem 0.5rem 2rem;
       background-color: $body-bg;
     }
-    .token-detail-general {
-      display: flex;
-      margin: 10px;
-      .token-detail-title {
-        width: 230px;
+    .token-detail-general-wp {
+     
+      .token-detail-general {
+        display: flex;
+        margin: 10px;
+        .token-detail-title {
+          width: 230px;
+        }
       }
     }
+
     .token-contract-list {
       height: calc(100vh - 20.5rem);
       .token-contract-list-wrapper {

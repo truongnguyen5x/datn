@@ -161,43 +161,44 @@ const TokenDetails = props => {
         </Nav>
         <TabContent className="py-50" activeTab={activeTab}>
           <TabPane tabId={1}>
-            <div className="mx-auto">
-              <div className="avatar mr-1 avatar-xl">
-                <img src={data?.image || noImage} alt="avatarImg" />
+            <div className="token-detail-general-wp">
+              <div className="d-flex justify-content-center mb-5">
+                <div className="avatar avatar-xl ">
+                  <img src={data?.image || noImage} alt="avatarImg" />
+                </div>
               </div>
+              <Row className="mb-1">
+                <Col md={6}>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Token symbol</div>
+                    <div>{data?.symbol}</div>
+                  </div>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Description</div>
+                    <div>{data?.description || "empty"}</div>
+                  </div>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Name</div>
+                    <div>{data?.name || "empty"}</div>
+                  </div>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Created at</div>
+                    <div>{moment(data?.createdAt).format("hh:mm DD/MM/YYYY")}</div>
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Exchange rate</div>
+                    <div>{data?.exchange_rate ? `${data.exchange_rate} %` : `empty`}</div>
+                  </div>
+                  <div className="token-detail-general">
+                    <div className="font-weight-bold token-detail-title">Transaction fee</div>
+                    <div>{data?.transaction_fee ? `${data.transaction_fee} %` : `empty`}</div>
+                  </div>
+
+                </Col>
+              </Row>
             </div>
-            <Row className="mb-1">
-              <Col md={6}>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Token symbol</div>
-                  <div>{data?.symbol}</div>
-                </div>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Description</div>
-                  <div>{data?.description || "empty"}</div>
-                </div>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Name</div>
-                  <div>{data?.name || "empty"}</div>
-                </div>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Created at</div>
-                  <div>{moment(data?.createdAt).format("hh:mm DD/MM/YYYY")}</div>
-                </div>
-              </Col>
-              <Col md={6}>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Exchange rate</div>
-                  <div>{data?.exchange_rate ? `${data.exchange_rate} %` : `empty`}</div>
-                </div>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">Transaction fee</div>
-                  <div>{data?.transaction_fee ? `${data.transaction_fee} %` : `empty`}</div>
-                </div>
-
-              </Col>
-            </Row>
-
           </TabPane>
           <TabPane tabId={2}>
 
