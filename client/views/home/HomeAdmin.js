@@ -23,7 +23,7 @@ const ListVCoin = (props) => {
                 if (res.code) {
                     setData(res.data)
                     const temp = res.data.address.map(i => {
-                        return i.vcoins[i.vcoins.length - 1].address
+                        return i.vcoins[0].address
                     })
                     setDataContractAdd(temp)
                 } else {

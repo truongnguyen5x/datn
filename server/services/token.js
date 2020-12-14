@@ -149,6 +149,8 @@ const getListToken = async (type) => {
                     required: true
                 }]
             })
+        default:
+            return []
     }
 }
 
@@ -211,6 +213,8 @@ const getListPersonalToken = async (user_id, type) => {
                     }
                 }
             })
+        default:
+            return []
     }
 }
 
@@ -244,7 +248,8 @@ const getTokenById = async (id, data) => {
                         accepted: 0
                     }
                 }]
-            }]
+            }],
+            order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
         })
     } else return Token.findOne({
         where: {
@@ -273,7 +278,8 @@ const getTokenById = async (id, data) => {
                 },
                 required: false
             }]
-        }]
+        }],
+        order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
     })
 }
 
@@ -395,6 +401,26 @@ const createRequest = async (data) => {
     const smartContract = await SmartContract.findOne({
         where: { id: data.id }
     })
+    const token = await smartContract.getToken()
+    const existRequest = await Request.findAll({
+        include: {
+            model: SmartContract,
+            as: "smartContract",
+            where: {
+                token_id: token.id
+            },
+            include: {
+                model: Network,
+                as: 'network',
+                where: {
+                    id: smartContract.network_id
+                }
+            }
+        }
+    })
+    existRequest.forEach(async i => {
+        await i.update({ del: 1 })
+    })
     const requestNew = await Request.create({})
     await requestNew.setSmartContract(smartContract)
     return requestNew
@@ -406,7 +432,7 @@ const cancelRequest = async (data) => {
             smart_contract_id: data.id
         }
     })
-    await requestNew.destroy()
+    await requestNew.update({ del: 1 })
     return 'success'
 }
 

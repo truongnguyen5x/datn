@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { NavLink } from "react-router-dom"
 import { Disc, X, Circle } from "react-feather"
 import classnames from "classnames"
+import { connect } from 'react-redux'
 class SidebarHeader extends Component {
   render() {
     let {
@@ -18,7 +19,7 @@ class SidebarHeader extends Component {
           <li className="nav-item mr-auto">
             <NavLink to="/" className="navbar-brand">
               <div className="brand-logo" />
-              <h2 className="brand-text mb-0">VChain</h2>
+              <h2 className="brand-text mb-0">{this.props.role == "admin" ? "Ad VChain" : "Dev VChain"}</h2>
             </NavLink>
           </li>
           <li className="nav-item nav-toggle">
@@ -44,25 +45,25 @@ class SidebarHeader extends Component {
                   data-tour="toggle-icon"
                 />
               ) : (
-                <Circle
-                  onClick={() => {
-                    toggleSidebarMenu(false)
-                    toggle()
-                  }}
-                  className={classnames(
-                    "toggle-icon icon-x d-none d-xl-block font-medium-4",
-                    {
-                      "text-primary": activeTheme === "primary",
-                      "text-success": activeTheme === "success",
-                      "text-danger": activeTheme === "danger",
-                      "text-info": activeTheme === "info",
-                      "text-warning": activeTheme === "warning",
-                      "text-dark": activeTheme === "dark"
-                    }
-                  )}
-                  size={20}
-                />
-              )}
+                  <Circle
+                    onClick={() => {
+                      toggleSidebarMenu(false)
+                      toggle()
+                    }}
+                    className={classnames(
+                      "toggle-icon icon-x d-none d-xl-block font-medium-4",
+                      {
+                        "text-primary": activeTheme === "primary",
+                        "text-success": activeTheme === "success",
+                        "text-danger": activeTheme === "danger",
+                        "text-info": activeTheme === "info",
+                        "text-warning": activeTheme === "warning",
+                        "text-dark": activeTheme === "dark"
+                      }
+                    )}
+                    size={20}
+                  />
+                )}
               <X
                 onClick={sidebarVisibility}
                 className={classnames(
@@ -91,4 +92,10 @@ class SidebarHeader extends Component {
   }
 }
 
-export default SidebarHeader
+const mapStateToProps = state => {
+  return {
+    role: state.auth.login.userRole
+  }
+}
+
+export default connect(mapStateToProps, null)(SidebarHeader)

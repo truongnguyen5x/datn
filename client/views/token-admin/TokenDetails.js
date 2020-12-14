@@ -67,17 +67,17 @@ const TokenDetails = props => {
 
 
     return <React.Fragment>
-      <Button size="sm" id="remove" color="success" onClick={() => handleAddVChain(i.id)}>
+      <Button size="sm" id={"remove"+i.id} color="success" onClick={() => handleAddVChain(i.id)}>
         <Check size={14} />
       </Button>
-      <UncontrolledTooltip target="remove">
+      <UncontrolledTooltip target={"remove"+i.id}>
         Accept
             </UncontrolledTooltip>
 
-      <Button size="sm" id="add" color="danger" className="ml-1" onClick={() => handleCancelVChain(i.id)}>
+      <Button size="sm" id={"add"+i.id} color="danger" className="ml-1" onClick={() => handleCancelVChain(i.id)}>
         <X size={14} />
       </Button>
-      <UncontrolledTooltip target="add">
+      <UncontrolledTooltip target={"add"+i.id}>
         Reject request
           </UncontrolledTooltip>
     </React.Fragment>
@@ -167,7 +167,7 @@ const TokenDetails = props => {
                   <img src={data?.image || noImage} alt="avatarImg" />
                 </div>
               </div>
-              <Row className="mb-1">
+              <Row className="mb-1 mx-0 token-detail-general-wp1">
                 <Col md={6}>
                   <div className="token-detail-general">
                     <div className="font-weight-bold token-detail-title">Token symbol</div>

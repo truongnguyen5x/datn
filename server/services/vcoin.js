@@ -18,10 +18,14 @@ const getListVCoin = async () => {
     const { address } = web3.eth.accounts.privateKeyToAccount(config.value);
 
     const rs = await Network.findAll({
-        include: {
+        include: [{
             model: VCoin,
             as: "vcoins"
-        }
+        }],
+        order: [
+            ["createdAt", 'DESC'],
+            [{ model: VCoin, as: "vcoins" }, "createdAt", 'DESC']
+        ]
     })
     return {
         address_account: address,
