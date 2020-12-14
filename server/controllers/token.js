@@ -23,7 +23,7 @@ const getListToken = async (req, res, next) => {
 const getTokenById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const rs = await tokenService.getTokenById(id)
+        const rs = await tokenService.getTokenById(id, req.query)
         ResponseSuccess(res, rs)
     } catch  (error) {
         ResponseError(res, error, "ERROR")
@@ -98,6 +98,23 @@ const cancelRequest = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
+const acceptRequest = async (req, res, next) => {
+    try {
+        const rs = await tokenService.acceptRequest(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
+const denyRequest = async (req, res, next) => {
+    try {
+        const rs = await tokenService.denyRequest(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
 
 
 module.exports = {
@@ -108,5 +125,7 @@ module.exports = {
     deleteToken,
     validateSource,
     createRequest,
-    cancelRequest
+    cancelRequest,
+    acceptRequest,
+    denyRequest
 }

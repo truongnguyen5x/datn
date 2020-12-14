@@ -5,7 +5,7 @@ import { connect } from "react-redux"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { getListTokenAdmin } from "../../redux/actions/token"
 import TokenDetails from "./TokenDetails"
-import ComposeMail from "./CreateToken"
+
 import noImage from "../../assets/img/coin/no-image.png"
 
 const TokenList = props => {
@@ -85,10 +85,7 @@ const TokenList = props => {
           data={token}
         />
 
-        <ComposeMail
-          handleComposeSidebar={handleComposeSidebar}
-          currentStatus={props.showCreateModal}
-        />
+      
       </div>
     </div>
   )

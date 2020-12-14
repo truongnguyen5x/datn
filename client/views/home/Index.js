@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import HomeAdmin from "./HomeAdmin"
-import HomeDeveloper from "./HomeDeveloper"
+import HomeDeveloper from "../token-dev/Token"
 
 import { getProfile } from "../../redux/actions/auth/loginActions"
 
 const HomePage = (props) => {
 
-    useEffect(() => {
-        props.getProfile()
-    }, [])
+  
     return props.role == "admin" ? <HomeAdmin /> : <HomeDeveloper />
 }
 

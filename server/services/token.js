@@ -8,6 +8,7 @@ const accountService = require("./account")
 const networkService = require("./network")
 const fileService = require("./file")
 const solc = require("solc");
+const { Op } = require("sequelize");
 const { getWeb3Instance, getListAccount } = require("../utils/network_util")
 
 const createToken = async (data, user_id, transaction) => {
@@ -106,7 +107,49 @@ const createToken = async (data, user_id, transaction) => {
 
 
 const getListToken = async (type) => {
-    return Token.findAll({})
+    switch (type) {
+        case "pending":
+            return Token.findAll({
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0,
+                            accepted: 0
+                        },
+                        required: true
+                    },
+                    required: true
+                }]
+            })
+
+        case "in-vchain":
+            return Token.findAll({
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0,
+                            accepted: 1
+                        },
+                        required: true
+                    },
+                    required: true
+                }]
+            })
+    }
 }
 
 const getListPersonalToken = async (user_id, type) => {
@@ -115,16 +158,95 @@ const getListPersonalToken = async (user_id, type) => {
         case "all":
             return user.getTokens()
         case "requested":
-
+            return Token.findAll({
+                where: {
+                    user_id
+                },
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0,
+                            accepted: 0
+                        },
+                        required: true
+                    },
+                    required: true
+                }]
+            })
         case "in-vchain":
+            return Token.findAll({
+                where: {
+                    user_id
+                },
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0,
+                            accepted: 1
+                        },
+                        required: true
+                    },
+                    required: true
+                }]
+            })
         case "deploying":
-            return []
+            return SmartContract.findAll({
+                where: {
+                    deploy_status: {
+                        [Op.lte]: 3
+                    }
+                }
+            })
     }
 }
 
 
-const getTokenById = async (id) => {
-    return Token.findOne({
+const getTokenById = async (id, data) => {
+    if (data.type == "pending") {
+        return Token.findOne({
+            where: {
+                id
+            },
+            include: [{
+                model: User,
+                as: "owner"
+            }, {
+                model: SmartContract,
+                as: 'smartContracts',
+                include: [{
+                    model: Network,
+                    as: 'network'
+                }, {
+                    model: File,
+                    as: 'files'
+                }, {
+                    model: Account,
+                    as: 'owner'
+                }, {
+                    model: Request,
+                    as: "request",
+                    where: {
+                        del: 0,
+                        accepted: 0
+                    }
+                }]
+            }]
+        })
+    } else return Token.findOne({
         where: {
             id
         },
@@ -154,6 +276,8 @@ const getTokenById = async (id) => {
         }]
     })
 }
+
+
 const getTokenBySymbol = async (symbol) => {
     return Token.findOne({
         where: {
@@ -286,6 +410,26 @@ const cancelRequest = async (data) => {
     return 'success'
 }
 
+const acceptRequest = async (data) => {
+    const requestNew = await Request.findOne({
+        where: {
+            smart_contract_id: data.id
+        }
+    })
+    await requestNew.destroy()
+    return 'success'
+}
+
+const denyRequest = async (data) => {
+    const requestNew = await Request.findOne({
+        where: {
+            smart_contract_id: data.id
+        }
+    })
+    await requestNew.destroy()
+    return 'success'
+}
+
 module.exports = {
     createToken,
     getListToken,
@@ -300,5 +444,7 @@ module.exports = {
     validateSource,
     getListPersonalToken,
     createRequest,
-    cancelRequest
+    cancelRequest,
+    acceptRequest,
+    denyRequest
 }

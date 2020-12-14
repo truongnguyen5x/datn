@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest } from "../../redux/actions/token"
+import { getTokenById, createRequest, cancelRequest, acceptRequest, denyRequest } from "../../redux/actions/token"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Plus, Download, Trash } from 'react-feather'
+import { Plus, Download, Trash, X, Check } from 'react-feather'
 import { Nav, NavItem, NavLink, TabPane, TabContent, Row, Col, Button, UncontrolledTooltip } from 'reactstrap'
 import classnames from "classnames"
 import noImage from "../../assets/img/coin/no-image.png"
@@ -16,7 +16,7 @@ const TokenDetails = props => {
 
   useEffect(() => {
     if (props.data) {
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById({ id: props.data.id, type: "pending" })
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -64,29 +64,23 @@ const TokenDetails = props => {
   }
 
   const renderButtonAction = (i) => {
-    if (i?.request?.accepted) {
-      return null
-    }
-    if (i?.request) {
-      return <React.Fragment>
-        <Button size="sm" id="remove" color="danger" onClick={() => handleCancelVChain(i.id)}>
-          <Trash size={14} />
-        </Button>
-        <UncontrolledTooltip target="remove">
-          Cancel add request
+
+
+    return <React.Fragment>
+      <Button size="sm" id="remove" color="success" onClick={() => handleAddVChain(i.id)}>
+        <Check size={14} />
+      </Button>
+      <UncontrolledTooltip target="remove">
+        Accept
             </UncontrolledTooltip>
-      </React.Fragment>
-    }
-    else {
-      return <React.Fragment>
-        <Button size="sm" id="add" color="success" onClick={() => handleAddVChain(i.id)}>
-          <Plus size={14} />
-        </Button>
-        <UncontrolledTooltip target="add">
-          Add to VChain
+
+      <Button size="sm" id="add" color="danger" className="ml-1" onClick={() => handleCancelVChain(i.id)}>
+        <X size={14} />
+      </Button>
+      <UncontrolledTooltip target="add">
+        Reject request
           </UncontrolledTooltip>
-      </React.Fragment>
-    }
+    </React.Fragment>
   }
 
   const renderListContract = () => {
@@ -103,9 +97,6 @@ const TokenDetails = props => {
         <div>
           Address: {i.address}
         </div>
-        <div>
-          Status: {i?.request?.accepted ? "on VChain" : "not on Vchain"}
-        </div>
       </div>
       <div>
         <div>
@@ -117,12 +108,6 @@ const TokenDetails = props => {
       </div>
       <div>
         {renderButtonAction(i)}
-        <Button size="sm" id="sdk" color="primary" className="ml-1">
-          <Download size={14} />
-        </Button>
-        <UncontrolledTooltip target="sdk">
-          Download SDK
-            </UncontrolledTooltip>
       </div>
     </li>)
   }
@@ -209,23 +194,10 @@ const TokenDetails = props => {
                   <div className="font-weight-bold token-detail-title">Transaction fee</div>
                   <div>{data?.transaction_fee ? `${data.transaction_fee} %` : `empty`}</div>
                 </div>
-                <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">In Vchain</div>
-                  <div>None</div>
-                </div>
 
               </Col>
             </Row>
-            <div>
-              <Button.Ripple
-                className="my-1 btn-block"
-                color="primary"
-                outline
-              >
-                <Edit size={14} />
-                <span className="align-middle ml-50"> Update</span>
-              </Button.Ripple>
-            </div>
+
           </TabPane>
           <TabPane tabId={2}>
 
@@ -258,6 +230,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   getTokenById,
   createRequest,
-  cancelRequest
+  cancelRequest,
+  acceptRequest,
+  denyRequest
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

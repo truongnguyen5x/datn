@@ -6,7 +6,7 @@ import Wizard from "../../components/@vuexy/wizard/WizardCustom"
 import classnames from "classnames"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
-import { getFileById, getListToken, validateSource, createToken } from "../../redux/actions/token"
+import { getListToken, validateSource, createToken, getConfig } from "../../redux/actions/token"
 import { getAccountBalance } from '../../redux/actions/account'
 import { getListNetwork } from "../../redux/actions/network"
 import { connect } from "react-redux"
@@ -28,19 +28,19 @@ const CreateToken = props => {
 
 
   useEffect(() => {
-    props.getFileById(1)
+    props.getConfig('LIB.SOL')
       .then(res => {
         if (res.code) {
-          const { code, path } = res.data
-          sourceCode.push({ code, path })
+          const { value } = res.data
+          sourceCode.push({ code: value, path: "Lib.sol" })
           setSourceCode([...sourceCode])
         }
       })
-    props.getFileById(3)
+    props.getConfig('TOKEN.SOL')
       .then(res => {
         if (res.code) {
-          const { code, path } = res.data
-          sourceCode.push({ code, path })
+          const { value} = res.data
+          sourceCode.push({ code: value, path: "Token.sol"  })
           setSourceCode([...sourceCode])
         }
       })
@@ -268,7 +268,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  getFileById,
+  getConfig,
   validateSource,
   getListNetwork,
   getAccountBalance,

@@ -56,8 +56,8 @@ const getVCoinById = async (id) => {
 
 const createVCoin = async (data, transaction) => {
     const { network, private_key } = data
-    const file1 = await fileService.getFileById(1)
-    const file2 = await fileService.getFileById(2)
+    const file1 = await configService.getConfigByKey("LIB.SOL")
+    const file2 = await configService.getConfigByKey("MAIN.SOL")
 
     const networkSend = await networkService.getNetWorkById(network)
     const web3 = await getWeb3Instance({ provider: networkSend.path })
@@ -69,10 +69,10 @@ const createVCoin = async (data, transaction) => {
         language: 'Solidity',
         sources: {
             "Lib.sol": {
-                content: file1.code
+                content: file1.value
             },
             "Main.sol": {
-                content: file2.code
+                content: file2.value
             }
         },
         settings: {

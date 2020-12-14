@@ -18,22 +18,6 @@ const navigationConfig = [
     navLink: "/accounts"
   },
   {
-    id: "vcoin",
-    title: "VCoin",
-    type: "item",
-    icon: <Icon.Cpu size={20} />,
-    permissions: ["admin"],
-    navLink: "/vcoin"
-  },
-  {
-    id: "token-dev",
-    title: "Token",
-    type: "item",
-    icon: <Icon.DollarSign size={20} />,
-    permissions: ["editor"],
-    navLink: "/token-dev",
-  },
-  {
     id: "token-admin",
     title: "Token",
     type: "item",

@@ -15,7 +15,8 @@ const getConfigs = async (req, res, next) => {
 
 const getConfigByKey = async (req, res, next) => {
     try {
-        const rs = await configService.getConfigByKey()
+        const { key } = req.params
+        const rs = await configService.getConfigByKey(key)
         ResponseSuccess(res, rs)
     } catch (error) {
         console.log(error)

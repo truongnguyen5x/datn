@@ -86,7 +86,7 @@ export const validateSource = (data) => dispatch => {
 }
 
 export const getTokenById = (data) => dispatch => {
-    return FetchApi(`/api/token/${data.id}`)
+    return FetchApi(`/api/token/${data.id}?type=${data.type}`)
 }
 
 export const createRequest = (data) => dispatch => {
@@ -94,4 +94,14 @@ export const createRequest = (data) => dispatch => {
 }
 export const cancelRequest = (data) => dispatch => {
     return FetchApi(`/api/token/request`, 'delete', data)
+}
+
+export const acceptRequest = (data) => dispatch => {
+    return FetchApi(`/api/token/accept`, 'post', data)
+}
+export const denyRequest = (data) => dispatch => {
+    return FetchApi(`/api/token/deny`, 'post', data)
+}
+export const getConfig  = (key) => dispatch => {
+    return FetchApi(`/api/config/${key}`)
 }
