@@ -26,6 +26,7 @@ const getTokenById = async (req, res, next) => {
         const rs = await tokenService.getTokenById(id, req.query)
         ResponseSuccess(res, rs)
     } catch  (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -61,11 +62,7 @@ const updateToken = async (req, res, next) => {
 const deleteToken = async (req, res, next) => {
     try {
         const { id } = req.params
-        const token = await tokenService.getTokenById(id)
-        if (!token) {
-            throw new ApiError("Khong tim thay token ")
-        }
-        await tokenService.deleteToken(token)
+        await tokenService.deleteToken(id)
         ResponseSuccess(res)
     } catch (error) {
         ResponseError(res, error, "ERROR")
@@ -103,6 +100,7 @@ const acceptRequest = async (req, res, next) => {
         const rs = await tokenService.acceptRequest(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -111,6 +109,14 @@ const denyRequest = async (req, res, next) => {
     try {
         const rs = await tokenService.denyRequest(req.body)
         ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+const testContract = async (req, res, next) => {
+    try {
+        await tokenService.testContract(req.body)
+        ResponseSuccess(res)
     } catch (error) {
         ResponseError(res, error, "ERROR")
     }
@@ -127,5 +133,6 @@ module.exports = {
     createRequest,
     cancelRequest,
     acceptRequest,
-    denyRequest
+    denyRequest,
+    testContract
 }

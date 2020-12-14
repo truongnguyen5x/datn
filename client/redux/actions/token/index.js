@@ -39,13 +39,13 @@ export const getListTokenAdmin = () => (dispatch, getState) => {
 
 
 export const changeFilter = (type) => dispatch => {
+    dispatch({
+        type: "CHANGE_LIST_TYPE_TOKEN",
+        payload: type
+    })
     return FetchApi("/api/token", 'get', { type })
         .then(res => {
             if (res.code) {
-                dispatch({
-                    type: "CHANGE_LIST_TYPE_TOKEN",
-                    payload: type
-                })
                 dispatch({
                     type: "GET_LIST_TOKEN",
                     payload: res.data
@@ -54,13 +54,13 @@ export const changeFilter = (type) => dispatch => {
         })
 }
 export const changeFilterAdmin = (type) => dispatch => {
+    dispatch({
+        type: "CHANGE_LIST_TYPE_TOKEN_ADMIN",
+        payload: type
+    })
     return FetchApi("/api/token", 'get', { type })
         .then(res => {
             if (res.code) {
-                dispatch({
-                    type: "CHANGE_LIST_TYPE_TOKEN_ADMIN",
-                    payload: type
-                })
                 dispatch({
                     type: "GET_LIST_TOKEN",
                     payload: res.data
@@ -102,6 +102,6 @@ export const acceptRequest = (data) => dispatch => {
 export const denyRequest = (data) => dispatch => {
     return FetchApi(`/api/token/deny`, 'post', data)
 }
-export const getConfig  = (key) => dispatch => {
+export const getConfig = (key) => dispatch => {
     return FetchApi(`/api/config/${key}`)
 }

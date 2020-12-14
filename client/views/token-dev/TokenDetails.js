@@ -211,7 +211,7 @@ const TokenDetails = props => {
                     <div>{data?.transaction_fee ? `${data.transaction_fee} %` : `empty`}</div>
                   </div>
                   <div className="token-detail-general">
-                    <div className="font-weight-bold token-detail-title">In Vchain</div>
+                    <div className="font-weight-bold token-detail-title">On Vchain</div>
                     <div>None</div>
                   </div>
 

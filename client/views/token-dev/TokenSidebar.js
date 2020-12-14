@@ -56,7 +56,7 @@ class TokenSidebar extends React.Component {
                 className="border-0 cursor-pointer"
               >
                 <Globe size={21} />
-                <span className="align-middle ml-1">In Vchain</span>
+                <span className="align-middle ml-1">On Vchain</span>
               </ListGroupItem>              
               <ListGroupItem
                 onClick={() => this.props.changeFilter("requested")}

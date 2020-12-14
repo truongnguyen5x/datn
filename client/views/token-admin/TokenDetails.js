@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest, acceptRequest, denyRequest } from "../../redux/actions/token"
+import { getTokenById, createRequest, cancelRequest, acceptRequest, denyRequest, deleteToken } from "../../redux/actions/token"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { Plus, Download, Trash, X, Check } from 'react-feather'
@@ -16,7 +16,7 @@ const TokenDetails = props => {
 
   useEffect(() => {
     if (props.data) {
-      props.getTokenById({ id: props.data.id, type: "pending" })
+      props.getTokenById({ id: props.data.id, type: props.type })
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -37,7 +37,7 @@ const TokenDetails = props => {
     })
     if (res.code) {
       console.log(res.data)
-      props.getTokenById({ id: props.data.id, type: "pending" })
+      props.getTokenById({ id: props.data.id, type: props.type })
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -52,7 +52,22 @@ const TokenDetails = props => {
     const res = await props.denyRequest({ id })
     if (res.code) {
       console.log(res.data)
-      props.getTokenById({ id: props.data.id, type: "pending" })
+      props.getTokenById({ id: props.data.id, type: props.type })
+        .then(res => {
+          if (res.code) {
+            setData(res.data)
+          }
+        })
+    } else {
+      console.log('error')
+    }
+  }  
+  
+  const handleDeleteToken = async (id) => {
+    const res = await props.deleteToken(id)
+    if (res.code) {
+      console.log(res.data)
+      props.getTokenById({ id: props.data.id, type: props.type })
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -64,20 +79,30 @@ const TokenDetails = props => {
   }
 
   const renderButtonAction = (i) => {
+    if (props.type == "in-vchain") {
+      return <React.Fragment>
+        <Button size="sm" id={"add" + i.id} color="danger" className="ml-1" onClick={() => handleDeleteToken(i.id)}>
+          <Trash size={14} />
+        </Button>
+        <UncontrolledTooltip target={"add" + i.id}>
+          Delete from vcoin
+          </UncontrolledTooltip>
 
+      </React.Fragment>
+    }
 
     return <React.Fragment>
-      <Button size="sm" id={"remove"+i.id} color="success" onClick={() => handleAddVChain(i.id)}>
+      <Button size="sm" id={"remove" + i.id} color="success" onClick={() => handleAddVChain(i.id)}>
         <Check size={14} />
       </Button>
-      <UncontrolledTooltip target={"remove"+i.id}>
+      <UncontrolledTooltip target={"remove" + i.id}>
         Accept
             </UncontrolledTooltip>
 
-      <Button size="sm" id={"add"+i.id} color="danger" className="ml-1" onClick={() => handleCancelVChain(i.id)}>
+      <Button size="sm" id={"add" + i.id} color="danger" className="ml-1" onClick={() => handleCancelVChain(i.id)}>
         <X size={14} />
       </Button>
-      <UncontrolledTooltip target={"add"+i.id}>
+      <UncontrolledTooltip target={"add" + i.id}>
         Reject request
           </UncontrolledTooltip>
     </React.Fragment>
@@ -225,7 +250,7 @@ const TokenDetails = props => {
 }
 const mapStateToProps = state => {
   return {
-
+    type: state.token.listTypeAdmin
   }
 }
 const mapDispatchToProps = {
@@ -233,6 +258,7 @@ const mapDispatchToProps = {
   createRequest,
   cancelRequest,
   acceptRequest,
-  denyRequest
+  denyRequest,
+  deleteToken
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

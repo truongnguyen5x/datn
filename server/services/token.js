@@ -60,49 +60,49 @@ const createToken = async (data, user_id, transaction) => {
     await newSmartContract.setOwner(accSend)
     await newSmartContract.setFiles(createdSources)
 
+    // myContract.deploy({
+    //     data: bytecode,
+    //     arguments: constructor
+    // }).estimateGas({ gas: 5000000 })
+    //     .then(gas => {
     myContract.deploy({
         data: bytecode,
         arguments: constructor
-    }).estimateGas({ gas: 5000000 })
-        .then(gas => {
-            myContract.deploy({
-                data: bytecode,
-                arguments: constructor
-            }).send({
-                from: accSend.address,
-                gas
-            })
-                .on('error', function (error) {
-                    console.log('error', error)
-                })
-                .on('transactionHash', async (transactionHash) => {
-                    newSmartContract.update({ deploy_status: 1 })
-                    console.log('transactionHash', transactionHash)
-                })
-                .on('receipt', async (receipt) => {
-                    newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
-                    console.log('receipt', receipt.contractAddress) // contains the new contract address
-                })
-                .on('confirmation', async (confirmationNumber, receipt) => {
-                    newSmartContract.update({ deploy_status: 4 })
-                    console.log('confirm', confirmationNumber, receipt)
-                })
-                .then(async (newContractInstance) => {
-                    newSmartContract.update({ deploy_status: 3 })
-                    console.log('then', newContractInstance.options.address) // instance with the new contract address
-                    return newContractInstance.methods.symbol().call({ from: accSend.address })
-                })
-                .then(async symbol => {
-                    let tokenCreated = await Token.findOne({
-                        where: { symbol }
-                    })
-                    if (!tokenCreated) {
-                        tokenCreated = await Token.create({ symbol })
-                        tokenCreated.setOwner(userSend)
-                    }
-                    tokenCreated.addSmartContract(newSmartContract)
-                })
+    }).send({
+        from: accSend.address,
+        gas: 3000000
+    })
+        .on('error', function (error) {
+            console.log('error', error)
         })
+        .on('transactionHash', async (transactionHash) => {
+            newSmartContract.update({ deploy_status: 1 })
+            console.log('transactionHash', transactionHash)
+        })
+        .on('receipt', async (receipt) => {
+            newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
+            console.log('receipt', receipt.contractAddress) // contains the new contract address
+        })
+        .on('confirmation', async (confirmationNumber, receipt) => {
+            newSmartContract.update({ deploy_status: 4 })
+            console.log('confirm', confirmationNumber, receipt)
+        })
+        .then(async (newContractInstance) => {
+            newSmartContract.update({ deploy_status: 3 })
+            console.log('then', newContractInstance.options.address) // instance with the new contract address
+            return newContractInstance.methods.symbol().call({ from: accSend.address })
+        })
+        .then(async symbol => {
+            let tokenCreated = await Token.findOne({
+                where: { symbol }
+            })
+            if (!tokenCreated) {
+                tokenCreated = await Token.create({ symbol })
+                tokenCreated.setOwner(userSend)
+            }
+            tokenCreated.addSmartContract(newSmartContract)
+        })
+    // })
     return newSmartContract
 }
 
@@ -252,6 +252,37 @@ const getTokenById = async (id, data) => {
             }],
             order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
         })
+    } else if (data.type == 'in-vchain') {
+        return Token.findOne({
+            where: {
+                id
+            },
+            include: [{
+                model: User,
+                as: "owner"
+            }, {
+                model: SmartContract,
+                as: 'smartContracts',
+                include: [{
+                    model: Network,
+                    as: 'network'
+                }, {
+                    model: File,
+                    as: 'files'
+                }, {
+                    model: Account,
+                    as: 'owner'
+                }, {
+                    model: Request,
+                    as: "request",
+                    where: {
+                        del: 0,
+                        accepted: 1
+                    }
+                }]
+            }],
+            order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
+        })
     } else return Token.findOne({
         where: {
             id
@@ -315,16 +346,57 @@ const updateToken = async (data, oldData) => {
     }
 }
 
-const deleteToken = async (data) => {
-    const { symbol, id } = data
-    const mainContract = await getMainConstract()
-    const account = await getMainAccount()
-    return mainContract.methods.removeToken(symbol)
-        .send({ from: account, gas: 4700000 })
-        .then(res => {
-            console.log('Delete token success')
-            return Token.update({ del: true }, { where: { id } })
+const deleteToken = async (id) => {
+    const smartContract = await SmartContract.findOne({ where: { id } })
+    const token = await smartContract.getToken()
+    const requestNew = await Request.findOne({
+        where: {
+            del: 0,
+            smart_contract_id: id
+        }
+    })
+    const vcoin = await VCoin.findOne({
+        include: {
+            model: Network,
+            as: "network",
+            where: {
+                id: smartContract.network_id
+            }
+        },
+        order: [
+            ["createdAt", 'DESC']
+        ]
+    })
+
+    const privateKey = await configService.getConfigByKey("KEY_ADMIN")
+    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
+    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.value);
+    const interface = JSON.parse(vcoin.abi)
+
+    const myContract = new web3.eth.Contract(interface, vcoin.address)
+    await web3.eth.accounts.wallet.add(privateKey.value);
+    // myContract.methods.addToken(smartContract.address)
+    //     .estimateGas({ gas: 5000000 })
+    //     .then(gas => {
+    myContract.methods.removeToken(token.symbol)
+        .send({
+            from: address,
+            gas: 3000000
         })
+        .on('transactionHash', function (hash) {
+            console.log(hash)
+        })
+        .on('receipt', function (receipt) {
+            console.log(receipt)
+        })
+        .on('confirmation', function (confirmationNumber, receipt) {
+
+        })
+        .on('error', err => { });
+    // })
+    requestNew.update({ accepted: 0, del: 1 })
+    return 'success'
+
 }
 
 const getProvider = async () => {
@@ -459,43 +531,63 @@ const acceptRequest = async (data) => {
         ]
     })
 
-    const privateKey = (await configService.getConfigByKey("KEY_ADMIN")).value
-    const web3 = new Web3(vcoin.network.path)
-    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey);
+    const privateKey = await configService.getConfigByKey("KEY_ADMIN")
+    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
+    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.value);
     const interface = JSON.parse(vcoin.abi)
+
     const myContract = new web3.eth.Contract(interface, vcoin.address)
-    await web3.eth.accounts.wallet.add(privateKey);
+    await web3.eth.accounts.wallet.add(privateKey.value);
+    // myContract.methods.addToken(smartContract.address)
+    //     .estimateGas({ gas: 5000000 })
+    //     .then(gas => {
     myContract.methods.addToken(smartContract.address)
-        .estimateGas({ gas: 5000000 })
-        .then(gas => {
-            myContract.methods.addToken(smartContract.address)
-                .send({
-                    from: address,
-                    gas
-                })
-                .on('error', function (error) {
-                    console.log('error', error)
-                })
-                .on('transactionHash', async (transactionHash) => {
-
-                    console.log('transactionHash', transactionHash)
-                })
-                .on('receipt', async (receipt) => {
-
-                    console.log('receipt', receipt.contractAddress) // contains the new contract address
-                })
-                .on('confirmation', async (confirmationNumber, receipt) => {
-
-                    console.log('confirm', confirmationNumber, receipt)
-                })
-                .then(async (newContractInstance) => {
-                    console.log('then', newContractInstance.options.address)
-                })
+        .send({
+            from: address,
+            gas: 3000000
         })
+        .on('transactionHash', function (hash) {
+            console.log(hash)
+        })
+        .on('receipt', function (receipt) {
+            console.log(receipt)
+        })
+        .on('confirmation', function (confirmationNumber, receipt) {
+
+        })
+        .on('error', err => { });
+    // })
 
     await requestNew.update({ accepted: 1 })
-    // await requestNew.destroy()
     return 'success'
+}
+
+const testContract = async (data) => {
+    console.log(data)
+    const vcoin = await VCoin.findOne({
+        include: {
+            model: Network,
+            as: "network"
+        },
+        order: [
+            ["createdAt", 'DESC']
+        ]
+    })
+
+    const privateKey = await configService.getConfigByKey("KEY_ADMIN")
+    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
+    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.value);
+    const interface = JSON.parse(vcoin.abi)
+
+    const myContract = new web3.eth.Contract(interface, vcoin.address)
+    await web3.eth.accounts.wallet.add(privateKey.value);
+    myContract.methods.getListToken()
+        .call({
+            from: address
+        })
+        .then(res => { console.log(res) })
+    return
+
 }
 
 const denyRequest = async (data) => {
@@ -524,5 +616,6 @@ module.exports = {
     createRequest,
     cancelRequest,
     acceptRequest,
-    denyRequest
+    denyRequest,
+    testContract
 }

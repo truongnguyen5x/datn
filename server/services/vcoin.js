@@ -99,24 +99,23 @@ const createVCoin = async (data, transaction) => {
     const newVCoin = await VCoin.create({ abi: JSON.stringify(interface) })
     await newVCoin.setNetwork(networkSend)
 
-    myContract.deploy({
-        data: bytecode,
-        arguments: [1000000, "vcoin", "vcn"]
-    }).estimateGas({ gas: 5000000 })
-        .then(gas => {
+    // myContract.deploy({
+    //     data: bytecode,
+    //     arguments: [1000000, "vcoin", "vcn"]
+    // }).estimateGas({ gas: 5000000 })
+    //     .then(gas => {
             myContract.deploy({
                 data: bytecode,
                 arguments: [1000000, "vcoin", "vcn"]
             }).send({
                 from: address,
-                gas: gas
+                gas: 5000000
             })
                 .on('receipt', async (receipt) => {
                     newVCoin.update({ address: receipt.contractAddress })
                     console.log('receipt', receipt.contractAddress) // contains the new contract address
                 })
-        })
-
+        // })
 
     return newVCoin
 }
