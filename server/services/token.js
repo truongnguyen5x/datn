@@ -9,7 +9,8 @@ const networkService = require("./network")
 const fileService = require("./file")
 const solc = require("solc");
 const { Op } = require("sequelize");
-const { getWeb3Instance, getListAccount } = require("../utils/network_util")
+const { getWeb3Instance, getListAccount } = require("../utils/network_util");
+const VCoin = require("../models/vcoin");
 
 const createToken = async (data, user_id, transaction) => {
     const { source, contract, network, account, constructor } = data
@@ -437,12 +438,63 @@ const cancelRequest = async (data) => {
 }
 
 const acceptRequest = async (data) => {
+    const smartContract = await SmartContract.findOne({ where: { id: data.id } })
     const requestNew = await Request.findOne({
         where: {
+            del: 0,
             smart_contract_id: data.id
         }
     })
-    await requestNew.destroy()
+
+    const vcoin = await VCoin.findOne({
+        include: {
+            model: Network,
+            as: "network",
+            where: {
+                id: smartContract.network_id
+            }
+        },
+        order: [
+            ["createdAt", 'DESC']
+        ]
+    })
+
+    const privateKey = (await configService.getConfigByKey("KEY_ADMIN")).value
+    const web3 = new Web3(vcoin.network.path)
+    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey);
+    const interface = JSON.parse(vcoin.abi)
+    const myContract = new web3.eth.Contract(interface, vcoin.address)
+    await web3.eth.accounts.wallet.add(privateKey);
+    myContract.methods.addToken(smartContract.address)
+        .estimateGas({ gas: 5000000 })
+        .then(gas => {
+            myContract.methods.addToken(smartContract.address)
+                .send({
+                    from: address,
+                    gas
+                })
+                .on('error', function (error) {
+                    console.log('error', error)
+                })
+                .on('transactionHash', async (transactionHash) => {
+
+                    console.log('transactionHash', transactionHash)
+                })
+                .on('receipt', async (receipt) => {
+
+                    console.log('receipt', receipt.contractAddress) // contains the new contract address
+                })
+                .on('confirmation', async (confirmationNumber, receipt) => {
+
+                    console.log('confirm', confirmationNumber, receipt)
+                })
+                .then(async (newContractInstance) => {
+                    console.log('then', newContractInstance.options.address)
+                })
+        })
+
+    await requestNew.update({ accepted: 1 })
+    // await requestNew.destroy()
     return 'success'
 }
 
@@ -452,7 +504,7 @@ const denyRequest = async (data) => {
             smart_contract_id: data.id
         }
     })
-    await requestNew.destroy()
+    await requestNew.update({ del: 1 })
     return 'success'
 }
 

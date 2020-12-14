@@ -32,12 +32,12 @@ const TokenDetails = props => {
   }
 
   const handleAddVChain = async (id) => {
-    const res = await props.createRequest({
+    const res = await props.acceptRequest({
       id
     })
     if (res.code) {
       console.log(res.data)
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById({ id: props.data.id, type: "pending" })
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -49,10 +49,10 @@ const TokenDetails = props => {
   }
 
   const handleCancelVChain = async (id) => {
-    const res = await props.cancelRequest({ id })
+    const res = await props.denyRequest({ id })
     if (res.code) {
       console.log(res.data)
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById({ id: props.data.id, type: "pending" })
         .then(res => {
           if (res.code) {
             setData(res.data)
