@@ -60,8 +60,9 @@ const deleteVCoin = async (req, res, next) => {
 
 const exportSDK = async (req, res, next) =>{
     try {
+
         // const { id } = req.params
-        const path = await vcoinService.exportSDK()
+        const path = await vcoinService.exportSDK(req.body)
         res.download(path)
     } catch (error) {
         console.log(error)

@@ -59,14 +59,14 @@ const getVCoinById = async (id) => {
 }
 
 const createVCoin = async (data, transaction) => {
-    const { network, private_key } = data
+    const { network } = data
     const file1 = await configService.getConfigByKey("LIB.SOL")
     const file2 = await configService.getConfigByKey("MAIN.SOL")
-
+    const private_key = await configService.getConfigByKey("KEY_ADMIN")
     const networkSend = await networkService.getNetWorkById(network)
     const web3 = await getWeb3Instance({ provider: networkSend.path })
-    const { address } = web3.eth.accounts.privateKeyToAccount(private_key);
-    await web3.eth.accounts.wallet.add(private_key);
+    const { address } = web3.eth.accounts.privateKeyToAccount(private_key.value);
+    await web3.eth.accounts.wallet.add(private_key.value);
     await getListAccount(web3)
 
     const input = {
