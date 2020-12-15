@@ -6,7 +6,6 @@ const getListUser = async (req, res, next) => {
         const rs = await userService.getListUser(null)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

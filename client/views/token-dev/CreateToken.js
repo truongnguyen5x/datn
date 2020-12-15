@@ -6,7 +6,7 @@ import Wizard from "../../components/@vuexy/wizard/WizardCustom"
 import classnames from "classnames"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
-import { getListToken, validateSource, createToken, getConfig } from "../../redux/actions/token"
+import { getListToken, validateSource, createToken, getConfig } from "../../redux/actions/token-dev"
 import { getAccountBalance } from '../../redux/actions/account'
 import { getListNetwork } from "../../redux/actions/network"
 import { connect } from "react-redux"
@@ -94,7 +94,6 @@ const CreateToken = props => {
 
 
   const onChangeNetwork = async (e) => {
-    console.log(e)
     setSelectedNetwork(e)
     setLoadingAccount(true)
     await props.getAccountBalance({ network_id: e.id })
@@ -124,7 +123,6 @@ const CreateToken = props => {
       source: sourceCode
     })
     if (res.code) {
-      console.log('create token done ', res.data)
       props.handleComposeSidebar("close")
  
       toast.success("Create token success")

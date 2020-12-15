@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest, exportSDK } from "../../redux/actions/token"
+import { getTokenById, createRequest, cancelRequest, exportSDK } from "../../redux/actions/token-dev"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { Plus, Download, Trash } from 'react-feather'
@@ -9,7 +9,6 @@ import classnames from "classnames"
 import noImage from "../../assets/img/coin/no-image.png"
 import moment from "moment"
 import { Edit } from 'react-feather'
-import { saveAs } from "file-saver"
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -17,7 +16,7 @@ const TokenDetails = props => {
 
   useEffect(() => {
     if (props.data) {
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -37,8 +36,7 @@ const TokenDetails = props => {
       id
     })
     if (res.code) {
-      console.log(res.data)
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -52,8 +50,7 @@ const TokenDetails = props => {
   const handleCancelVChain = async (id) => {
     const res = await props.cancelRequest({ id })
     if (res.code) {
-      console.log(res.data)
-      props.getTokenById({ id: props.data.id })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -65,14 +62,9 @@ const TokenDetails = props => {
   }
 
   const handleDownloadSdk = async (id) => {
-    const res = await props.exportSDK({ id })
+    const res = await props.exportSDK(id)
     if (res.code) {
-
-      const blob = new Blob([res.data], {
-        type: 'application/octet-stream'
-      })
-      const filename = 'sdk.zip'
-      // saveAs(blob, filename)
+      console.log(res.data)
     }
   }
 

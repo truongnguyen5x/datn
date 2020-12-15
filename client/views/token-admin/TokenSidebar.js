@@ -2,7 +2,7 @@ import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, Plus } from "react-feather"
-import { changeFilterAdmin } from "../../redux/actions/token"
+import { changeFilter } from "../../redux/actions/token-admin"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
@@ -43,7 +43,7 @@ class TokenSidebar extends React.Component {
           >
             <ListGroup className="list-group-messages font-medium-1 mt-1">
               <ListGroupItem
-                onClick={() => this.props.changeFilterAdmin("pending")}
+                onClick={() => this.props.changeFilter("pending")}
                 active={"pending" === this.props.listType}
                 className="border-0 cursor-pointer pt-0"
               >
@@ -51,7 +51,7 @@ class TokenSidebar extends React.Component {
                 <span className="align-middle ml-1">Pending token</span>
               </ListGroupItem>
               <ListGroupItem
-                onClick={() => this.props.changeFilterAdmin("in-vchain")}
+                onClick={() => this.props.changeFilter("in-vchain")}
                 active={"in-vchain" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
@@ -70,8 +70,8 @@ class TokenSidebar extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    listType: state.token.listTypeAdmin
+    listType: state.tokenAdmin.listType
   }
 }
 
-export default connect(mapStateToProps, { changeFilterAdmin })(TokenSidebar)
+export default connect(mapStateToProps, { changeFilter })(TokenSidebar)

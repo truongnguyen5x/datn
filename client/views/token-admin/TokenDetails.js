@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest, acceptRequest, denyRequest, deleteToken } from "../../redux/actions/token"
+import { getTokenById, acceptRequest, denyRequest, deleteToken } from "../../redux/actions/token-admin"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Plus, Download, Trash, X, Check } from 'react-feather'
+import { Trash, X, Check } from 'react-feather'
 import { Nav, NavItem, NavLink, TabPane, TabContent, Row, Col, Button, UncontrolledTooltip } from 'reactstrap'
 import classnames from "classnames"
 import noImage from "../../assets/img/coin/no-image.png"
 import moment from "moment"
-import { Edit } from 'react-feather'
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -16,7 +15,7 @@ const TokenDetails = props => {
 
   useEffect(() => {
     if (props.data) {
-      props.getTokenById({ id: props.data.id, type: props.type })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -36,8 +35,7 @@ const TokenDetails = props => {
       id
     })
     if (res.code) {
-      console.log(res.data)
-      props.getTokenById({ id: props.data.id, type: props.type })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -51,8 +49,7 @@ const TokenDetails = props => {
   const handleCancelVChain = async (id) => {
     const res = await props.denyRequest({ id })
     if (res.code) {
-      console.log(res.data)
-      props.getTokenById({ id: props.data.id, type: props.type })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -61,13 +58,12 @@ const TokenDetails = props => {
     } else {
       console.log('error')
     }
-  }  
-  
+  }
+
   const handleDeleteToken = async (id) => {
     const res = await props.deleteToken(id)
     if (res.code) {
-      console.log(res.data)
-      props.getTokenById({ id: props.data.id, type: props.type })
+      props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
@@ -250,13 +246,11 @@ const TokenDetails = props => {
 }
 const mapStateToProps = state => {
   return {
-    type: state.token.listTypeAdmin
+    type: state.tokenAdmin.listType
   }
 }
 const mapDispatchToProps = {
   getTokenById,
-  createRequest,
-  cancelRequest,
   acceptRequest,
   denyRequest,
   deleteToken

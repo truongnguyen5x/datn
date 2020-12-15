@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Row, Col, Button } from 'reactstrap'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { getProfile } from "../../redux/actions/auth/loginActions"
-import { getListToken } from "../../redux/actions/token"
+import { getListToken } from "../../redux/actions/token-dev"
 import TokenDetails from "./TokenDetails"
 import ComposeMail from "./CreateToken"
 import noImage from "../../assets/img/coin/no-image.png"
@@ -96,7 +96,7 @@ const TokenList = props => {
 }
 const mapStateToProps = state => {
   return {
-    listToken: state.token.listToken
+    listToken: state.tokenDev.listToken
   }
 }
 const mapDispatchToProps = {

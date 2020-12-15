@@ -13,8 +13,8 @@ export const updateVCoin = (data) => dispatch => {
     return FetchApi(`/api/vcoin`, 'put', data)
 }
 
-export const exportSDK = () => dispatch => {
-    return FetchApi(`/api/vcoin/sdk`, "POST")
+export const exportSDK = (id) => dispatch => {
+    return FetchApi(`/api/vcoin/sdk/${id}`, "POST")
 }
 
 

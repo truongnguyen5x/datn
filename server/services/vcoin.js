@@ -5,12 +5,10 @@ const networkService = require("./network")
 const fileService = require("./file")
 const configService = require("./config")
 const ApiError = require("../middlewares/error")
-const path = require('path')
-const AdmZip = require('adm-zip');
-const Web3 = require('web3')
 
-const solc = require("solc");
-const { getWeb3Instance, getListAccount } = require("../utils/network_util")
+const Web3 = require('web3')
+const { getWeb3Instance, getListAccount, exporSdkWorker, compileSourceCode } = require("../utils/network_util");
+
 
 const getListVCoin = async () => {
     const web3 = new Web3()
@@ -49,7 +47,7 @@ const getVCoinById = async (id) => {
                 as: 'network'
             }, {
                 model: Account,
-                as: 'owner'
+                as: 'account'
             }, {
                 model: File,
                 as: "files"
@@ -69,54 +67,49 @@ const createVCoin = async (data, transaction) => {
     await web3.eth.accounts.wallet.add(private_key.value);
     await getListAccount(web3)
 
-    const input = {
-        language: 'Solidity',
-        sources: {
-            "Lib.sol": {
-                content: file1.value
-            },
-            "Main.sol": {
-                content: file2.value
-            }
-        },
-        settings: {
-            outputSelection: {
-                '*': {
-                    '*': ['*']
-                }
-            }
-        }
-    }
-
-    var output = JSON.parse(
-        solc.compile(JSON.stringify(input))
-    );
+    var output = await compileSourceCode([
+        { path: "Lib.sol", code: file1.value },
+        { path: "Main.sol", code: file2.value }
+    ])
     const constractCompile = output.contracts["Main.sol"]["VCoin"]
     const interface = constractCompile.abi
     const myContract = new web3.eth.Contract(interface)
     const bytecode = constractCompile.evm.bytecode.object;
 
-    const newVCoin = await VCoin.create({ abi: JSON.stringify(interface) })
-    await newVCoin.setNetwork(networkSend)
+    const newVCoin = await VCoin.create({ abi: JSON.stringify(interface) }, { transaction })
+    await newVCoin.setNetwork(networkSend, { transaction })
 
     // myContract.deploy({
     //     data: bytecode,
     //     arguments: [1000000, "vcoin", "vcn"]
     // }).estimateGas({ gas: 5000000 })
-    //     .then(gas => {
-            myContract.deploy({
-                data: bytecode,
-                arguments: [1000000, "vcoin", "vcn"]
-            }).send({
-                from: address,
-                gas: 5000000
-            })
-                .on('receipt', async (receipt) => {
-                    newVCoin.update({ address: receipt.contractAddress })
-                    console.log('receipt', receipt.contractAddress) // contains the new contract address
-                })
-        // })
-
+    // .then(gas => {
+    myContract.deploy({
+        data: bytecode,
+        arguments: [1000000, "vcoin", "vcn"]
+    })
+        .send({
+            from: address,
+            gas: 3000000
+            // gas
+        })
+        .on('error', async (error) => {
+            console.log('error')
+        })
+        .on('transactionHash', async (transactionHash) => {
+            console.log('transactionHash', transactionHash)
+        })
+        .on('receipt', async (receipt) => {
+            console.log('receipt', receipt.contractAddress)
+            newVCoin.update({ address: receipt.contractAddress })
+        })
+        .on('confirmation', async (confirmationNumber, receipt) => {
+            console.log('confirm', confirmationNumber, receipt)
+        })
+        .then(async (newContractInstance) => {
+            console.log('then', newContractInstance.options.address)
+        })
+    // })
     return newVCoin
 }
 
@@ -133,11 +126,7 @@ const deleteVCoin = async (id) => {
 }
 
 const exportSDK = async () => {
-    const zip = new AdmZip();
-    zip.addLocalFile(path.resolve(__dirname, "../sdk/index.js"));
-    zip.addLocalFile(path.resolve(__dirname, "../sdk/secret.js"));
-    zip.writeZip(path.resolve(__dirname, "../sdk/sdk.zip"))
-    return path.resolve(__dirname, "../sdk/sdk.zip")
+    return exporSdkWorker()
 }
 
 module.exports = {

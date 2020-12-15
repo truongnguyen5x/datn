@@ -8,7 +8,6 @@ const getListVCoin = async (req, res, next) => {
         const rs = await vcoinService.getListVCoin()
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -24,13 +23,13 @@ const getVCoinById = async (req, res, next) => {
 }
 
 const createVCoin = async (req, res, next) => {
-    const t = await sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
-        const rs = await vcoinService.createVCoin(req.body, t)
+        const rs = await vcoinService.createVCoin(req.body, transaction)
+        await transaction.commit()
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        await t.rollback();
+        await transaction.rollback();
         ResponseError(res, error, "ERROR")
     }
 }
@@ -58,14 +57,12 @@ const deleteVCoin = async (req, res, next) => {
     }
 }
 
-const exportSDK = async (req, res, next) =>{
+const exportSDK = async (req, res, next) => {
     try {
-
-        // const { id } = req.params
-        const path = await vcoinService.exportSDK(req.body)
-        res.download(path)
+        const { id } = req.params
+        const path = await vcoinService.exportSDK(id)
+        ResponseSuccess(res)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

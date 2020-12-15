@@ -2,7 +2,7 @@ import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, Plus } from "react-feather"
-import { changeFilter } from "../../redux/actions/token"
+import { changeFilter } from "../../redux/actions/token-dev"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
@@ -84,7 +84,7 @@ class TokenSidebar extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    listType: state.token.listType
+    listType: state.tokenDev.listType
   }
 }
 

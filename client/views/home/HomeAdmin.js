@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { Button, Card, Row, Col, Input, FormGroup, Label } from "reactstrap"
 import { Plus, Edit, Save, Download } from 'react-feather'
-import Sidebar from "react-sidebar"
 import { getListVCoin, updateConfig, updateVCoin, exportSDK } from "../../redux/actions/vcoin/index"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import "../../assets/scss/pages/vcoin.scss"
-import { saveAs } from 'file-saver'
 
 
 const ListVCoin = (props) => {
@@ -69,14 +67,11 @@ const ListVCoin = (props) => {
             }
         }
     }
-    const onDownloadSDK = async () => {
-        const res = await props.exportSDK()
-        console.log(res, res.data)
-        const blob = new Blob([res.data], {
-            type: 'application/octet-stream'
-        })
-        const filename = 'download.zip'
-        saveAs(blob, filename)
+    const onDownloadSDK = async (id) => {
+        const res = await props.exportSDK(id)
+        if (res.code) {
+            console.log(res.data)
+        }
     }
 
     return <div className="vcoin-application">
@@ -126,7 +121,7 @@ const ListVCoin = (props) => {
                         value={dataContractAdd[idx]}
                         onChange={(e) => onChangeContractAddress(e, idx)} />
                 </FormGroup>
-                    <div className="d-flex">
+                    <div className="d-flex justify-content-between">
                         <Button
                             className="btn"
                             onClick={() => onSaveContractAddress(idx)}
@@ -135,24 +130,19 @@ const ListVCoin = (props) => {
                             <Save size={15} />
                             <span className="align-middle ml-50">Save</span>
                         </Button>
+                        <Button
+                            onClick={() => onDownloadSDK(i.id)}
+                            color="primary"
+                        >
+                            <Download size={15} />
+                            <span className="align-middle ml-50">Download SDK</span>
+                        </Button>
                     </div>
 
                 </Card>
             </Col>)}
-
         </Row>
-        <h3>Download SDK Vcoin</h3>
-        <div className="d-flex">
-            <Button
 
-                onClick={onDownloadSDK}
-                color="primary"
-            >
-                <Download size={15} />
-                <span className="align-middle ml-50">Download</span>
-            </Button>
-
-        </div>
     </div>
 }
 

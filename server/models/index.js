@@ -16,7 +16,7 @@ const { sequelize } = require('../configs')
 User.hasMany(Account, { as: 'wallets', foreignKey: "user_id" })
 
 SmartContract.belongsTo(Network, { as: "network", foreignKey: "network_id" })
-SmartContract.belongsTo(Account, { as: "owner", foreignKey: "account_id" })
+SmartContract.belongsTo(Account, { as: "account", foreignKey: "account_id" })
 SmartContract.hasMany(File, { as: "files", foreignKey: "smart_contract_id" })
 SmartContract.hasMany(SmartContract, { as: "tokens", foreignKey: "vcoin_id" })
 

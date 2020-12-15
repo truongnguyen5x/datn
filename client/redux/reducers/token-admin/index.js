@@ -1,7 +1,6 @@
 const initialState = {
     listToken: [],
-    listType: "all",
-    listTypeAdmin: "pending"
+    listType: "pending",
 }
 const token = (state = initialState, action) => {
     switch (action.type) {
@@ -10,9 +9,6 @@ const token = (state = initialState, action) => {
         }
         case "CHANGE_LIST_TYPE_TOKEN": {
             return { ...state, listType: action.payload }
-        }
-        case "CHANGE_LIST_TYPE_TOKEN_ADMIN": {
-            return { ...state, listTypeAdmin: action.payload }
         }
         default: {
             return state

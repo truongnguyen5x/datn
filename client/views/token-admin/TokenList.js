@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Row, Col, Button } from 'reactstrap'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { getProfile } from "../../redux/actions/auth/loginActions"
-import { getListTokenAdmin } from "../../redux/actions/token"
+import { getListToken } from "../../redux/actions/token-admin"
 import TokenDetails from "./TokenDetails"
 
 import noImage from "../../assets/img/coin/no-image.png"
@@ -13,7 +13,7 @@ const TokenList = props => {
   const [TokenDetailsVisibility, setTokenDetailsVisibility] = useState(false)
   useEffect(() => {
     props.getProfile()
-    props.getListTokenAdmin()
+    props.getListToken()
   }, [])
 
   const handleTokenDetails = (status, token) => {
@@ -93,11 +93,11 @@ const TokenList = props => {
 }
 const mapStateToProps = state => {
   return {
-    listToken: state.token.listToken
+    listToken: state.tokenAdmin.listToken
   }
 }
 const mapDispatchToProps = {
   getProfile,
-  getListTokenAdmin
+  getListToken
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenList)

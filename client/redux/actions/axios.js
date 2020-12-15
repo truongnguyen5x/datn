@@ -2,7 +2,7 @@ import axios from 'axios'
 import { history } from "../../history"
 
 
-export const FetchApi = async (url, method = 'get', body, headers) => {
+export const FetchApi = async (url, method = 'GET', body, headers) => {
     let token = localStorage.getItem("accessToken");
     try {
         let opts = {
@@ -11,7 +11,7 @@ export const FetchApi = async (url, method = 'get', body, headers) => {
             timeout: 1 * 1000 * 60,//1phut
             headers: { Authorization: `Bearer ${token}` }
         }
-        if (method === 'get') {
+        if (method === 'GET') {
             opts.params = body;
         } else {
             opts.data = body;

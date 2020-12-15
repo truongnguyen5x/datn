@@ -22,7 +22,6 @@ const Editor = props => {
     }, [props.source])
 
     const onChangeCode = (idx, value) => {
-        // console.log(idx, value)
         props.source[idx].code = value.target.value
         props.onChangeCode([...props.source])
     }

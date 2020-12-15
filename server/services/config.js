@@ -9,7 +9,6 @@ const getConfigByKey = async (key) => {
 
 const updateBatchConfig = async (data) => {
     const p_w = data.map(async i => {
-        console.log(i)
         const config = await Config.findOne({
             where: { key: i.key }
         })
@@ -22,13 +21,6 @@ const updateBatchConfig = async (data) => {
     return Promise.all(p_w)
 }
 
-const initConfig = async () => {
-    return Config.bulkCreate([
-        { key: "VCOIN_ADDRESS", value: "" },
-        { key: "VCOIN_OWNER", value: "" },
-        { key: "CURRENT_NETWORK", value: "" }
-    ])
-}
 
 const getListConfig = async () => {
     return Config.findAll({})
@@ -37,6 +29,5 @@ const getListConfig = async () => {
 module.exports = {
     getConfigByKey,
     updateBatchConfig,
-    getListConfig,
-    initConfig
+    getListConfig
 }
