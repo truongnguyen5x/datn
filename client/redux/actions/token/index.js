@@ -105,3 +105,7 @@ export const denyRequest = (data) => dispatch => {
 export const getConfig = (key) => dispatch => {
     return FetchApi(`/api/config/${key}`)
 }
+
+export const exportSDK = (data) => dispatch => {
+    return FetchApi(`/api/token/sdk`, 'post', data)
+}

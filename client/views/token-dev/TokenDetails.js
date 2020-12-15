@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest } from "../../redux/actions/token"
+import { getTokenById, createRequest, cancelRequest, exportSDK } from "../../redux/actions/token"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { Plus, Download, Trash } from 'react-feather'
@@ -9,6 +9,7 @@ import classnames from "classnames"
 import noImage from "../../assets/img/coin/no-image.png"
 import moment from "moment"
 import { Edit } from 'react-feather'
+import { saveAs } from "file-saver"
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -63,26 +64,38 @@ const TokenDetails = props => {
     }
   }
 
+  const handleDownloadSdk = async (id) => {
+    const res = await props.exportSDK({ id })
+    if (res.code) {
+
+      const blob = new Blob([res.data], {
+        type: 'application/octet-stream'
+      })
+      const filename = 'sdk.zip'
+      // saveAs(blob, filename)
+    }
+  }
+
   const renderButtonAction = (i) => {
     if (i?.request?.accepted) {
       return null
     }
     if (i?.request) {
       return <React.Fragment>
-        <Button size="sm" id={"remove"+i.id} color="danger" onClick={() => handleCancelVChain(i.id)}>
+        <Button size="sm" id={"remove" + i.id} color="danger" onClick={() => handleCancelVChain(i.id)}>
           <Trash size={14} />
         </Button>
-        <UncontrolledTooltip target={"remove"+i.id}>
+        <UncontrolledTooltip target={"remove" + i.id}>
           Cancel add request
             </UncontrolledTooltip>
       </React.Fragment>
     }
     else {
       return <React.Fragment>
-        <Button size="sm" id={"add"+i.id} color="success" onClick={() => handleAddVChain(i.id)}>
+        <Button size="sm" id={"add" + i.id} color="success" onClick={() => handleAddVChain(i.id)}>
           <Plus size={14} />
         </Button>
-        <UncontrolledTooltip target={"add"+i.id}>
+        <UncontrolledTooltip target={"add" + i.id}>
           Add to VChain
           </UncontrolledTooltip>
       </React.Fragment>
@@ -117,7 +130,9 @@ const TokenDetails = props => {
       </div>
       <div>
         {renderButtonAction(i)}
-        <Button size="sm" id="sdk" color="primary" className="ml-1">
+        <Button size="sm" id="sdk" color="primary" className="ml-1"
+          onClick={() => handleDownloadSdk(i.id)}
+        >
           <Download size={14} />
         </Button>
         <UncontrolledTooltip target="sdk">
@@ -260,6 +275,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   getTokenById,
   createRequest,
-  cancelRequest
+  cancelRequest,
+  exportSDK
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

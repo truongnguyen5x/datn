@@ -122,6 +122,15 @@ const testContract = async (req, res, next) => {
     }
 }
 
+const exportSDK = async (req, res, next) => {
+    try {
+        await tokenService.exportSDK(req.body)
+        ResponseSuccess(res)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
 
 module.exports = {
     createToken,
@@ -134,5 +143,6 @@ module.exports = {
     cancelRequest,
     acceptRequest,
     denyRequest,
-    testContract
+    testContract,
+    exportSDK
 }
