@@ -31,7 +31,7 @@ const createToken = async (data, user_id, transaction) => {
 
     const newSmartContract = await SmartContract.create({ deploy_status: 0, abi: JSON.stringify(interface) }, { transaction })
     await newSmartContract.setNetwork(networkSend, { transaction })
-    await newSmartContract.setOwner(accSend, { transaction })
+    await newSmartContract.setAccount(accSend, { transaction })
     await newSmartContract.setFiles(createdSources, { transaction })
 
     // myContract.deploy({
@@ -73,7 +73,7 @@ const createToken = async (data, user_id, transaction) => {
             })
             if (!tokenCreated) {
                 tokenCreated = await Token.create({ symbol })
-                tokenCreated.setOwner(userSend)
+                tokenCreated.setAccount(userSend)
             }
             tokenCreated.addSmartContract(newSmartContract)
         })
