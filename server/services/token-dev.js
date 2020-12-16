@@ -73,7 +73,7 @@ const createToken = async (data, user_id, transaction) => {
             })
             if (!tokenCreated) {
                 tokenCreated = await Token.create({ symbol })
-                tokenCreated.setAccount(userSend)
+                tokenCreated.setOwner(userSend)
             }
             tokenCreated.addSmartContract(newSmartContract)
         })
