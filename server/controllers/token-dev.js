@@ -79,8 +79,8 @@ const testContract = async (req, res, next) => {
 const exportSDK = async (req, res, next) => {
     try {
         const { id } = req.params
-        await tokenDevService.exportSDK(id)
-        ResponseSuccess(res)
+        const rs = await tokenDevService.exportSDK(id)
+        ResponseSuccess(res, rs)
     } catch (error) {
         ResponseError(res, error, "ERROR")
     }

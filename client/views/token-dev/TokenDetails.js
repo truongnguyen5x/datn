@@ -9,6 +9,9 @@ import classnames from "classnames"
 import noImage from "../../assets/img/coin/no-image.png"
 import moment from "moment"
 import { Edit } from 'react-feather'
+import { saveAs } from 'file-saver'
+import exportToZip from '../../utility/sdk'
+
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -64,9 +67,16 @@ const TokenDetails = props => {
   const handleDownloadSdk = async (id) => {
     const res = await props.exportSDK(id)
     if (res.code) {
-      console.log(res.data)
+      const zip = exportToZip(res.data.name, res.data.zip)
+      zip.generateAsync({ type: "blob" })
+        .then(function (content) {
+          saveAs(content, `${res.data.name}.zip`);
+        });
+
     }
   }
+
+
 
   const renderButtonAction = (i) => {
     if (i?.request?.accepted) {

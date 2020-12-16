@@ -30,11 +30,13 @@ const getListAccount = async web3 => {
  * @param {string} network network url deploy smart contract
  * @param {Object} abi abi interface of smart contract
  */
-const exporSdkWorker = async (address, key, network, abi) => {
+const exporSdkWorker = async (name, address, key, network, abi) => {
+    console.log(name, address, key, network)
+
     const packageFile = `{
-        "name": "sdk-token-vchain",
+        "name": "sdk-token-${name}",
         "version": "1.0.0",
-        "description": "VToken JavaScript SDK",
+        "description": "Token ${name} JavaScript SDK",
         "engines": {
           "node": ">=8.0.0"
         },
@@ -58,7 +60,27 @@ const exporSdkWorker = async (address, key, network, abi) => {
         }
       }
       `
-    return 'success'
+    const configContent = ``
+    const tokenContent = ``
+    return {
+        name,
+        zip: [{
+            path: "pakage.json",
+            content: packageFile
+        }, {
+            path: "contracts",
+            child: [{
+                path: `${name}.sol`,
+                content: tokenContent
+            }]
+        }, {
+            path: "config",
+            child: [{
+                path: "config.json",
+                content: configContent
+            }]
+        }]
+    }
 }
 
 /**

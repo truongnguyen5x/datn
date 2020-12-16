@@ -275,9 +275,12 @@ const testContract = async (data) => {
 
 const exportSDK = async (id) => {
     const smartContract = await SmartContract.findOne({ where: { id } })
+    const token = await smartContract.getToken()
     const interface = JSON.parse(smartContract.abi)
+    const network = await smartContract.getNetwork()
+    const account = await smartContract.getAccount()
 
-    return exporSdkWorker(smartContract.address, null, null, interface)
+    return exporSdkWorker(token.symbol, smartContract.address, account.key, network.path, interface)
 }
 
 
