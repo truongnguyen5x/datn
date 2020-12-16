@@ -65,7 +65,7 @@ const createVCoin = async (data, transaction) => {
     const web3 = await getWeb3Instance({ provider: networkSend.path })
     const { address } = web3.eth.accounts.privateKeyToAccount(private_key.value);
     await web3.eth.accounts.wallet.add(private_key.value);
-    await getListAccount(web3)
+    // await getListAccount(web3)
 
     var output = await compileSourceCode([
         { path: "Lib.sol", code: file1.value },
@@ -93,21 +93,21 @@ const createVCoin = async (data, transaction) => {
             gas: 3000000
             // gas
         })
-        .on('error', async (error) => {
-            console.log('error')
+        .on('error', function (error) {
+            // console.log('error')
         })
         .on('transactionHash', async (transactionHash) => {
-            console.log('transactionHash', transactionHash)
+            // console.log('transactionHash', transactionHash)
         })
         .on('receipt', async (receipt) => {
-            console.log('receipt', receipt.contractAddress)
+            // console.log('receipt', receipt.contractAddress)
             newVCoin.update({ address: receipt.contractAddress })
         })
         .on('confirmation', async (confirmationNumber, receipt) => {
-            console.log('confirm', confirmationNumber, receipt)
+            // console.log('confirm', confirmationNumber, receipt)
         })
         .then(async (newContractInstance) => {
-            console.log('then', newContractInstance.options.address)
+            // console.log('then', newContractInstance.options.address)
         })
     // })
     return newVCoin

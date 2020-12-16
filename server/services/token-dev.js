@@ -47,7 +47,7 @@ const createToken = async (data, user_id, transaction) => {
         gas: 3000000
         // gas
     })
-        .on('error', async (error) => {
+        .on('error', (error) => {
             console.log('error')
         })
         .on('transactionHash', async (transactionHash) => {
