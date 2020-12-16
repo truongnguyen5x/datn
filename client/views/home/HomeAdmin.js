@@ -5,6 +5,8 @@ import { Plus, Edit, Save, Download } from 'react-feather'
 import { getListVCoin, updateConfig, updateVCoin, exportSDK } from "../../redux/actions/vcoin/index"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import "../../assets/scss/pages/vcoin.scss"
+import { saveAs } from 'file-saver'
+import exportToZip from "../../utility/sdk"
 
 
 const ListVCoin = (props) => {
@@ -70,7 +72,11 @@ const ListVCoin = (props) => {
     const onDownloadSDK = async (id) => {
         const res = await props.exportSDK(id)
         if (res.code) {
-            console.log(res.data)
+            const zip = exportToZip(res.data.name, res.data.zip)
+            zip.generateAsync({ type: "blob" })
+                .then(function (content) {
+                    saveAs(content, `${res.data.name}.zip`);
+                });
         }
     }
 
@@ -130,15 +136,14 @@ const ListVCoin = (props) => {
                             <Save size={15} />
                             <span className="align-middle ml-50">Save</span>
                         </Button>
-                        <Button
-                            onClick={() => onDownloadSDK(i.id)}
+                        {i.vcoins.length && <Button
+                            onClick={() => onDownloadSDK(i.vcoins[0].id)}
                             color="primary"
                         >
                             <Download size={15} />
                             <span className="align-middle ml-50">Download SDK</span>
-                        </Button>
+                        </Button>}
                     </div>
-
                 </Card>
             </Col>)}
         </Row>

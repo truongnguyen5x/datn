@@ -1,4 +1,4 @@
-const { VCoin, SmartContract, Network, Account, File, Token } = require('../models')
+const { VCoin, SmartContract, Network, Account, File, Token, Config } = require('../models')
 const userService = require("./user")
 const accountService = require("./account")
 const networkService = require("./network")
@@ -8,6 +8,7 @@ const ApiError = require("../middlewares/error")
 
 const Web3 = require('web3')
 const { getWeb3Instance, getListAccount, exporSdkWorker, compileSourceCode } = require("../utils/network_util");
+const { vcoinService } = require('.')
 
 
 const getListVCoin = async () => {
@@ -36,23 +37,10 @@ const getVCoinById = async (id) => {
         where: {
             id
         },
-        include: [{
-            model: SmartContract,
-            as: "smartContract",
-            where: {
-                del: 0
-            },
-            include: [{
-                model: Network,
-                as: 'network'
-            }, {
-                model: Account,
-                as: 'account'
-            }, {
-                model: File,
-                as: "files"
-            }]
-        }]
+        include: {
+            model: Network,
+            as: 'network'
+        }
     })
 }
 
@@ -125,8 +113,11 @@ const deleteVCoin = async (id) => {
     return VCoin.destroy({ where: { id } })
 }
 
-const exportSDK = async () => {
-    return exporSdkWorker()
+const exportSDK = async (id) => {
+    const vcoin = await getVCoinById(id)
+    const key = await configService.getConfigByKey('KEY_ADMIN')
+
+    return exporSdkWorker('VCOIN', vcoin.address, key.value, vcoin.network.path, JSON.parse(vcoin.abi))
 }
 
 module.exports = {
