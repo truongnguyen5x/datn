@@ -68,7 +68,13 @@ const exporSdkWorker = async (name, address, key, network, abi) => {
     const functionList = abi.filter(i => i.type == "function")
 
     const renderParams = (inputs) => {
-        return inputs.map(i => i.name).join(', ')
+        return inputs.map((i, idx) => i.name ? i.name : `param${idx}`).join(', ')
+    }
+    const renderParamsFrontend = (inputs) => {
+        if (inputs.length == 0) {
+            return 'from'
+        } else
+            return inputs.map((i, idx) => i.name).join(', ') + ", from"
     }
 
     const renderJsDoc = (inputs) => {
@@ -160,6 +166,57 @@ ${functionList.map(i => renderMedthods(i)).join("")}
 module.exports = Token${name};
 `
 
+    const renderMedthodFrontend = methods => {
+        const { stateMutability, inputs } = methods
+        if (stateMutability == "view") {
+            return `
+${renderJsDoc(inputs)}
+Token${name}.${methods.name} = async function (${renderParams(inputs)}) {
+    const response = await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).call();
+    return response;
+};`
+        } else {
+            return `
+${renderJsDoc(inputs)} 
+Token${name}.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
+await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
+    from, gas: 300000
+}, (error, result) => {
+    if (error) {
+        console.log('error in ${methods.name}' + error);
+        return 0;
+    }
+    return result;
+});
+};
+`
+        }
+    };
+
+    const frontendSdk =
+        `
+const DappContract = require('./contracts/${name}.json');
+
+const version = require('./package.json').version;
+
+function Token${name}(web3) {
+    this.web3 = web3;
+    this.${name}Contract = new web3.eth.Contract(
+        DappContract,
+        config.address
+      )
+      
+}
+
+
+
+Token${name}.version = version;
+${functionList.map(i => renderMedthodFrontend(i)).join("")}  
+module.exports = Token${name}
+
+`
+
+
     return {
         name,
         zip: [{
@@ -180,6 +237,9 @@ module.exports = Token${name};
         }, {
             path: "index.js",
             content: tokenContent
+        }, {
+            path: "frontend.js",
+            content: frontendSdk
         }]
     }
 }

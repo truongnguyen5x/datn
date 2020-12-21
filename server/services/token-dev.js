@@ -231,6 +231,48 @@ const createRequest = async (data) => {
     })
     const requestNew = await Request.create({})
     await requestNew.setSmartContract(smartContract)
+
+
+
+    const vcoin = await VCoin.findOne({
+        include: {
+            model: Network,
+            as: "network",
+            where: {
+                id: smartContract.network_id
+            }
+        },
+        order: [
+            ["createdAt", 'DESC']
+        ]
+    })
+
+    const privateKey = await smartContract.getAccount()
+    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
+    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.key);
+
+    await web3.eth.accounts.wallet.add(privateKey.key);
+    const interface = JSON.parse(smartContract.abi)
+
+    const myContract = new web3.eth.Contract(interface, smartContract.address)
+    myContract.methods.setVChain(vcoin.address)
+        .send({
+            from: address,
+            gas: 3000000
+        })
+        .on('transactionHash', (hash) => {
+            console.log('transactionHash', hash)
+        })
+        .on('receipt', (receipt) => {
+            console.log('receipt', receipt)
+        })
+        .on('confirmation', (confirmationNumber, receipt) => {
+            console.log('confirmation', confirmationNumber, receipt)
+        })
+        .on('error', async err => {
+            console.log('error')
+        });
+
     return requestNew
 }
 
