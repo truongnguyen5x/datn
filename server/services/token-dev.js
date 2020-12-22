@@ -44,7 +44,7 @@ const createToken = async (data, user_id, transaction) => {
         arguments: constructor
     }).send({
         from: accSend.address,
-        gas: 3000000
+        gas: 5000000
         // gas
     })
         .on('error', (error) => {
@@ -258,7 +258,7 @@ const createRequest = async (data) => {
     myContract.methods.setVChain(vcoin.address)
         .send({
             from: address,
-            gas: 3000000
+            gas: 500000
         })
         .on('transactionHash', (hash) => {
             console.log('transactionHash', hash)

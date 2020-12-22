@@ -78,7 +78,7 @@ const createVCoin = async (data, transaction) => {
     })
         .send({
             from: address,
-            gas: 3000000
+            gas: 5000000
             // gas
         })
         .on('error', function (error) {

@@ -72,9 +72,9 @@ const exporSdkWorker = async (name, address, key, network, abi) => {
     }
     const renderParamsFrontend = (inputs) => {
         if (inputs.length == 0) {
-            return 'from'
+            return 'fromAddress'
         } else
-            return inputs.map((i, idx) => i.name).join(', ') + ", from"
+            return inputs.map((i, idx) => i.name ? i.name : `param${idx}`).join(', ') + ", fromAddress"
     }
 
     const renderJsDoc = (inputs) => {
@@ -161,6 +161,7 @@ const ${name}Contract = new web3.eth.Contract(
 let Token${name} = {};
 
 Token${name}.version = version;
+Token${name}.address = config.address;
 ${functionList.map(i => renderMedthods(i)).join("")}    
     
 module.exports = Token${name};
@@ -171,16 +172,19 @@ module.exports = Token${name};
         if (stateMutability == "view") {
             return `
 ${renderJsDoc(inputs)}
-Token${name}.${methods.name} = async function (${renderParams(inputs)}) {
-    const response = await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).call();
-    return response;
+Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
+    if (fromAddress) {
+        return this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).call({from: fromAddress});
+    } else {
+        return  this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).call();
+    }
 };`
         } else {
             return `
 ${renderJsDoc(inputs)} 
-Token${name}.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
+Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
 await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
-    from, gas: 300000
+    from: fromAddress, gas: 300000
 }, (error, result) => {
     if (error) {
         console.log('error in ${methods.name}' + error);
@@ -198,6 +202,7 @@ await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send
 const DappContract = require('./contracts/${name}.json');
 
 const version = require('./package.json').version;
+const config = require('./config/config.json');
 
 function Token${name}(web3) {
     this.web3 = web3;
@@ -211,6 +216,7 @@ function Token${name}(web3) {
 
 
 Token${name}.version = version;
+Token${name}.address = config.address;
 ${functionList.map(i => renderMedthodFrontend(i)).join("")}  
 module.exports = Token${name}
 
@@ -220,7 +226,7 @@ module.exports = Token${name}
     return {
         name,
         zip: [{
-            path: "pakage.json",
+            path: "package.json",
             content: JSON.stringify(packageFile, null, 4)
         }, {
             path: "contracts",

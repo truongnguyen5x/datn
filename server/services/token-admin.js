@@ -161,7 +161,7 @@ const deleteToken = async (id, transaction) => {
     myContract.methods.removeToken(token.symbol)
         .send({
             from: address,
-            gas: 3000000
+            gas: 5000000
             // gas
         })
         .on('transactionHash', (hash) => {
@@ -218,7 +218,7 @@ const acceptRequest = async (data, transaction) => {
     myContract.methods.addToken(smartContract.address)
         .send({
             from: address,
-            gas: 3000000
+            gas: 5000000
             // gas
         })
         .on('transactionHash', (hash) => {
