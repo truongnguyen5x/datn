@@ -6,7 +6,9 @@ const development = process.env.NODE_ENV != 'production'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 require("dotenv").config()
 
-module.exports = {
+
+const client = {
+    name: "client",
     mode: development ? "development" : "production",
     entry: './client/index.js',
     output: {
@@ -50,4 +52,12 @@ module.exports = {
             }
         })
     ]
-};
+}
+
+const ide = {
+    name: "ide",
+    mode: development ? "development" : "production",
+
+
+}
+module.exports = client
