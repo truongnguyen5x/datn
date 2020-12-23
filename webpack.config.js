@@ -12,9 +12,9 @@ const client = {
     mode: development ? "development" : "production",
     entry: './client/index.js',
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "dist/client"),
         filename: development ? "[name].js" : "[name]-[hash].js",
-        publicPath: '/'
+        publicPath: '/client/'
     },
     devtool: 'inline-source-map',
     module: {

@@ -43,7 +43,7 @@ app.use('/api', routes)
 
 
 app.get('/*', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/client/index.html'));
 })
 
 app.listen(constants.PORT, function () {
