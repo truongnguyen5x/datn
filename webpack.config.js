@@ -7,14 +7,13 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 require("dotenv").config()
 
 
-const client = {
-    name: "client",
+module.exports  = {
     mode: development ? "development" : "production",
     entry: './client/index.js',
     output: {
-        path: path.resolve(__dirname, "dist/client"),
+        path: path.resolve(__dirname, "dist"),
         filename: development ? "[name].js" : "[name]-[hash].js",
-        publicPath: '/client/'
+        publicPath: '/'
     },
     devtool: 'inline-source-map',
     module: {
@@ -22,7 +21,13 @@ const client = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ["@babel/preset-react", "@babel/preset-env"],
+                        plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime"]
+                    }
+                }
             },
             {
                 test: /\.(css|scss)$/,
@@ -53,11 +58,3 @@ const client = {
         })
     ]
 }
-
-const ide = {
-    name: "ide",
-    mode: development ? "development" : "production",
-
-
-}
-module.exports = client

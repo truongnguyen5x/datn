@@ -75,6 +75,7 @@ const TokenList = props => {
                 <Row>
                   {renderMails()}
                 </Row>
+             
               </div>
             </PerfectScrollbar>
           </div>
