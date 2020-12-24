@@ -1,7 +1,7 @@
 import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import { X, CloudRain, List, Globe, Upload, Plus, Loader } from "react-feather"
+import { X, CloudRain, List, Globe, Upload, Plus } from "react-feather"
 import { changeFilter, setModalOpen } from "../../redux/actions/token-dev"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
@@ -20,7 +20,7 @@ class TokenSidebar extends React.Component {
         >
           <X size={18} />
         </div>
-        <div className="email-app-menu">
+        <div className="token-app-menu">
           <FormGroup className="form-group-compose text-center compose-btn">
             <Button.Ripple
               block
@@ -66,14 +66,14 @@ class TokenSidebar extends React.Component {
                 <Upload size={21} />
                 <span className="align-middle ml-1">Requested</span>
               </ListGroupItem>              
-              <ListGroupItem
+              {/* <ListGroupItem
                 onClick={() => this.props.changeFilter("deploying")}
                 active={"deploying" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
                 <Loader size={21} />
                 <span className="align-middle ml-1">Deploying</span>
-              </ListGroupItem>
+              </ListGroupItem> */}
             </ListGroup>
           </PerfectScrollbar>
         </div>

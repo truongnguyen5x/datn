@@ -27,15 +27,19 @@ const VuexyCustom = props => {
     checkDoneStep[activeStep]()
       .then(() => {
         if (activeStep !== props.steps.length - 1) {
+          console.log('step success 1', activeStep, props.steps)
           setActiveStep(activeStep + 1)
           setReachedStep(Math.max(reachedStep, activeStep + 1))
         } else {
+          console.log('step success 2')
           setActiveStep(0)
           setReachedStep(0)
         }
         setLoading(false)
       })
       .catch((error) => {
+
+        console.log('step fail')
         setLoading(false)
       })
   }

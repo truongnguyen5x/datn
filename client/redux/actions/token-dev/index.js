@@ -63,10 +63,11 @@ export const getConfig = (key) => dispatch => {
     return FetchApi(`/api/config/${key}`)
 }
 
-export const exportSDK = (id) => dispatch => {
-    return FetchApi(`/api/token-dev/sdk/${id}`, 'post')
-}
 
 export const setModalOpen = (modalName) => dispatch => {
     dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
+}
+
+export const testDeploy = (data) => dispatch => {
+    return FetchApi(`/api/token-dev/testDeploy`, 'post', data)
 }

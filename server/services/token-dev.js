@@ -5,80 +5,79 @@ const accountService = require("./account")
 const networkService = require("./network")
 const fileService = require("./file")
 const { Op } = require("sequelize");
-const { getWeb3Instance, getListAccount, exporSdkWorker, compileSourceCode } = require("../utils/network_util");
+const { getWeb3Instance, compileSourceCode } = require("../utils/network_util");
 const VCoin = require("../models/vcoin");
 
-const createToken = async (data, user_id, transaction) => {
-    const { source, contract, network, account, constructor } = data
-    const accSend = await accountService.getAccountById(account)
-    const userSend = await userService.getUserById(user_id)
-    if (accSend.user_id != user_id) {
-        console.log('khong trung user id')
-        throw new ApiError("ERROR")
-    }
-    const createdSources = await fileService.bulkCreate(source, { transaction })
-    const networkSend = await networkService.getNetWorkById(network)
-    const web3 = await getWeb3Instance({ provider: networkSend.path })
+const ApiError = require('../middlewares/error')
 
-    await web3.eth.accounts.wallet.add(accSend.key);
-    await getListAccount(web3)
+const createToken = async (data, user_id) => {
+    const { source, abi, network_id, account, address, token_id, symbol, exchangeRate } = data
 
-    var output = await compileSourceCode(source)
-    const constractCompile = output.contracts[contract.file][contract.contract]
-    const interface = constractCompile.abi
-    const myContract = new web3.eth.Contract(interface)
-    const bytecode = constractCompile.evm.bytecode.object;
+    const createdSources = await fileService.bulkCreate(source)
 
-    const newSmartContract = await SmartContract.create({ deploy_status: 0, abi: JSON.stringify(interface) }, { transaction })
-    await newSmartContract.setNetwork(networkSend, { transaction })
-    await newSmartContract.setAccount(accSend, { transaction })
-    await newSmartContract.setFiles(createdSources, { transaction })
-
-    // myContract.deploy({
-    //     data: bytecode,
-    //     arguments: constructor
-    // }).estimateGas({ gas: 5000000 })
-    //     .then(gas => {
-    myContract.deploy({
-        data: bytecode,
-        arguments: constructor
-    }).send({
-        from: accSend.address,
-        gas: 5000000
-        // gas
+    const newSmartContract = await SmartContract.create({
+        abi: JSON.stringify(abi),
+        account,
+        address,
+        network_id
     })
-        .on('error', (error) => {
-            console.log('error')
+    await newSmartContract.setFiles(createdSources)
+    let token
+    if (!token_id) {
+        token = await Token.create({ symbol, user_id, exchange_rate: exchangeRate })
+    } else {
+        token = await Token.findOne({ where: { id: token_id } })
+    }
+    await token.addSmartContract(newSmartContract);
+    return 'success'
+}
+
+
+const testDeploy = async (data, userId) => {
+    const private_key = await configService.getConfigByKey("KEY_ADMIN")
+    const network = await networkService.getNetWorkById(1)
+    const web3 = await getWeb3Instance({ provider: network.path })
+    const { address } = web3.eth.accounts.privateKeyToAccount(private_key.value);
+    await web3.eth.accounts.wallet.add(private_key.value);
+    const myContract = new web3.eth.Contract(data.abi)
+    let symbol, newContractInstance, existToken, totalSupply
+    return myContract.deploy({
+        data: data.bytecode,
+        arguments: data.constructor
+    }).send({
+        from: address,
+        gas: 5000000
+    })
+        .then(async (res) => {
+            newContractInstance = res
+            return newContractInstance.methods.totalSupply().call({ from: address })
         })
-        .on('transactionHash', async (transactionHash) => {
-            console.log('transactionHash', transactionHash)
-            newSmartContract.update({ deploy_status: 1 })
+        .then(res => {
+            totalSupply = res
+            return newContractInstance.methods.symbol().call({ from: address })
         })
-        .on('receipt', async (receipt) => {
-            console.log('receipt', receipt.contractAddress) // contains the new contract address
-            newSmartContract.update({ deploy_status: 2, address: receipt.contractAddress })
-        })
-        .on('confirmation', async (confirmationNumber, receipt) => {
-            console.log('confirm', confirmationNumber, receipt)
-            newSmartContract.update({ deploy_status: 4 })
-        })
-        .then(async (newContractInstance) => {
-            newSmartContract.update({ deploy_status: 3 })
-            console.log('then', newContractInstance.options.address) // instance with the new contract address
-            return newContractInstance.methods.symbol().call({ from: accSend.address })
-        })
-        .then(async symbol => {
-            let tokenCreated = await Token.findOne({
+        .then(async res => {
+            symbol = res
+            existToken = await Token.findOne({
                 where: { symbol }
             })
-            if (!tokenCreated) {
-                tokenCreated = await Token.create({ symbol })
-                tokenCreated.setOwner(userSend)
+            if (existToken) {
+                // TODO check
+                const tokenOwner = await existToken.getOwner()
+                if (tokenOwner.id != userId) {
+                    throw new ApiError("Symbol has taken")
+                }
             }
-            tokenCreated.addSmartContract(newSmartContract)
+            return newContractInstance.methods.exchangedRatePercent().call({ from: address })
         })
-    // })
-    return newSmartContract
+        .then((res) => {
+            return {
+                symbol,
+                exchangedRatePercent: res,
+                existToken,
+                totalSupply
+            }
+        })
 }
 
 
@@ -133,14 +132,6 @@ const getListToken = async (user_id, type) => {
                     required: true
                 }]
             })
-        case "deploying":
-            return SmartContract.findAll({
-                where: {
-                    deploy_status: {
-                        [Op.lte]: 3
-                    }
-                }
-            })
         default:
             return []
     }
@@ -148,36 +139,62 @@ const getListToken = async (user_id, type) => {
 
 
 const getTokenById = async (id, type) => {
-    return Token.findOne({
-        where: {
-            id
-        },
-        include: [{
-            model: User,
-            as: "owner"
-        }, {
-            model: SmartContract,
-            as: 'smartContracts',
-            include: [{
-                model: Network,
-                as: 'network'
-            }, {
-                model: File,
-                as: 'files'
-            }, {
-                model: Account,
-                as: 'account'
-            }, {
-                model: Request,
-                as: "request",
+    switch (type) {
+        case "requested":
+            return Token.findOne({
                 where: {
-                    del: 0
+                    id
                 },
-                required: false
-            }]
-        }],
-        order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
-    })
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: [{
+                        model: File,
+                        as: 'files'
+                    }, {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0
+                        },
+                        required: true
+                    }],
+
+                    required: true
+                }],
+                order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
+            })
+        default:
+            return Token.findOne({
+                where: {
+                    id
+                },
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: [{
+                        model: File,
+                        as: 'files'
+                    }, {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0
+                        },
+                        required: false
+                    }]
+                }],
+                order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
+            })
+
+    }
+
 }
 
 
@@ -198,13 +215,13 @@ const validateSource = async (data) => {
             if (constructor) {
                 constructor = constructor.inputs
             }
-            responses.push({ 
-                file: i, 
-                contract: j, 
+            responses.push({
+                file: i,
+                contract: j,
                 inputs: constructor,
                 bytecode: output.contracts[i][j].evm.bytecode.object,
                 abi: output.contracts[i][j].abi
-             })
+            })
         })
     })
 
@@ -221,14 +238,8 @@ const createRequest = async (data) => {
             model: SmartContract,
             as: "smartContract",
             where: {
-                token_id: token.id
-            },
-            include: {
-                model: Network,
-                as: 'network',
-                where: {
-                    id: smartContract.network_id
-                }
+                token_id: token.id,
+                network_id: smartContract.network_id
             }
         }
     })
@@ -238,48 +249,7 @@ const createRequest = async (data) => {
     const requestNew = await Request.create({})
     await requestNew.setSmartContract(smartContract)
 
-
-
-    const vcoin = await VCoin.findOne({
-        include: {
-            model: Network,
-            as: "network",
-            where: {
-                id: smartContract.network_id
-            }
-        },
-        order: [
-            ["createdAt", 'DESC']
-        ]
-    })
-
-    const privateKey = await smartContract.getAccount()
-    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
-    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.key);
-
-    await web3.eth.accounts.wallet.add(privateKey.key);
-    const interface = JSON.parse(smartContract.abi)
-
-    const myContract = new web3.eth.Contract(interface, smartContract.address)
-    myContract.methods.setVChain(vcoin.address)
-        .send({
-            from: address,
-            gas: 500000
-        })
-        .on('transactionHash', (hash) => {
-            console.log('transactionHash', hash)
-        })
-        .on('receipt', (receipt) => {
-            console.log('receipt', receipt)
-        })
-        .on('confirmation', (confirmationNumber, receipt) => {
-            console.log('confirmation', confirmationNumber, receipt)
-        })
-        .on('error', async err => {
-            console.log('error')
-        });
-
-    return requestNew
+    return 'new '
 }
 
 const cancelRequest = async (data) => {
@@ -293,43 +263,6 @@ const cancelRequest = async (data) => {
 }
 
 
-const testContract = async (data) => {
-    const vcoin = await VCoin.findOne({
-        include: {
-            model: Network,
-            as: "network"
-        },
-        order: [
-            ["createdAt", 'DESC']
-        ]
-    })
-
-    const privateKey = await configService.getConfigByKey("KEY_ADMIN")
-    const web3 = await getWeb3Instance({ provider: vcoin.network.path })
-    const { address } = web3.eth.accounts.privateKeyToAccount(privateKey.value);
-    const interface = JSON.parse(vcoin.abi)
-
-    const myContract = new web3.eth.Contract(interface, vcoin.address)
-    await web3.eth.accounts.wallet.add(privateKey.value);
-    myContract.methods.getListToken()
-        .call({
-            from: address
-        })
-        .then(res => { console.log(res) })
-    return
-
-}
-
-
-const exportSDK = async (id) => {
-    const smartContract = await SmartContract.findOne({ where: { id } })
-    const token = await smartContract.getToken()
-    const interface = JSON.parse(smartContract.abi)
-    const network = await smartContract.getNetwork()
-    const account = await smartContract.getAccount()
-
-    return exporSdkWorker(token.symbol, smartContract.address, account.key, network.path, interface)
-}
 
 
 module.exports = {
@@ -340,6 +273,5 @@ module.exports = {
     getListToken,
     createRequest,
     cancelRequest,
-    testContract,
-    exportSDK
+    testDeploy
 }

@@ -15,13 +15,9 @@ const { sequelize } = require('../configs')
 
 User.hasMany(Account, { as: 'wallets', foreignKey: "user_id" })
 
-SmartContract.belongsTo(Network, { as: "network", foreignKey: "network_id" })
-SmartContract.belongsTo(Account, { as: "account", foreignKey: "account_id" })
 SmartContract.hasMany(File, { as: "files", foreignKey: "smart_contract_id" })
 SmartContract.hasMany(SmartContract, { as: "tokens", foreignKey: "vcoin_id" })
 
-VCoin.belongsTo(Network, { as: "network", foreignKey: "network_id" })
-Network.hasMany(VCoin, { as: "vcoins", foreignKey: "network_id" })
 
 Token.hasMany(SmartContract, { as: "smartContracts", foreignKey: "token_id" })
 SmartContract.belongsTo(Token, { as: "token", foreignKey: "token_id" })
@@ -32,7 +28,8 @@ Request.belongsTo(SmartContract, { as: "smartContract", foreignKey: "smart_contr
 SmartContract.hasOne(Request, { as: "request", foreignKey: "smart_contract_id" })
 
 // sequelize.sync({ force: true })
-// Request.sync({ alter: true })
+// VCoin.sync({ alter: true })
+// SmartContract.sync({ alter: true })
 // sequelize.sync()
 
 sequelize

@@ -25,14 +25,11 @@ const getTokenById = async (req, res, next) => {
 }
 
 const deleteToken = async (req, res, next) => {
-    const transaction = await sequelize.transaction()
     try {
         const { id } = req.params
-        await tokenAdminService.deleteToken(id, transaction)
-        await transaction.commit()
+        await tokenAdminService.deleteToken(id)
         ResponseSuccess(res)
     } catch (error) {
-        await transaction.rollback()
         ResponseError(res, error, "ERROR")
     }
 }
@@ -40,13 +37,10 @@ const deleteToken = async (req, res, next) => {
 
 
 const acceptRequest = async (req, res, next) => {
-    const transaction = await sequelize.transaction()
     try {
-        const rs = await tokenAdminService.acceptRequest(req.body, transaction)
-        await transaction.commit()
+        const rs = await tokenAdminService.acceptRequest(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
-        await transaction.rollback()
         ResponseError(res, error, "ERROR")
     }
 }

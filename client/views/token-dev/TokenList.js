@@ -25,7 +25,7 @@ const TokenList = props => {
   const renderMails = () => {
     if (!props.listToken.length) {
       return <div className="no-results show">
-        <h5>No Items Found</h5>
+        <span>No Items Found</span>
       </div>
     }
     return props.listToken.map((i, idx) => {
@@ -56,11 +56,11 @@ const TokenList = props => {
 
   return (
     <div className="content-right">
-      <div className="email-app-area">
-        <div className="email-app-list-wrapper">
-          <div className="email-app-list">
+      <div className="token-app-area">
+        <div className="token-app-list-wrapper">
+          <div className="token-app-list">
             <PerfectScrollbar
-              className="email-user-list list-group p-1"
+              className="token-user-list list-group p-1"
               options={{
                 wheelPropagation: false
               }}

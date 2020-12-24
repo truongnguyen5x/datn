@@ -5,8 +5,14 @@ const SmartContract = sequelize.define('SmartContract', {
     abi: {
         type: DataTypes.TEXT
     },
+    account: {
+        type: DataTypes.STRING,
+    },
     address: {
         type: DataTypes.STRING,
+    },
+    network_id: {
+        type: DataTypes.BIGINT,
     },
     del: {
         type: DataTypes.BOOLEAN,

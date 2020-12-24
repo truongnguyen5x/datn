@@ -6,7 +6,7 @@ import { ContextLayout } from "../../utility/context/Layout"
 import "../../assets/scss/pages/token-dev.scss"
 import { ToastContainer, toast } from 'react-toastify'
 const mql = window.matchMedia(`(min-width: 992px)`)
-class Email extends React.Component {
+class Token extends React.Component {
   state = {
     sidebarDocked: mql.matches,
     sidebarOpen: false
@@ -42,7 +42,7 @@ class Email extends React.Component {
               }
               docked={this.state.sidebarDocked}
               open={this.state.sidebarOpen}
-              sidebarClassName="sidebar-content email-app-sidebar d-flex"
+              sidebarClassName="sidebar-content token-app-sidebar d-flex"
               touch={false}
               contentClassName="sidebar-children"
               pullRight={context.state.direction === "rtl"}>
@@ -51,11 +51,10 @@ class Email extends React.Component {
           )}
         </ContextLayout.Consumer>
         <TokenList
-          handleComposeSidebar={this.handleComposeSidebar}
         />
         <ToastContainer />
       </div>
     )
   }
 }
-export default Email
+export default Token

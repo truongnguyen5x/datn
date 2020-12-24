@@ -1,8 +1,8 @@
 import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, Plus } from "react-feather"
-import { changeFilter } from "../../redux/actions/token-admin"
+import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, CloudRain } from "react-feather"
+import { changeFilter, setModalOpen } from "../../redux/actions/token-admin"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
@@ -20,7 +20,7 @@ class TokenSidebar extends React.Component {
         >
           <X size={18} />
         </div>
-        <div className="email-app-menu">
+        <div className="token-app-menu">
           {/* <FormGroup className="form-group-compose text-center compose-btn">
             <Button.Ripple
               block
@@ -55,7 +55,7 @@ class TokenSidebar extends React.Component {
                 active={"in-vchain" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
-                <Globe size={21} />
+                <CloudRain size={21} />
                 <span className="align-middle ml-1">On Vchain</span>
               </ListGroupItem>              
              

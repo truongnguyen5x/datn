@@ -1,6 +1,7 @@
 const initialState = {
     listToken: [],
     listType: "pending",
+    modalOpen: "",
 }
 const token = (state = initialState, action) => {
     switch (action.type) {
@@ -9,6 +10,9 @@ const token = (state = initialState, action) => {
         }
         case "CHANGE_LIST_TYPE_TOKEN": {
             return { ...state, listType: action.payload }
+        }
+        case 'SET_MODAL_OPEN': {
+            return { ...state, modalOpen: action.payload }
         }
         default: {
             return state

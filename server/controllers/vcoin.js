@@ -23,13 +23,10 @@ const getVCoinById = async (req, res, next) => {
 }
 
 const createVCoin = async (req, res, next) => {
-    const transaction = await sequelize.transaction();
     try {
-        const rs = await vcoinService.createVCoin(req.body, transaction)
-        await transaction.commit()
+        const rs = await vcoinService.createVCoin(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
-        await transaction.rollback();
         ResponseError(res, error, "ERROR")
     }
 }
@@ -56,11 +53,10 @@ const deleteVCoin = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
-
-const exportSDK = async (req, res, next) => {
+const testDeploy = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const rs = await vcoinService.exportSDK(id)
+        const { user } = req
+        const rs = await vcoinService.testDeploy(req.body, user.id)
         ResponseSuccess(res, rs)
     } catch (error) {
         ResponseError(res, error, "ERROR")
@@ -74,5 +70,5 @@ module.exports = {
     getVCoinById,
     updateVCoin,
     deleteVCoin,
-    exportSDK
+    testDeploy
 }

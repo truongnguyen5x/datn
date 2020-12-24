@@ -3,13 +3,12 @@ import { Input, Label, Spinner, Tooltip, CardBody, Button, Row, Col, FormGroup, 
 import { X, ArrowLeft, Database, Briefcase, Image, Folder, Box, Layers } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import Wizard from "../../components/@vuexy/wizard/WizardCustom"
-import { useFormik } from 'formik';
-import classnames from "classnames"
+
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
-import { getListToken, createToken, validateSource, getConfig, setModalOpen, testDeploy } from "../../redux/actions/token-dev"
-import { getAccountBalance } from '../../redux/actions/account'
-import { getListNetwork } from "../../redux/actions/network"
+import { getConfig, validateSource } from "../../redux/actions/token-dev"
+import { createVcoin, testDeploy, getListVCoin } from '../../redux/actions/vcoin'
+
 import { connect } from "react-redux"
 import { readBatchFile, writeOneFile } from '../../utility/file'
 import Select from 'react-select'
@@ -42,7 +41,7 @@ const CreateToken = props => {
 
   useEffect(() => {
     getAndWriteTemplateCode()
-    props.getListNetwork()
+
     getWeb3()
       .then(res => {
         setWeb3(res)
@@ -64,7 +63,9 @@ const CreateToken = props => {
           setBalance(web3.utils.fromWei(e))
         })
     })
-    web3.eth.net.getId().then(netId => setNetId(netId))
+    web3.eth.net.getId().then(netId => { 
+      console.log('net id', netId)
+       setNetId(netId)})
   }
 
   const getNetType = (netId) => {
@@ -96,7 +97,7 @@ const CreateToken = props => {
         }
       })
 
-    props.getConfig('TOKEN.SOL')
+    props.getConfig('MAIN.SOL')
       .then(res => {
         if (res.code) {
           const { value } = res.data
@@ -153,11 +154,6 @@ const CreateToken = props => {
     const { abi, bytecode } = selectedContractInterface
     const res = await props.testDeploy({ abi, bytecode, constructor: dataConstructorDeploy })
     if (res.code) {
-      const { data } = res
-      setTokenSymbol(data.symbol)
-      setExchangeRate(data.exchangedRatePercent)
-      setExistToken(data.existToken)
-      setTotalSupply(data.totalSupply)
       return
     } else {
       Swal.fire({
@@ -170,7 +166,7 @@ const CreateToken = props => {
   }
 
   const onCloseModal = () => {
-    props.setModalOpen("")
+    props.onClose()
   }
 
   const onCheckDoneStep2 = async () => {
@@ -200,22 +196,18 @@ const CreateToken = props => {
       })
       .then(async (newContractInstance) => {
         console.log('then', newContractInstance.options.address) // instance with the new contract address
-        return props.createToken({
+        return props.createVcoin({
           account: accs[0],
           network_id: netId,
           abi: selectedContractInterface.abi,
-          address: smartContractAddress,
-          source: sourceCode,
-          symbol: tokenSymbol,
-          token_id: existToken ? existToken.id : 0,
-          exchangeRate
+          address: smartContractAddress
         })
       })
       .then(res => {
         if (res.code) {
           resetState()
-          props.setModalOpen("")
-          props.getListToken()
+          props.onClose()
+          props.getListVCoin()
           toast.success("Create token success")
         } else {
           toast.error("Create token error !")
@@ -303,24 +295,6 @@ const CreateToken = props => {
             </div>
           <div> {getNetType(netId)}</div>
         </div>
-        <div className="d-flex m-1">
-          <div className="font-weight-bold info-title">
-            Token symbol:
-            </div>
-          <div> {tokenSymbol}</div>
-        </div>
-        <div className="d-flex m-1">
-          <div className="font-weight-bold info-title">
-            Exchange Rate:
-            </div>
-          <div> {exchangeRate} %</div>
-        </div>
-        <div className="d-flex m-1">
-          <div className="font-weight-bold info-title">
-            Total Supply:
-            </div>
-          <div> {totalSupply}</div>
-        </div>
       </Col>
       <Col md="6" sm="12">
       </Col>
@@ -330,7 +304,7 @@ const CreateToken = props => {
 
   return (
     <div
-      className={`compose-token shadow-none ${props.modalOpen == 'create' ? "open" : ""
+      className={`compose-token shadow-none ${props.visible ? "open" : ""
         }`}
     >
       <div className="compose-mail-header align-items-center">
@@ -356,21 +330,16 @@ const CreateToken = props => {
 }
 const mapStateToProps = state => {
   return {
-    listNetwork: state.network.listNetwork,
-    listAccount: state.account.listAccount,
-    modalOpen: state.tokenDev.modalOpen
+
   }
 }
 
 const mapDispatchToProps = {
   getConfig,
   validateSource,
-  getListNetwork,
-  getAccountBalance,
-  createToken,
-  getListToken,
-  setModalOpen,
-  testDeploy
+  createVcoin,
+  testDeploy,
+  getListVCoin
 }
 
 

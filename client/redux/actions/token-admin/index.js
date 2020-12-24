@@ -21,6 +21,10 @@ export const getListToken = () => (dispatch, getState) => {
 
 export const changeFilter = (type) => dispatch => {
     dispatch({
+        type: "SET_MODAL_OPEN",
+        payload: ''
+    })
+    dispatch({
         type: "CHANGE_LIST_TYPE_TOKEN",
         payload: type
     })
@@ -50,4 +54,7 @@ export const acceptRequest = (data) => dispatch => {
 }
 export const denyRequest = (data) => dispatch => {
     return FetchApi(`/api/token-admin/deny`, 'POST', data)
+}
+export const setModalOpen = (modalName) => dispatch => {
+    dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
 }

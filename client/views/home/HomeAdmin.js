@@ -2,161 +2,90 @@ import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { Button, Card, Row, Col, Input, FormGroup, Label } from "reactstrap"
 import { Plus, Edit, Save, Download } from 'react-feather'
-import { getListVCoin, updateConfig, updateVCoin, exportSDK } from "../../redux/actions/vcoin/index"
+import { getListVCoin } from "../../redux/actions/vcoin/index"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import "../../assets/scss/pages/vcoin.scss"
 import { saveAs } from 'file-saver'
-import exportToZip from "../../utility/sdk"
+
+import CreateVCoin from './CreateToken'
 
 
 const ListVCoin = (props) => {
 
-    const [privateKey, setPrivateKey] = useState("")
-    const [data, setData] = useState()
-    const [isEditAccount, setEditAccount] = useState(false)
-    const [dataContractAdd, setDataContractAdd] = useState([])
+    const [modalCreate, openModalCreate] = useState(false)
 
     useEffect(() => {
         props.getProfile()
         props.getListVCoin()
-            .then(res => {
-                if (res.code) {
-                    setData(res.data)
-                    const temp = res.data.address.map(i => {
-                        return i.vcoins?.[0]?.address || ""
-                    })
-                    setDataContractAdd(temp)
-                } else {
-                }
-            })
+        
     }, [])
 
-    const handleEditAccount = () => {
-        setEditAccount(true)
-    }
+    const getNetType = (netId) => {
+        switch (netId) {
+            case 1:
+                return 'mainnet'
 
-    const onChangePrivateKey = (e) => {
-        setPrivateKey(e.target.value)
-    }
+            case 2:
+                return 'morden'
 
-    const onUpdatePrivateKey = async () => {
-        const res = await props.updateConfig([{ key: "KEY_ADMIN", value: privateKey }])
-        if (res.code) {
-            const res2 = await props.getListVCoin()
-            if (res2.code) {
-                setData(res2.data)
-            }
-            setEditAccount(false)
-        } else {
+            case 3:
+                return 'ropsten'
 
+            default:
+                return 'local'
         }
     }
 
-    const onChangeContractAddress = async (e, idx) => {
-        dataContractAdd[idx] = e.target.value
-        setDataContractAdd([...dataContractAdd])
+    const onDownloadSDK = async (i) => {
+
     }
 
-    const onSaveContractAddress = async (idx) => {
-        const res = await props.updateVCoin({
-            network: data.address[idx].id,
-            address: dataContractAdd[idx]
-        })
-        if (res.code) {
-            const res2 = await props.getListVCoin()
-            if (res2.code) {
-                setData(res2.data)
-            }
-        }
-    }
-    const onDownloadSDK = async (id) => {
-        const res = await props.exportSDK(id)
-        if (res.code) {
-            const zip = exportToZip(res.data.name, res.data.zip)
-            zip.generateAsync({ type: "blob" })
-                .then(function (content) {
-                    saveAs(content, `${res.data.name}.zip`);
-                });
-        }
-    }
+
 
     return <div className="vcoin-application">
-        <h3>Config VCoin</h3>
-        <Row>
-            <Col md={6}>
-                <Card className="p-1">
-                    <div className="d-flex address-admin">
-                        <div className="font-weight-bold address-admin-title" >Admin address</div>
-                        <span>{data?.address_account}</span>
-                    </div>
-                    <div className="d-flex">
-                        {isEditAccount ? <>
-                            <div className="enter-key">
-                                <Input
-                                    placeholder="Enter private key"
-                                    type="text"
-                                    value={privateKey}
-                                    onChange={onChangePrivateKey}
-                                />
-                            </div>
+        <div className="content-right">
+            <h3>Config VCoin</h3>
 
+            <Row>
+                {props.listVCoin.map((i, idx) => i ? <Col md={6} key={i.id}>
+                    <Card className="p-1">
+                        <div className="mb-1">VCoin on network {getNetType(i.network_id)}</div>
+                        <div>Address: {i.address}</div>
+                        <div>Account: {i.account}</div>
+                        <div className="d-flex justify-content-between mt-1">
                             <Button
-                                className="btn"
-                                onClick={onUpdatePrivateKey}
+                                // onClick={() => onDownloadSDK(i.vcoins[0].id)}
                                 color="primary"
                             >
-                                <Save size={15} />
-                                <span className="align-middle ml-50">Save</span>
+                                <Download size={15} />
+                                <span className="align-middle ml-50">Download SDK</span>
                             </Button>
-                        </> : <Button
-                            color="primary"
-                            onClick={handleEditAccount}
-                        >
-                                <Edit size={15} />
-                                <span className="align-middle ml-50">Edit</span>
-                            </Button>}
+                        </div>
+                    </Card>
+                </Col> : null)}
+            </Row>
 
-                    </div>
-                </Card>
-            </Col>
-            {data?.address?.map((i, idx) => <Col md={6} key={i.id}>
-                <Card className="p-1"><FormGroup>
-                    <Label >VCoin on {i.name}</Label>
-                    <Input
-                        type="text"
-                        value={dataContractAdd[idx]}
-                        onChange={(e) => onChangeContractAddress(e, idx)} />
-                </FormGroup>
-                    <div className="d-flex justify-content-between">
-                        <Button
-                            className="btn"
-                            onClick={() => onSaveContractAddress(idx)}
-                            color="primary"
-                        >
-                            <Save size={15} />
-                            <span className="align-middle ml-50">Save</span>
-                        </Button>
-                        {i.vcoins.length && <Button
-                            onClick={() => onDownloadSDK(i.vcoins[0].id)}
-                            color="primary"
-                        >
-                            <Download size={15} />
-                            <span className="align-middle ml-50">Download SDK</span>
-                        </Button>}
-                    </div>
-                </Card>
-            </Col>)}
-        </Row>
+            <div className="full-width d-flex align-items-center flex-direction-column">
+
+                <Button type="success"
+                    onClick={() => openModalCreate(true)}
+                >
+                    Deploy a V-Coin
+                 </Button>
+
+            </div>
+            <CreateVCoin
+                visible={modalCreate}
+                onClose={() => openModalCreate(false)}
+            />
+        </div>
 
     </div>
 }
 
 const mapDispatchToProps = {
     getListVCoin,
-    getProfile,
-    updateConfig,
-    updateVCoin,
-    exportSDK
+    getProfile
 }
 
 const mapStateToProps = state => {

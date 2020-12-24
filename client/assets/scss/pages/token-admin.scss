@@ -13,7 +13,7 @@
   .sidebar-children {
     display: none;
   }
-  .email-app-sidebar {
+  .token-app-sidebar {
     width: $menu-expanded-width;
     height: calc(100vh - 13rem);
     background-color: $white;
@@ -43,7 +43,7 @@
       z-index: 5;
       visibility: hidden;
     }
-    .email-app-menu {
+    .token-app-menu {
       width: 100%;
       // padding-bottom: 0.5rem;
       // z-index: 3;
@@ -63,7 +63,7 @@
       .list-group .list-group-item i {
         top: 3px;
       }
-      .email-pending-avatar {
+      .token-pending-avatar {
         .avatar-content {
           height: 20px;
           width: 20px;
@@ -105,7 +105,7 @@
   }
   // Right content area common css End
 
-  // email list section
+  // token list section
   .app-content {
     .content-area-wrapper {
       position: relative;
@@ -117,7 +117,7 @@
     }
   }
 
-  .email-user-list {
+  .token-user-list {
     position: relative;
     height: calc(100vh - 13.2rem);
     .users-list-wrapper {
@@ -146,14 +146,19 @@
     }
   }
   .no-results {
+    width: 100%;
     display: none;
     padding: 1.5rem;
     text-align: center;
     &.show {
       display: block;
     }
+    span {
+      font-size: 40px;
+      font-weight: bold;
+    }
   }
-  .email-app-details {
+  .token-app-details {
     position: absolute;
     display: block;
     z-index: 2;
@@ -176,7 +181,7 @@
       transition: all 0.3s ease;
       width: 100%;
     }
-    .email-detail-header {
+    .token-detail-header {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -186,14 +191,11 @@
       background-color: $body-bg;
     }
     .token-detail-general-wp {
-      .token-detail-general-wp1 {
-        border-top: 1px solid $gray-300;
-        .token-detail-general {
-          display: flex;
-          margin: 10px;
-          .token-detail-title {
-            width: 230px;
-          }
+      .token-detail-general {
+        display: flex;
+        margin: 10px;
+        .token-detail-title {
+          width: 230px;
         }
       }
     }
@@ -235,7 +237,7 @@
   }
 
   // Compose Mail Sidebar
-  .compose-email {
+  .compose-token {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -278,134 +280,8 @@
     }
   }
 }
-// Modal form editor
-#email-container {
-  .demo-editor {
-    min-height: 150px !important;
-  }
-}
-@include media-breakpoint-down(sm) {
-  .email-application {
-    .sidebar-content {
-      .sidebar-close-icon {
-        visibility: visible !important;
-      }
-    }
-  }
-}
-@include media-breakpoint-down(md) {
-  .email-application {
-    .app-content-overlay {
-      z-index: 2;
-    }
-    .sidebar-left {
-      position: relative;
-      .email-app-sidebar {
-        transform: translateX(-110%);
-        transition: all 0.3s ease-in-out;
-        // transition: transform .25s;
-        left: 0;
-        position: fixed;
-        z-index: 5;
-        left: -2px;
-      }
-      &.show {
-        .email-app-sidebar {
-          transform: translateX(13%);
-          transition: all 0.3s ease;
-          // transition: transform .25s;
-          display: block;
-        }
-      }
-    }
-    .content-right {
-      width: 100%;
-      .app-fixed-search {
-        border-top-left-radius: $border-radius;
-        .form-group {
-          width: 90%;
-        }
-      }
-      .email-app-details {
-        width: 100%;
-        border-radius: $border-radius;
-        .email-scroll-area {
-          height: calc(100vh - 21.5rem);
-        }
-      }
-    }
-  }
-}
 
-// Extra small devices (portrait phones, less than 576px)
-@media (max-width: 575.98px) {
-  .email-application {
-    .sidebar-left .email-app-sidebar {
-      left: -1.12rem !important;
-    }
-    .compose-email {
-      width: 300px;
-    }
-    .app-fixed-search {
-      border-top-left-radius: $border-radius;
-      .form-group {
-        width: 88% !important;
-      }
-    }
-    .email-detail-head .mail-meta-item {
-      display: flex;
-      justify-content: space-between;
-      .mail-date,
-      .mail-time {
-        margin: 1rem 0.75rem 0 0;
-      }
-    }
-    .app-content .content-right .email-app-details {
-      .email-scroll-area {
-        height: calc(100vh - 23.25rem);
-      }
-    }
-    .app-content
-      .content-area-wrapper
-      .email-user-list
-      .users-list-wrapper
-      li
-      .user-details {
-      display: block;
-      .mail-items {
-        width: 70%;
-        display: inline-grid;
-      }
-      .mail-meta-item {
-        width: 15%;
-        position: absolute;
-        right: 1rem;
-        top: 1.5rem;
-        i,
-        .bullet {
-          display: none;
-        }
-      }
-    }
-  }
-}
 
-@media (max-width: 349.98px) {
-  .email-application .content-area-wrapper .sidebar .email-app-sidebar {
-    width: 230px;
-    left: 3px;
-  }
-  .email-application .app-content .content-area-wrapper .email-user-list {
-    height: calc(100vh - 22.3rem);
-  }
-  .email-application .email-app-details .email-detail-header {
-    padding: 0 1.2rem;
-    .email-prev,
-    .email-next {
-      display: none;
-    }
-  }
-}
 
 // Keyframe animation
 @keyframes fadeIn {
