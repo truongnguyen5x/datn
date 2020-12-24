@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Account } = require('../models')
 const bcrypt = require('bcrypt')
 const { constants } = require('../configs')
 const authService = require('./auth')
@@ -164,7 +164,13 @@ const me = async (token, refreshToken) => {
         payload = verify.payload
     }
     const email = payload.email; // Lấy username từ payload
-    const user = await User.findOne({ where: { email } })
+    const user = await User.findOne({ 
+        where: { email } ,
+        include: {
+            model: Account,
+            as: 'wallets'
+        }
+    })
     if (!user) {
         throw new Error('User không tồn tại.');
     }

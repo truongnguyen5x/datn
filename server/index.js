@@ -46,7 +46,7 @@ app.get('/ide', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../ide/index.html'));
 })
 app.get('/*', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '../dist/client/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })
 
 app.listen(constants.PORT, function () {

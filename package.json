@@ -1,6 +1,15 @@
 {
-  "name": "vchain-management-token",
+  "name": "vchain-manage-token",
   "version": "1.0.0",
+  "scripts": {
+    "dev:web": "webpack --watch --progress",
+    "dev:server": "nodemon server/index.js",
+    "prod:server": "NODE_ENV=production node server/index.js",
+    "prod:web": "NODE_ENV=production webpack --progress",
+    "dev:ide": "webpack --progress -c webpack.ide.config.js",
+    "prod:ide": "NODE_ENV=production webpack --progress -c webpack.ide.config.js",
+    "start:ganache": "ganache-cli --account=\"0x18d55f4933b3a97d41b755d75f2f36e6f1a2da58f7cfb03e1f59d328ed24a9d6,100000000000000000000\" --account=\"0x5733281d7a38000fc50e0ac85fc5b7643827a3c92daa7015d2111593139e150e,100000000000000000000\" --account=\"0x2c3cabda8bd8b885d38dea44c78a9f3830f3069961384368e52969f659abc3de, 100000000000000000000\""
+  },
   "dependencies": {
     "@remix-project/remix-analyzer": "^0.5.6",
     "@remix-project/remix-debug": "^0.4.8",
@@ -120,6 +129,7 @@
     "signale": "^1.4.0",
     "solc": "^0.7.5",
     "styled-components": "^5.0.1",
+    "sweetalert2": "^10.12.6",
     "swiper": "^5.3.0",
     "time-stamp": "^2.2.0",
     "tls": "0.0.1",
@@ -129,15 +139,6 @@
     "ws": "^7.3.0",
     "xlsx": "^0.15.5",
     "yup": "^0.28.1"
-  },
-  "scripts": {
-    "dev:web": "webpack --watch --progress",
-    "dev:server": "nodemon server/index.js",
-    "prod:server": "NODE_ENV=production node server/index.js",
-    "prod:web": "NODE_ENV=production webpack --progress",
-    "dev:ide": "webpack --progress -c webpack.ide.config.js",
-    "prod:ide": "NODE_ENV=production webpack --progress -c webpack.ide.config.js",
-    "start:ganache": "ganache-cli --account=\"0x18d55f4933b3a97d41b755d75f2f36e6f1a2da58f7cfb03e1f59d328ed24a9d6,100000000000000000000\" --account=\"0x5733281d7a38000fc50e0ac85fc5b7643827a3c92daa7015d2111593139e150e,100000000000000000000\" --account=\"0x2c3cabda8bd8b885d38dea44c78a9f3830f3069961384368e52969f659abc3de, 100000000000000000000\""
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

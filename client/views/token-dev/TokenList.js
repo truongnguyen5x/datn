@@ -3,30 +3,24 @@ import { Card, CardBody, CardHeader, Row, Col, Button } from 'reactstrap'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { getProfile } from "../../redux/actions/auth/loginActions"
-import { getListToken } from "../../redux/actions/token-dev"
+import { getListToken, setModalOpen, changeFilter } from "../../redux/actions/token-dev"
 import TokenDetails from "./TokenDetails"
-import ComposeMail from "./CreateToken"
+import CreateToken from "./CreateToken"
 import noImage from "../../assets/img/coin/no-image.png"
 
 const TokenList = props => {
   const [token, setToken] = useState()
-  const [TokenDetailsVisibility, setTokenDetailsVisibility] = useState(false)
+
   useEffect(() => {
     props.getProfile()
-    props.getListToken()
+    props.setModalOpen('')
+    props.changeFilter('all')
   }, [])
 
-  const handleTokenDetails = (status, token) => {
+  const handleTokenDetails = (token) => {
     setToken(token)
-    if (status === "open")
-      setTokenDetailsVisibility(true)
-    else setTokenDetailsVisibility(false)
+    props.setModalOpen('detail')
   }
-
-  const handleComposeSidebar = status => {
-    props.handleComposeSidebar(status)
-  }
-
 
   const renderMails = () => {
     if (!props.listToken.length) {
@@ -48,7 +42,7 @@ const TokenList = props => {
             <p>{i.description ? `Description: ${i.description}` : `No description`}</p>
             <Button
               className=" bg-gradient-primary"
-              onClick={() => handleTokenDetails("open", i)}
+              onClick={() => handleTokenDetails(i)}
             >
               Detail
             </Button>
@@ -81,14 +75,10 @@ const TokenList = props => {
           </div>
         </div>
         <TokenDetails
-          handleTokenDetails={handleTokenDetails}
-          currentStatus={TokenDetailsVisibility}
           data={token}
         />
 
-        <ComposeMail
-          handleComposeSidebar={handleComposeSidebar}
-          currentStatus={props.showCreateModal}
+        <CreateToken
         />
       </div>
     </div>
@@ -102,6 +92,8 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = {
   getProfile,
-  getListToken
+  getListToken,
+  setModalOpen,
+  changeFilter
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenList)

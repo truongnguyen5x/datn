@@ -16,14 +16,16 @@ const VuexyCustom = props => {
   const [loading, setLoading] = useState(false)
   const [reachedStep, setReachedStep] = useState(0)
 
+  useEffect(() => {
+    setActiveStep(0);
+    setReachedStep(0);
+  }, [])
 
   const handleNextStep = async () => {
     const { checkDoneStep } = props
     setLoading(true)
-
     checkDoneStep[activeStep]()
       .then(() => {
-
         if (activeStep !== props.steps.length - 1) {
           setActiveStep(activeStep + 1)
           setReachedStep(Math.max(reachedStep, activeStep + 1))
@@ -34,6 +36,7 @@ const VuexyCustom = props => {
         setLoading(false)
       })
       .catch((error) => {
+        setLoading(false)
       })
   }
 
@@ -44,6 +47,9 @@ const VuexyCustom = props => {
   const handleEnableAllSteps = index => {
     if (index < reachedStep) {
       setActiveStep(index)
+    }
+    if (index - activeStep == 1) {
+      handleNextStep()
     }
   }
 
@@ -87,23 +93,27 @@ const VuexyCustom = props => {
       </TabContent>
       <div className="wizard-actions d-flex justify-content-between">
         <Button
+          type="button"
           color="primary"
           disabled={activeStep === 0}
           onClick={handlePreviousStep}>
           Prev
         </Button>
-        <Button type="button" color="primary" style={{display:"flex", alignItems:"center"}}
-          onClick={handleNextStep}>
-          <div>{loading && <Spinner color="light" size="sm"/>}</div>
-          <div>
-            {props.steps.length - 1 === activeStep &&
+        <Button
+          type="button"
+          color="primary"
+          className='d-flex align-items-center'
+          onClick={handleNextStep}
+        >
+          {loading ? <Spinner color="white" size="sm" />
+            : props.steps.length - 1 === activeStep &&
               !props.finishBtnText
               ? "Submit"
               : props.steps.length - 1 === activeStep &&
                 props.finishBtnText
                 ? props.finishBtnText
-                : "Next"}
-          </div>
+                : "Next"
+          }
         </Button>
       </div>
     </React.Fragment>
@@ -114,9 +124,7 @@ VuexyCustom.propTypes = {
   className: PropTypes.string,
   tabPaneClass: PropTypes.string,
   steps: PropTypes.array.isRequired,
-  finishBtnText: PropTypes.string,
-  onFinish: PropTypes.func,
-  onValidationError: PropTypes.func
+  finishBtnText: PropTypes.string
 }
 
 

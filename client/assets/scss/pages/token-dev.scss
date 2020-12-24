@@ -269,14 +269,32 @@
     }
     .compose-mail-body {
       flex-grow: 1;
+      display: flex;
+      height: 500px;
+      flex-direction: column;
       .list-option-select {
         display: flex;
         margin: 10px;
         justify-content: space-between;
       }
+      .vx-wizard-content {
+        flex-grow: 1;
+        .step-content {
+          height: 100%;
+        }
+      }
     }
   }
 }
+
+.invalid-feedback {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: smaller;
+  color: $red;
+  display: block;
+}
+
 // Modal form editor
 #email-container {
   .demo-editor {

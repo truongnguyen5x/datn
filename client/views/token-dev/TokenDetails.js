@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { ArrowLeft } from "react-feather"
-import { getTokenById, createRequest, cancelRequest, exportSDK } from "../../redux/actions/token-dev"
+import { getTokenById, createRequest, cancelRequest, exportSDK, setModalOpen } from "../../redux/actions/token-dev"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { Plus, Download, Trash } from 'react-feather'
@@ -145,7 +145,7 @@ const TokenDetails = props => {
   }
   return (
     <div
-      className={`email-app-details ${props.currentStatus ? "show" : ""
+      className={`email-app-details ${props.modalOpen == 'detail' ? "show" : ""
         }`}
     >
       <div className="email-detail-header">
@@ -154,7 +154,7 @@ const TokenDetails = props => {
             size={20}
             className="mr-1 cursor-pointer"
             onClick={() => {
-              props.handleTokenDetails("close")
+              props.setModalOpen("")
             }}
           />
           <h4 className="mb-0">Detail Token</h4>
@@ -271,13 +271,14 @@ const TokenDetails = props => {
 }
 const mapStateToProps = state => {
   return {
-
+    modalOpen: state.tokenDev.modalOpen
   }
 }
 const mapDispatchToProps = {
   getTokenById,
   createRequest,
   cancelRequest,
-  exportSDK
+  exportSDK,
+  setModalOpen
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

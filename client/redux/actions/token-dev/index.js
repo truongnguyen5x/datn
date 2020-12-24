@@ -24,6 +24,10 @@ export const changeFilter = (type) => dispatch => {
         type: "CHANGE_LIST_TYPE_TOKEN",
         payload: type
     })
+    dispatch({
+        type: "SET_MODAL_OPEN",
+        payload: ''
+    })
     return FetchApi("/api/token-dev", 'GET', { type })
         .then(res => {
             if (res.code) {
@@ -61,4 +65,8 @@ export const getConfig = (key) => dispatch => {
 
 export const exportSDK = (id) => dispatch => {
     return FetchApi(`/api/token-dev/sdk/${id}`, 'post')
+}
+
+export const setModalOpen = (modalName) => dispatch => {
+    dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
 }

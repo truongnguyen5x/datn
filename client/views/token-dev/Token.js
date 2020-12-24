@@ -4,23 +4,12 @@ import TokenList from "./TokenList"
 import TokenSidebarContent from "./TokenSidebar"
 import { ContextLayout } from "../../utility/context/Layout"
 import "../../assets/scss/pages/token-dev.scss"
+import { ToastContainer, toast } from 'react-toastify'
 const mql = window.matchMedia(`(min-width: 992px)`)
 class Email extends React.Component {
   state = {
-    composeMailStatus: false,
     sidebarDocked: mql.matches,
     sidebarOpen: false
-  }
-  handleComposeSidebar = status => {
-    if (status === "open") {
-      this.setState({
-        composeMailStatus: true
-      })
-    } else {
-      this.setState({
-        composeMailStatus: false
-      })
-    }
   }
 
   UNSAFE_componentWillMount() {
@@ -39,11 +28,6 @@ class Email extends React.Component {
     this.setState({ sidebarDocked: mql.matches, sidebarOpen: false })
   }
 
-  handleMainAndComposeSidebar = () => {
-    this.handleComposeSidebar("close")
-    this.onSetSidebarOpen(false)
-  }
-
   render() {
     return (
       <div className="token-dev-application position-relative">
@@ -53,7 +37,6 @@ class Email extends React.Component {
             <Sidebar
               sidebar={
                 <TokenSidebarContent
-                  handleComposeSidebar={this.handleComposeSidebar}
                   mainSidebar={this.onSetSidebarOpen}
                 />
               }
@@ -68,12 +51,9 @@ class Email extends React.Component {
           )}
         </ContextLayout.Consumer>
         <TokenList
-
           handleComposeSidebar={this.handleComposeSidebar}
-          showCreateModal={this.state.composeMailStatus}
-          mainSidebar={this.onSetSidebarOpen}
-          routerProps={this.props}
         />
+        <ToastContainer />
       </div>
     )
   }

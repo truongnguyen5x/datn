@@ -198,7 +198,13 @@ const validateSource = async (data) => {
             if (constructor) {
                 constructor = constructor.inputs
             }
-            responses.push({ file: i, contract: j, inputs: constructor })
+            responses.push({ 
+                file: i, 
+                contract: j, 
+                inputs: constructor,
+                bytecode: output.contracts[i][j].evm.bytecode.object,
+                abi: output.contracts[i][j].abi
+             })
         })
     })
 

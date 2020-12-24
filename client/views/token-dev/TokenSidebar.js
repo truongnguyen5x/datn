@@ -1,8 +1,8 @@
 import React from "react"
 import { FormGroup, Button, ListGroup, ListGroupItem } from "reactstrap"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import { X, Edit, Mail, Send, Edit2, Star, Info, Trash, List, Globe, Upload, Plus } from "react-feather"
-import { changeFilter } from "../../redux/actions/token-dev"
+import { X, CloudRain, List, Globe, Upload, Plus, Loader } from "react-feather"
+import { changeFilter, setModalOpen } from "../../redux/actions/token-dev"
 import { connect } from "react-redux"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import "../../assets/scss/plugins/extensions/editor.scss"
@@ -27,7 +27,7 @@ class TokenSidebar extends React.Component {
               className="my-2 btn-block"
               color="primary"
               onClick={() => {
-                this.props.handleComposeSidebar("open")
+                this.props.setModalOpen("create")
                 this.props.mainSidebar(false)
               }}
             >
@@ -55,7 +55,7 @@ class TokenSidebar extends React.Component {
                 active={"in-vchain" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
-                <Globe size={21} />
+                <CloudRain size={21} />
                 <span className="align-middle ml-1">On Vchain</span>
               </ListGroupItem>              
               <ListGroupItem
@@ -71,7 +71,7 @@ class TokenSidebar extends React.Component {
                 active={"deploying" === this.props.listType}
                 className="border-0 cursor-pointer"
               >
-                <Upload size={21} />
+                <Loader size={21} />
                 <span className="align-middle ml-1">Deploying</span>
               </ListGroupItem>
             </ListGroup>
@@ -84,8 +84,9 @@ class TokenSidebar extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    listType: state.tokenDev.listType
+    listType: state.tokenDev.listType,
+    modalOpen: state.tokenDev.modalOpen
   }
 }
 
-export default connect(mapStateToProps, { changeFilter })(TokenSidebar)
+export default connect(mapStateToProps, { changeFilter, setModalOpen })(TokenSidebar)
