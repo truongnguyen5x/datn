@@ -216,15 +216,6 @@ const CreateToken = props => {
   }
 
 
-  // const CustomOption = ({ innerProps, innerRef, data, ...rest }) => {
-  //   // console.log(rest)
-  //   return <div className="list-option-select" ref={innerRef} {...innerProps}>
-  //     <div>{data.name}</div>
-  //     <div>{data.path}</div>
-  //   </div>
-  // }
-
-
   const renderConstructorDeploy = () => {
     return <div className="mt-2">
       <h5>Enter params to deploy {selectedContractInterface.label}</h5>
