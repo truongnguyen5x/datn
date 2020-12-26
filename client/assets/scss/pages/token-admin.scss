@@ -5,7 +5,7 @@
 @import "~bootstrap/scss/_variables.scss";
 @import "../core/variables/components-variables";
 
-.token-dev-application {
+.token-application {
   // border: 1px solid $gray-300;
   border-radius: $border-radius-sm;
   height: calc(100vh - 12rem);
@@ -98,7 +98,12 @@
     .content-wrapper {
       padding: 0;
     }
-
+    .sidebar-toggle {
+      cursor: pointer;
+      margin: 0.5rem 0.99rem;
+      float: left;
+      line-height: 1;
+    }
     .action-icon {
       cursor: pointer;
     }
@@ -281,7 +286,43 @@
   }
 }
 
+@include media-breakpoint-down(md) {
+  .token-application {
+    .sidebar-left {
+      position: relative;
+      .token-app-sidebar {
+        transform: translateX(-110%);
+        transition: all 0.3s ease-in-out;
+        // transition: transform .25s;
+        left: 0;
+        position: fixed;
+        z-index: 5;
+        left: -2px;
+      }
+      &.show {
+        .token-app-sidebar {
+          transform: translateX(13%);
+          transition: all 0.3s ease;
+          // transition: transform .25s;
+          display: block;
+        }
+      }
+    }
+    .content-right {
+      width: 100%;
+    }
+  }
+}
 
+@include media-breakpoint-down(sm) {
+  .token-application {
+    .sidebar-content {
+      .sidebar-close-icon {
+        visibility: visible !important;
+      }
+    }
+  }
+}
 
 // Keyframe animation
 @keyframes fadeIn {

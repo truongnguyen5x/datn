@@ -30,8 +30,7 @@ class Token extends React.Component {
 
   render() {
     return (
-      <div className="token-dev-application position-relative">
-    
+      <div className="token-application position-relative">
         <ContextLayout.Consumer>
           {context => (
             <Sidebar
@@ -51,6 +50,7 @@ class Token extends React.Component {
           )}
         </ContextLayout.Consumer>
         <TokenList
+          mainSidebar={this.onSetSidebarOpen}
         />
         <ToastContainer />
       </div>

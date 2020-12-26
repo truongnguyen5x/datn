@@ -71,10 +71,10 @@ const ThemeNavbar = props => {
               id="navbar-mobile"
             >
               <div className="bookmark-wrapper">
-                {/* <NavbarBookmarks
+                <NavbarBookmarks
                   sidebarVisibility={props.sidebarVisibility}
                   handleAppOverlay={props.handleAppOverlay}
-                /> */}
+                />
               </div>
               {props.horizontal ? (
                 <div className="logo d-flex align-items-center">

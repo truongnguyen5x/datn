@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { Card, CardBody, CardHeader, Row, Col, Button } from 'reactstrap'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { getProfile } from "../../redux/actions/auth/loginActions"
-import { getListToken, setModalOpen, changeFilter } from "../../redux/actions/token-dev"
-import TokenDetails from "./TokenDetails"
-import CreateToken from "./CreateToken"
+import { Button, Card, CardBody, CardHeader, Col, Row } from 'reactstrap'
 import noImage from "../../assets/img/coin/no-image.png"
+import { Menu } from 'react-feather'
+import { getProfile } from "../../redux/actions/auth/loginActions"
+import { changeFilter, getListToken, setModalOpen } from "../../redux/actions/token-dev"
+import CreateToken from "./CreateToken"
+import TokenDetails from "./TokenDetails"
 
 const TokenList = props => {
   const [token, setToken] = useState()
@@ -59,6 +60,16 @@ const TokenList = props => {
       <div className="token-app-area">
         <div className="token-app-list-wrapper">
           <div className="token-app-list">
+            <div style={{height: '40px'}}>
+              <div
+                className="d-lg-none sidebar-toggle"
+                onClick={() => props.mainSidebar(true)}
+              >
+                <Menu size={24} />
+              </div>
+
+            </div>
+
             <PerfectScrollbar
               className="token-user-list list-group p-1"
               options={{
@@ -69,7 +80,7 @@ const TokenList = props => {
                 <Row>
                   {renderMails()}
                 </Row>
-             
+
               </div>
             </PerfectScrollbar>
           </div>

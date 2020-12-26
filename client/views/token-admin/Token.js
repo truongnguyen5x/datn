@@ -31,7 +31,7 @@ class Email extends React.Component {
 
   render() {
     return (
-      <div className="token-dev-application position-relative">
+      <div className="token-application position-relative">
     
         <ContextLayout.Consumer>
           {context => (
@@ -52,6 +52,7 @@ class Email extends React.Component {
           )}
         </ContextLayout.Consumer>
         <TokenList
+          mainSidebar={this.onSetSidebarOpen}
         />
       </div>
     )

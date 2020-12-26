@@ -5,6 +5,7 @@ import { connect } from "react-redux"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { getListToken, setModalOpen, changeFilter } from "../../redux/actions/token-admin"
 import TokenDetails from "./TokenDetails"
+import { Menu } from 'react-feather'
 
 import noImage from "../../assets/img/coin/no-image.png"
 
@@ -58,6 +59,14 @@ const TokenList = props => {
       <div className="token-app-area">
         <div className="token-app-list-wrapper">
           <div className="token-app-list">
+            <div style={{ height: '40px' }}>
+              <div
+                className="d-lg-none sidebar-toggle"
+                onClick={() => props.mainSidebar(true)}
+              >
+                <Menu size={24} />
+              </div>
+            </div>
             <PerfectScrollbar
               className="token-user-list list-group p-1"
               options={{
