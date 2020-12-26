@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react"
-import { Input, Label, Spinner, Tooltip, CardBody, Button, Row, Col, FormGroup, CustomInput, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap"
-import { X, ArrowLeft, Database, Briefcase, Image, Folder, Box, Layers } from "react-feather"
-import PerfectScrollbar from "react-perfect-scrollbar"
-import Wizard from "../../components/@vuexy/wizard/WizardCustom"
-import { useFormik } from 'formik';
-import classnames from "classnames"
+import React, { useEffect, useState } from "react"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
-import "../../assets/scss/plugins/extensions/editor.scss"
-import { getListToken, createToken, validateSource, getConfig, setModalOpen, testDeploy } from "../../redux/actions/token-dev"
-import { getAccountBalance } from '../../redux/actions/account'
-import { getListNetwork } from "../../redux/actions/network"
+import { ArrowLeft, Box, Folder, Layers } from "react-feather"
 import { connect } from "react-redux"
-import { readBatchFile, writeOneFile } from '../../utility/file'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
-import Swal from 'sweetalert2'
-import { getWeb3 } from '../../utility/web3'
 import "react-toastify/dist/ReactToastify.css"
+import { Col, Input, Row } from "reactstrap"
+import Swal from 'sweetalert2'
+import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
+import Wizard from "../../components/@vuexy/wizard/WizardCustom"
+import { getAccountBalance } from '../../redux/actions/account'
+import { getListNetwork } from "../../redux/actions/network"
+import { createToken, getConfig, getListToken, setModalOpen, testDeploy, validateSource } from "../../redux/actions/token-dev"
+import { readBatchFile, writeOneFile } from '../../utility/file'
+import { getWeb3 } from '../../utility/web3'
 
 
 

@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { ArrowLeft } from "react-feather"
-import { getTokenById, setModalOpen, acceptRequest, denyRequest, deleteToken } from "../../redux/actions/token-admin"
-import { getListVCoin } from '../../redux/actions/vcoin'
+import classnames from "classnames"
+import { saveAs } from 'file-saver'
+import moment from "moment"
+import React, { useEffect, useState } from "react"
+import { ArrowLeft, Check, Download, Trash, X } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Plus, Download, Trash, Check, X } from 'react-feather'
-import { Nav, NavItem, NavLink, TabPane, TabContent, Row, Col, Button, UncontrolledTooltip } from 'reactstrap'
-import classnames from "classnames"
-import noImage from "../../assets/img/coin/no-image.png"
-import moment from "moment"
-import { Edit } from 'react-feather'
-import { saveAs } from 'file-saver'
-import exportToZip from '../../utility/sdk'
-import Swal from 'sweetalert2'
-import { readBatchFile, writeOneFile, writeBatchFile } from '../../utility/file'
+import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+import { acceptRequest, deleteToken, denyRequest, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
+import { getListVCoin } from '../../redux/actions/vcoin'
+import { writeBatchFile } from '../../utility/file'
 import { exporSdkWorker } from '../../utility/sdk'
 import { getWeb3 } from '../../utility/web3'
 

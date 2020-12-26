@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { Download } from 'react-feather'
 import { connect } from "react-redux"
-import { Button, Card, Row, Col, Input, FormGroup, Label } from "reactstrap"
-import { Plus, Edit, Save, Download } from 'react-feather'
-import { getListVCoin } from "../../redux/actions/vcoin/index"
-import { getProfile } from "../../redux/actions/auth/loginActions"
+import { Button, Card, Col, Row } from "reactstrap"
 import "../../assets/scss/pages/vcoin.scss"
-import { saveAs } from 'file-saver'
-
+import { getProfile } from "../../redux/actions/auth/loginActions"
+import { getListVCoin } from "../../redux/actions/vcoin/index"
 import CreateVCoin from './CreateToken'
+
 
 
 const ListVCoin = (props) => {

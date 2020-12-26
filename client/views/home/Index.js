@@ -1,17 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import HomeAdmin from "./HomeAdmin"
-import HomeDeveloper from "../token-dev/Token"
-
 import { getProfile } from "../../redux/actions/auth/loginActions"
+import HomeDeveloper from "../token-dev/TokenDev"
+import HomeAdmin from "./HomeAdmin"
 
 const HomePage = (props) => {
-
-  
     return props.role == "admin" ? <HomeAdmin /> : <HomeDeveloper />
 }
-
-
 
 const mapDispatchToProps = {
     getProfile

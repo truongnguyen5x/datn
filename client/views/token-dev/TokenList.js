@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
+import { Menu } from 'react-feather'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { Button, Card, CardBody, CardHeader, Col, Row } from 'reactstrap'
 import noImage from "../../assets/img/coin/no-image.png"
-import { Menu } from 'react-feather'
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { changeFilter, getListToken, setModalOpen } from "../../redux/actions/token-dev"
 import CreateToken from "./CreateToken"

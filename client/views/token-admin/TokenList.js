@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { Card, CardBody, CardHeader, Row, Col, Button } from 'reactstrap'
+import { Menu } from 'react-feather'
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { getProfile } from "../../redux/actions/auth/loginActions"
-import { getListToken, setModalOpen, changeFilter } from "../../redux/actions/token-admin"
-import TokenDetails from "./TokenDetails"
-import { Menu } from 'react-feather'
-
+import { Button, Card, CardBody, CardHeader, Col, Row } from 'reactstrap'
 import noImage from "../../assets/img/coin/no-image.png"
+import { getProfile } from "../../redux/actions/auth/loginActions"
+import { changeFilter, getListToken, setModalOpen } from "../../redux/actions/token-admin"
+import TokenDetails from "./TokenDetails"
+
 
 const TokenList = props => {
   const [token, setToken] = useState()

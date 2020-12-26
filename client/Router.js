@@ -182,7 +182,7 @@ const accessControl = lazy(() =>
 const HomePage = lazy(() => import("./views/home/Index"))
 const Account = lazy(() => import("./views/accounts/ListAccount"))
 
-const TokenAdmin = lazy(()=> import("./views/token-admin/Token"))
+const TokenAdmin = lazy(()=> import("./views/token-admin/TokenAdmin"))
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
