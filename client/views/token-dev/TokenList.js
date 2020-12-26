@@ -60,7 +60,7 @@ const TokenList = props => {
       <div className="token-app-area">
         <div className="token-app-list-wrapper">
           <div className="token-app-list">
-            <div style={{height: '40px'}}>
+            <div style={{height: '40px'}} className="d-lg-none">
               <div
                 className="d-lg-none sidebar-toggle"
                 onClick={() => props.mainSidebar(true)}
