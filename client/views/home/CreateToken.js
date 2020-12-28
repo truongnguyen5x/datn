@@ -100,7 +100,7 @@ const CreateToken = props => {
       .then(res => {
         if (res.code) {
           const { value } = res.data
-          writeOneFile('/Token.sol', value)
+          writeOneFile('/Main.sol', value)
         }
       })
   }
