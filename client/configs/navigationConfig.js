@@ -42,6 +42,14 @@ const navigationConfig = [
     navLink: "/token-admin"
   },
   {
+    id: "export-sdk",
+    title: "ExportSDK",
+    type: "item",
+    icon: <Icon.DownloadCloud size={20} />,
+    permissions: ["admin"],
+    navLink: "/export-sdk"
+  },
+  {
     type: "groupHeader",
     groupTitle: "Dashboard"
   },

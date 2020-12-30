@@ -101,6 +101,7 @@
     "prod:web": "NODE_ENV=production webpack --progress"
   },
   "devDependencies": {
+    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "node-sass": "^4.13.1",
     "webpack-cli": "^4.2.0"

@@ -181,9 +181,10 @@ const accessControl = lazy(() =>
 )
 const HomePage = lazy(() => import("./views/home/Index"))
 const Account = lazy(() => import("./views/accounts/ListAccount"))
-const TokenDev = lazy(()=> import("./views/token-dev/ListToken"))
-const TokenAdmin = lazy(()=> import("./views/token-admin/ListToken"))
-const VCoin = lazy(()=> import("./views/vcoin/ListVCoin"))
+const TokenDev = lazy(() => import("./views/token-dev/ListToken"))
+const TokenAdmin = lazy(() => import("./views/token-admin/ListToken"))
+const VCoin = lazy(() => import("./views/vcoin/ListVCoin"))
+const ExportSDK = lazy(() => import("./views/vcoin/ListVCoin"))
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
@@ -261,6 +262,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/token-dev" component={TokenDev} />
           <AppRoute path="/token-admin" component={TokenAdmin} />
           <AppRoute path="/vcoin" component={VCoin} />
+          <AppRoute path="/export-sdk" component={ExportSDK} />
           <AppRoute
             path="/ecommerce-dashboard"
             component={ecommerceDashboard}
