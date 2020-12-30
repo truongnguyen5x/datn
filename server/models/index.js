@@ -8,26 +8,28 @@ const Network = require("./network")
 const Token = require('./token')
 const User = require('./user')
 const VCoin = require("./vcoin")
+const Request = require("./request")
 
 const { sequelize } = require('../configs')
 
 
 User.hasMany(Account, { as: 'wallets', foreignKey: "user_id" })
 
-SmartContract.belongsTo(Network, { as: "network", foreignKey: "network_id" })
-SmartContract.belongsTo(Account, { as: "owner", foreignKey: "account_id" })
 SmartContract.hasMany(File, { as: "files", foreignKey: "smart_contract_id" })
-SmartContract.hasMany(SmartContract, {as: "tokens", foreignKey: "vcoin_id"})
+SmartContract.hasMany(SmartContract, { as: "tokens", foreignKey: "vcoin_id" })
 
-VCoin.belongsTo(SmartContract, { as: "smartContract", foreignKey: "smart_contract_id" })
-VCoin.belongsTo(User, { as: "owner", foreignKey: "user_id" })
 
 Token.hasMany(SmartContract, { as: "smartContracts", foreignKey: "token_id" })
+SmartContract.belongsTo(Token, { as: "token", foreignKey: "token_id" })
 Token.belongsTo(User, { as: "owner", foreignKey: "user_id" })
+User.hasMany(Token, { as: "tokens", foreignKey: "user_id" })
 
+Request.belongsTo(SmartContract, { as: "smartContract", foreignKey: "smart_contract_id" })
+SmartContract.hasOne(Request, { as: "request", foreignKey: "smart_contract_id" })
 
 // sequelize.sync({ force: true })
-// sequelize.sync({ alter: true })
+// VCoin.sync({ alter: true })
+// SmartContract.sync({ alter: true })
 // sequelize.sync()
 
 sequelize
@@ -38,4 +40,4 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
-module.exports = { User, Token, Config, Account, Network, VCoin, SmartContract, File }
+module.exports = { User, Token, Config, Account, Network, VCoin, SmartContract, File, Request }

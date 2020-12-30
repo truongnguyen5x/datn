@@ -7,7 +7,7 @@ import Spinner from "./components/@vuexy/spinner/Loading-spinner"
 import knowledgeBaseCategory from "./views/pages/knowledge-base/Category"
 import knowledgeBaseQuestion from "./views/pages/knowledge-base/Questions"
 import { ContextLayout } from "./utility/context/Layout"
-import { getProfile } from './redux/actions/auth/loginActions'
+
 
 
 // Route-based code splitting
@@ -181,10 +181,8 @@ const accessControl = lazy(() =>
 )
 const HomePage = lazy(() => import("./views/home/Index"))
 const Account = lazy(() => import("./views/accounts/ListAccount"))
-const TokenDev = lazy(() => import("./views/token-dev/ListToken"))
-const TokenAdmin = lazy(() => import("./views/token-admin/ListToken"))
-const VCoin = lazy(() => import("./views/vcoin/ListVCoin"))
-const ExportSDK = lazy(() => import("./views/vcoin/ListVCoin"))
+
+const TokenAdmin = lazy(() => import("./views/token-admin/TokenAdmin"))
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
@@ -247,9 +245,7 @@ const AppRouteNormal = connect(mapStateToProps)(RouteNormalConfig)
 
 
 class AppRouter extends React.Component {
-  componentDidMount() {
-    this.props.getProfile()
-  }
+
   render() {
 
     return (
@@ -259,10 +255,9 @@ class AppRouter extends React.Component {
           <AppRoute exact path="/" component={HomePage} />
           <AppRoute path="/analytics" component={analyticsDashboard} />
           <AppRoute path="/accounts" component={Account} />
-          <AppRoute path="/token-dev" component={TokenDev} />
+
           <AppRoute path="/token-admin" component={TokenAdmin} />
-          <AppRoute path="/vcoin" component={VCoin} />
-          <AppRoute path="/export-sdk" component={ExportSDK} />
+
           <AppRoute
             path="/ecommerce-dashboard"
             component={ecommerceDashboard}
@@ -451,4 +446,4 @@ class AppRouter extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProfile })(AppRouter)
+export default connect(mapStateToProps)(AppRouter)

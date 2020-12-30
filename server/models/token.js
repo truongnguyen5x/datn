@@ -17,9 +17,6 @@ const Token = sequelize.define('Token', {
     symbol: {
         type: DataTypes.STRING
     },
-    transaction_fee: {
-        type: DataTypes.INTEGER.UNSIGNED
-    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: new Date()

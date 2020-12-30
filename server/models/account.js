@@ -10,7 +10,6 @@ const Account = sequelize.define('Account', {
     },
     key: {
         type: DataTypes.STRING,
-        unique: true,
         validate: {
             is: /^(0x){0,1}[a-fA-F_0-9]{64}$/g
         }

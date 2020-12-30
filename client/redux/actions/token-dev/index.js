@@ -1,14 +1,16 @@
 
 import { FetchApi } from "../axios"
 
-export const getListToken = () => dispatch => {
-    return FetchApi("/api/token")
+export const getListToken = () => (dispatch, getState) => {
+    const type = getState().tokenDev.listType
+    return FetchApi(`/api/token-dev`, "GET", { type })
         .then(res => {
             if (res.code) {
                 dispatch({
                     type: "GET_LIST_TOKEN",
                     payload: res.data
                 })
+
                 return res.data
             } else {
                 return res
@@ -16,10 +18,56 @@ export const getListToken = () => dispatch => {
         })
 }
 
-export const createToken = (data) => dispatch => {
-    return FetchApi("/api/token", 'POST', data)
+
+export const changeFilter = (type) => dispatch => {
+    dispatch({
+        type: "CHANGE_LIST_TYPE_TOKEN",
+        payload: type
+    })
+    dispatch({
+        type: "SET_MODAL_OPEN",
+        payload: ''
+    })
+    return FetchApi("/api/token-dev", 'GET', { type })
+        .then(res => {
+            if (res.code) {
+                dispatch({
+                    type: "GET_LIST_TOKEN",
+                    payload: res.data
+                })
+            }
+        })
 }
 
-export const deleteToken = (id) => dispatch => {
-    return FetchApi(`/api/token/${id}`, 'DELETE')
+export const createToken = (data) => dispatch => {
+    return FetchApi("/api/token-dev", 'POST', data)
+}
+
+export const validateSource = (data) => dispatch => {
+    return FetchApi(`/api/token-dev/validate`, "POST", data)
+}
+
+export const getTokenById = (id) => (dispatch, getState) => {
+    const type = getState().tokenDev.listType
+    return FetchApi(`/api/token-dev/${id}`, "GET", { type })
+}
+
+export const createRequest = (data) => dispatch => {
+    return FetchApi(`/api/token-dev/request`, 'post', data)
+}
+export const cancelRequest = (data) => dispatch => {
+    return FetchApi(`/api/token-dev/request`, 'delete', data)
+}
+
+export const getConfig = (key) => dispatch => {
+    return FetchApi(`/api/config/${key}`)
+}
+
+
+export const setModalOpen = (modalName) => dispatch => {
+    dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
+}
+
+export const testDeploy = (data) => dispatch => {
+    return FetchApi(`/api/token-dev/testDeploy`, 'post', data)
 }

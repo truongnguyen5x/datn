@@ -2,9 +2,17 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const VCoin = sequelize.define('VCoin', {
-    used: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+    abi: {
+        type: DataTypes.TEXT
+    },
+    account: {
+        type: DataTypes.STRING,
+    },
+    address: {
+        type: DataTypes.STRING,
+    },
+    network_id: {
+        type: DataTypes.BIGINT,
     },
     createdAt: {
         type: DataTypes.DATE,

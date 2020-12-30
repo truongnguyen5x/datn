@@ -42,6 +42,9 @@ app.use(express.static(path.resolve(__dirname, '../dist')))
 app.use('/api', routes)
 
 
+app.get('/ide', function (req, res) {
+    res.sendFile(path.resolve(__dirname, '../ide/index.html'));
+})
 app.get('/*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })

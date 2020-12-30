@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import { Edit, Trash, X } from 'react-feather'
 import { connect } from "react-redux"
-import { Button, FormGroup, Row, Col } from "reactstrap"
-import { Plus, ArrowLeft, X, Edit, Trash } from 'react-feather'
-import { getListAccount, deleteAccount } from "../../redux/actions/account/index"
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { Button } from "reactstrap"
+import { deleteAccount, getListAccount } from "../../redux/actions/account/index"
 
-import { toast, ToastContainer } from "react-toastify"
 
 
 const DetailAccount = (props) => {

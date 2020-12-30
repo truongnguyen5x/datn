@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react'
+import { ErrorMessage, Field, Form, Formik } from 'formik'
+import React, { useEffect, useRef } from 'react'
+import { X } from 'react-feather'
 import { connect } from "react-redux"
-import { Button, FormGroup, Row, Col } from "reactstrap"
-import { Plus, ArrowLeft, X } from 'react-feather'
-import { getListAccount, createAccount } from "../../redux/actions/account/index"
-import * as Yup from "yup"
-import { Formik, Field, Form, ErrorMessage } from 'formik'
-import "react-toastify/dist/ReactToastify.css"
-import "../../assets/scss/pages/account.scss"
 import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { Button, Col, FormGroup, Row } from "reactstrap"
+import * as Yup from "yup"
+import "../../assets/scss/pages/account.scss"
+import { createAccount, getListAccount } from "../../redux/actions/account/index"
 
 const FormSchema = Yup.object().shape({
     name: Yup.string()

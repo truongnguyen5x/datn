@@ -1,5 +1,6 @@
 const userController  = require('./user')
-const tokenController = require('./token')
+const tokenAdminController = require('./token-admin')
+const tokenDevController = require('./token-dev')
 const vcoinController = require('./vcoin')
 const configController = require("./config")
 const accountController = require("./account")
@@ -8,7 +9,8 @@ const fileController = require("./file")
 
 module.exports = {
     userController,
-    tokenController,
+    tokenAdminController,
+    tokenDevController,
     configController,
     accountController,
     vcoinController,

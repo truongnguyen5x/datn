@@ -8,7 +8,6 @@ const getListAccount = async (req, res, next) => {
         const rs = await accountService.getListAccount(user.id)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -29,7 +28,6 @@ const createAccount = async (req, res, next) => {
         const rs = await accountService.createAccount(req.body, user.id)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -69,7 +67,6 @@ const getListAccountBalance = async (req, res, next) => {
         const rs = await accountService.getListAccountBalance(user.id, network_id)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

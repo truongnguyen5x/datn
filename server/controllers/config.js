@@ -7,7 +7,6 @@ const getConfigs = async (req, res, next) => {
         const rs = await configService.getListConfig()
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -15,10 +14,10 @@ const getConfigs = async (req, res, next) => {
 
 const getConfigByKey = async (req, res, next) => {
     try {
-        const rs = await configService.getConfigByKey()
+        const { key } = req.params
+        const rs = await configService.getConfigByKey(key)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -28,7 +27,6 @@ const updateBatchConfig = async (req, res, next) => {
         const rs = await configService.updateBatchConfig(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }

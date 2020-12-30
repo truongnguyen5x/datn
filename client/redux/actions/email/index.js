@@ -120,7 +120,7 @@ export const setLabel = label => {
         dispatch(getEmails(routeParams))
       })
       .catch(error => {
-        console.log(error)
+        // console.log(error)
       })
   }
 }

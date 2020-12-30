@@ -9,7 +9,8 @@ import navbar from "./navbar/Index"
 import dataList from "./data-list/"
 import account from "./account"
 import vcoin from "./vcoin"
-import token from "./token"
+import tokenAdmin from "./token-admin"
+import tokenDev from "./token-dev"
 import network from "./network"
 
 const rootReducer = combineReducers({
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   dataList: dataList,
   account: account,
   vcoin: vcoin,
-  token: token,
+  tokenAdmin: tokenAdmin,
+  tokenDev: tokenDev,
   network: network
 })
 

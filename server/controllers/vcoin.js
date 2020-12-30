@@ -5,11 +5,9 @@ const { sequelize } = require("../configs")
 
 const getListVCoin = async (req, res, next) => {
     try {
-        const { filter } = req.query
-        const rs = await vcoinService.getListVCoin(filter)
+        const rs = await vcoinService.getListVCoin()
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -25,26 +23,16 @@ const getVCoinById = async (req, res, next) => {
 }
 
 const createVCoin = async (req, res, next) => {
-    const t = await sequelize.transaction();
     try {
-        const { user } = req
-        const rs = await vcoinService.createVCoin(req.body, user.id, t)
+        const rs = await vcoinService.createVCoin(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
-        await t.rollback();
         ResponseError(res, error, "ERROR")
     }
 }
 
 const updateVCoin = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const vcoin = await vcoinService.getVCoinById(id)
-        if (!vcoin) {
-            throw new ApiError('khong tim thay template')
-        }
-        req.body.id = id
         const rs = await vcoinService.updateVCoin(req.body)
         ResponseSuccess(res, rs)
     } catch (error) {
@@ -65,15 +53,12 @@ const deleteVCoin = async (req, res, next) => {
         ResponseError(res, error, "ERROR")
     }
 }
-
-const exportSDK = async (req, res, next) =>{
+const testDeploy = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const path = await vcoinService.exportSDK(id)
-
-        res.download(path)
+        const { user } = req
+        const rs = await vcoinService.testDeploy(req.body, user.id)
+        ResponseSuccess(res, rs)
     } catch (error) {
-        console.log(error)
         ResponseError(res, error, "ERROR")
     }
 }
@@ -85,5 +70,5 @@ module.exports = {
     getVCoinById,
     updateVCoin,
     deleteVCoin,
-    exportSDK
+    testDeploy
 }

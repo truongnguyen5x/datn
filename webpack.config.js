@@ -6,7 +6,8 @@ const development = process.env.NODE_ENV != 'production'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 require("dotenv").config()
 
-module.exports = {
+
+module.exports  = {
     mode: development ? "development" : "production",
     entry: './client/index.js',
     output: {
@@ -20,7 +21,13 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ["@babel/preset-react", "@babel/preset-env"],
+                        plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime"]
+                    }
+                }
             },
             {
                 test: /\.(css|scss)$/,
@@ -50,4 +57,4 @@ module.exports = {
             }
         })
     ]
-};
+}

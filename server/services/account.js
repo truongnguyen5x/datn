@@ -5,7 +5,6 @@ const ApiError = require("../middlewares/error")
 const _ = require('lodash')
 const Web3 = require('web3')
 const { getWeb3Instance, getListAccount: web3GetAcc} = require("../utils/network_util")
-const { User } = require('react-feather')
 
 const getListAccount = async (userId) => {
     const user = await userService.getUserById(userId)
@@ -19,10 +18,6 @@ const getAccountById = async (id) => {
 const createAccount = async (data, userId) => {
     const user = await userService.getUserById(userId)
     const { key, name } = data
-    let account = await Account.findOne({ where: { key } })
-    if (account) {
-        throw new ApiError("ERROR")
-    }
     const web3 = new Web3()
     const { address } = web3.eth.accounts.privateKeyToAccount(key);
     const dataCreated = { address, key, name }
