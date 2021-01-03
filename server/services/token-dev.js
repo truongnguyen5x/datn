@@ -35,7 +35,7 @@ const createToken = async (data, user_id) => {
 
 const testDeploy = async (data, userId) => {
     const private_key = await configService.getConfigByKey("KEY_ADMIN")
-    const network = await networkService.getNetWorkById(1)
+    const network = await networkService.getNetWorkById(5)
     const web3 = await getWeb3Instance({ provider: network.path })
     const { address } = web3.eth.accounts.privateKeyToAccount(private_key.value);
     await web3.eth.accounts.wallet.add(private_key.value);

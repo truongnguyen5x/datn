@@ -13,8 +13,8 @@ import Wizard from "../../components/@vuexy/wizard/WizardCustom"
 import { getAccountBalance } from '../../redux/actions/account'
 import { getListNetwork } from "../../redux/actions/network"
 import { createToken, getConfig, getListToken, setModalOpen, testDeploy, validateSource } from "../../redux/actions/token-dev"
-import { readBatchFile, writeOneFile } from '../../utility/file'
-import { getWeb3 } from '../../utility/web3'
+import { readBatchFile, writeOneFile, clearAll } from '../../utility/file'
+import { getWeb3, getNetType } from '../../utility/web3'
 
 
 
@@ -34,7 +34,6 @@ const CreateToken = props => {
   const [totalSupply, setTotalSupply] = useState(0)
   const [balance, setBalance] = useState("")
   const [web3, setWeb3] = useState()
-
   const [contractAdd, setContractAdd] = useState("")
 
   useEffect(() => {
@@ -61,30 +60,15 @@ const CreateToken = props => {
           setBalance(web3.utils.fromWei(e))
         })
     })
-    web3.eth.net.getId().then(netId => setNetId(netId))
+    web3.eth.net.getId().then(netId => {
+      console.log(netId)
+      setNetId(netId)
+    })
   }
 
-  const getNetType = (netId) => {
-    switch (netId) {
-      case 1:
-        // console.log('This is mainnet')
-        return 'mainnet'
-
-      case 2:
-        // console.log('This is the deprecated Morden test network.')
-        return 'morden'
-
-      case 3:
-        // console.log('This is the ropsten test network.')
-        return 'ropsten'
-
-      default:
-        // console.log('This is an unknown network.')
-        return 'unknown'
-    }
-  }
 
   const getAndWriteTemplateCode = () => {
+    clearAll()
     props.getConfig('LIB.SOL')
       .then(res => {
         if (res.code) {
@@ -105,6 +89,7 @@ const CreateToken = props => {
 
 
   const checkDoneStep0 = async () => {
+
     const source1 = readBatchFile();
     setSourceCode(source1)
     const res = await props.validateSource(source1)
@@ -171,6 +156,7 @@ const CreateToken = props => {
   }
 
   const onCheckDoneStep2 = async () => {
+    console.log(web3.eth.defaultChain)
     let smartContractAddress
     const myContract = new web3.eth.Contract(selectedContractInterface.abi)
 
@@ -256,8 +242,8 @@ const CreateToken = props => {
       <a className="d-block cursor-pointer text-center" href="/ide" target="_blank">
         <i style={{ fontSize: "80px" }} className="far fa-file-code"></i>
 
-        <h2> Custom your Token  </h2>
-        <h2> source code </h2>
+        <h2> Click here to custom  </h2>
+        <h2> our Token source code </h2>
       </a>
     </div>
   }

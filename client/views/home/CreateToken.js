@@ -13,7 +13,7 @@ import Wizard from "../../components/@vuexy/wizard/WizardCustom"
 import { getConfig, validateSource } from "../../redux/actions/token-dev"
 import { createVcoin, getListVCoin, testDeploy } from '../../redux/actions/vcoin'
 import { readBatchFile, writeOneFile } from '../../utility/file'
-import { getWeb3 } from '../../utility/web3'
+import { getWeb3, getNetType } from '../../utility/web3'
 
 
 
@@ -65,26 +65,6 @@ const CreateToken = props => {
     web3.eth.net.getId().then(netId => { 
       console.log('net id', netId)
        setNetId(netId)})
-  }
-
-  const getNetType = (netId) => {
-    switch (netId) {
-      case 1:
-        // console.log('This is mainnet')
-        return 'mainnet'
-
-      case 2:
-        // console.log('This is the deprecated Morden test network.')
-        return 'morden'
-
-      case 3:
-        // console.log('This is the ropsten test network.')
-        return 'ropsten'
-
-      default:
-        // console.log('This is an unknown network.')
-        return 'unknown'
-    }
   }
 
   const getAndWriteTemplateCode = () => {
@@ -241,8 +221,8 @@ const CreateToken = props => {
       <a className="d-block cursor-pointer text-center" href="/ide" target="_blank">
         <i style={{ fontSize: "80px" }} className="far fa-file-code"></i>
 
-        <h2> Custom your Token  </h2>
-        <h2> source code </h2>
+        <h2> Click here to custom  </h2>
+        <h2> our Token source code </h2>
       </a>
     </div>
   }

@@ -12,7 +12,7 @@ import { cancelRequest, createRequest, getTokenById, setModalOpen } from "../../
 import { getListVCoin } from '../../redux/actions/vcoin'
 import { writeBatchFile } from '../../utility/file'
 import { exporSdkWorker } from '../../utility/sdk'
-import { getWeb3 } from '../../utility/web3'
+import { getWeb3, getNetType } from '../../utility/web3'
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -125,25 +125,6 @@ const TokenDetails = props => {
 
   }
 
-  const getNetType = (netId) => {
-    switch (netId) {
-      case 1:
-        // console.log('This is mainnet')
-        return 'mainnet'
-
-      case 2:
-        // console.log('This is the deprecated Morden test network.')
-        return 'morden'
-
-      case 3:
-        // console.log('This is the ropsten test network.')
-        return 'ropsten'
-
-      default:
-        // console.log('This is an unknown network.')
-        return 'unknown'
-    }
-  }
 
   const handleOpenSourceCode = (i) => {
     // console.log(i)

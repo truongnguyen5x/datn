@@ -6,6 +6,7 @@ import "../../assets/scss/pages/vcoin.scss"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { getListVCoin } from "../../redux/actions/vcoin/index"
 import CreateVCoin from './CreateToken'
+import { getNetType } from '../../utility/web3'
 
 
 
@@ -16,24 +17,9 @@ const ListVCoin = (props) => {
     useEffect(() => {
         props.getProfile()
         props.getListVCoin()
-        
+
     }, [])
 
-    const getNetType = (netId) => {
-        switch (netId) {
-            case 1:
-                return 'mainnet'
-
-            case 2:
-                return 'morden'
-
-            case 3:
-                return 'ropsten'
-
-            default:
-                return 'local'
-        }
-    }
 
     const onDownloadSDK = async (i) => {
 
