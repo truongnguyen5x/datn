@@ -7,6 +7,7 @@ const fileService = require("./file")
 const { Op } = require("sequelize");
 const { getWeb3Instance } = require("../utils/network_util");
 const VCoin = require("../models/vcoin");
+const { await } = require('signale')
 
 
 const getListToken = async (type) => {
@@ -115,11 +116,13 @@ const getTokenById = async (id, type) => {
                     where: {
                         del: 0,
                         accepted: 1
-                    }
+                    },
+                    required: true
                 }, {
                     model: Network,
                     as: 'network'
-                }]
+                }],
+                required: true
             }],
             order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
         })
@@ -141,13 +144,17 @@ const deleteToken = async (id) => {
 
 
 const acceptRequest = async (data) => {
+    const smartContract = await SmartContract.findOne({ where: { id: data.id } })
+
     const requestNew = await Request.findOne({
         where: {
             del: 0,
             smart_contract_id: data.id
         }
     })
-
+    if (data.address) {
+        await smartContract.update({ address: data.address })
+    }
     await requestNew.update({ accepted: 1 })
     return 'success'
 }

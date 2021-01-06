@@ -252,7 +252,7 @@ module.exports = Token${name}
   const root = zip.folder(name);
   root.file('package.json', JSON.stringify(packageFile, null, 4))
   root.file('index.js', frontendSdk)
-  const contracts = root.folder(contracts)
+  const contracts = root.folder('contracts')
   contracts.file(`${name}.json`,JSON.stringify(abi, null, 4) )
   const config = root.folder('config')
   config.file("config.json", JSON.stringify(configContent, null, 4))

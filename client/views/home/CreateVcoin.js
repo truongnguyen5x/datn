@@ -22,7 +22,7 @@ import "../../assets/scss/plugins/extensions/toastr.scss"
 import { getConfig } from "../../redux/actions/token-dev"
 import { createVcoin, getListVCoin, testDeploy, validateSource } from '../../redux/actions/vcoin'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
-import { getNetType, getWeb3 } from '../../utility/web3'
+import { getNetType, getWeb3, deployWithEstimateGas } from '../../utility/web3'
 
 
 
@@ -40,7 +40,6 @@ const CreateVcoin = props => {
   const [balance, setBalance] = useState("")
   const [web3, setWeb3] = useState()
 
-  const [contractAdd, setContractAdd] = useState("")
 
   useEffect(() => {
     getAndWriteTemplateCode()
@@ -192,43 +191,17 @@ const CreateVcoin = props => {
     setLoading(true)
     let smartContractAddress
     const myContract = new web3.eth.Contract(selectedContractInterface.abi)
-    myContract.deploy({
+    const deploy = myContract.deploy({
       data: selectedContractInterface.bytecode,
       arguments: dataConstructorDeploy
-    }).estimateGas()
-      .then(gas => {
-        console.log('estimate gas', gas)
-        return myContract.deploy({
-          data: selectedContractInterface.bytecode,
-          arguments: dataConstructorDeploy
-        }).send({
-          from: accs[0],
-          gas: gas + 1000000
-        })
-          .on('error', (error) => {
-            console.log('error')
-            setLoading(false)
-          })
-          .on('transactionHash', async (transactionHash) => {
-            console.log('transactionHash', transactionHash)
-          })
-          .on('receipt', async (receipt) => {
-            console.log('receipt', receipt)
-            setContractAdd(receipt.contractAddress)
-            smartContractAddress = receipt.contractAddress
-          })
-          .on('confirmation', async (confirmationNumber, receipt) => {
-            console.log('confirm', confirmationNumber, receipt)
-          })
-      })
-      .then(async (newContractInstance) => {
-        console.log('then', newContractInstance.options.address) // instance with the new contract address
-
+    })
+    deployWithEstimateGas(deploy, accs[0])
+      .then(instance => {
         return props.createVcoin({
           account: accs[0],
           network_id: netId,
           abi: selectedContractInterface.abi,
-          address: smartContractAddress
+          address: instance.options.address
         })
       })
       .then(res => {
@@ -241,6 +214,9 @@ const CreateVcoin = props => {
           toast.error("Create token error !")
         }
         setLoading(false)
+      })
+      .catch(error => {
+        console.log(error)
       })
   }
 

@@ -152,7 +152,6 @@ const CreateToken = props => {
 
       if (source1[0].path == 'Lib.sol' && source1[0].code == libSol
         && source1[1].path == 'Token.sol' && source1[1].code == tokenSol) {
-        // console.log('same')
         setSourceEdited(false)
         setTokenSymbol('TK1')
         const temp = res.data.find(i => i.file == 'Token.sol')
@@ -172,6 +171,8 @@ const CreateToken = props => {
         }
         setActiveStep(2)
       } else {
+        setSelectedContractInterface(null)
+        setDataConstructorDeploy([])
         setSourceEdited(true)
         setActiveStep(1)
         Swal.fire({
@@ -239,7 +240,7 @@ const CreateToken = props => {
         text: 'Please enter information !'
       })
     }
-    console.log(tokenSymbol)
+
     const res = await props.checkTokenSymbolExists(tokenSymbol)
     console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
     if (res.code) {
@@ -255,122 +256,79 @@ const CreateToken = props => {
     }
   }
   const checkDoneStep3 = async () => {
-    try {
-      setLoading(true)
-      if (useMetaMask) {
-        let smartContractAddress
-        let newContractInstance
-        const myContract = new web3.eth.Contract(selectedContractInterface.abi)
-        // const deploy =
-        myContract.deploy({
-          data: selectedContractInterface.bytecode,
-          arguments: dataConstructorDeploy
-        }).estimateGas()
-          .then(gas => {
-            console.log('estimate gas', gas)
-            return myContract.deploy({
-              data: selectedContractInterface.bytecode,
-              arguments: dataConstructorDeploy
-            }).send({
-              from: accs[0],
-              gas: gas + 1000000
-            })
-              .on('error', (error) => {
-                console.log('error')
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: 'Something error'
-                })
-                setLoading(false)
-              })
-              .on('transactionHash', async (transactionHash) => {
-                console.log('transactionHash', transactionHash)
-              })
-              .on('receipt', async (receipt) => {
-                console.log('receipt', receipt)
-                smartContractAddress = receipt.contractAddress
-              })
-              .on('confirmation', async (confirmationNumber, receipt) => {
-                console.log('confirm', confirmationNumber, receipt)
-              })
-          })
-          .then(async instance => {
-            console.log('then', instance.options.address) // instance with the new contract address
-            newContractInstance = instance
-            return instance.methods.setInfo(tokenSymbol, tokenName, initialSupply)
-              .estimateGas()
-          })
-          .then(gas => {
-            console.log('estimate gas 2', gas)
-            return newContractInstance.methods.setInfo(tokenSymbol, tokenName, initialSupply)
-              .send({
-                from: accs[0],
-                gas: gas + 1000000
-              })
-          })
-          .then(() => {
-            return props.createToken({
-              source: sourceCode,
-              chain_id: getNetType(netId),
-              tokenSymbol,
-              abi: selectedContractInterface.abi,
-              initialSupply: initialSupply,
-              tokenName,
-              account: accs[0],
-              description,
-              address: smartContractAddress
-            })
-            // alert('success')
-          })
-          .then(res => {
-            if (res.code) {
-              resetState()
-              props.setModalOpen("")
-              props.getListToken()
-              toast.success('Create token success')
-              setLoading(false)
-            } else {
-              setLoading(false)
-            }
-          })
-
-      } else {
-        console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
-        props.createToken({
-          source: sourceCode,
-          network_id: selectedNetwork.id,
-          constructorData: dataConstructorDeploy,
-          bytecode: selectedContractInterface.bytecode,
-          tokenSymbol,
-          abi: selectedContractInterface.abi,
-          initialSupply: initialSupply,
-          tokenName,
-          description
-        })
-
-          .then(res => {
-            if (res.code) {
-              resetState()
-              props.setModalOpen("")
-              props.getListToken()
-              toast.success('Create token success')
-              setLoading(false)
-            } else {
-              setLoading(false)
-            }
-          })
-
-
-      }
-    } catch (error) {
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Something error'
+    setLoading(true)
+    if (useMetaMask) {
+      let smartContractAddress
+      let newContractInstance
+      const myContract = new web3.eth.Contract(selectedContractInterface.abi)
+      const deploy = myContract.deploy({
+        data: selectedContractInterface.bytecode,
+        arguments: dataConstructorDeploy
       })
-      setLoading(false)
+      deployWithEstimateGas(deploy, accs[0])
+        .then(instance => {
+          newContractInstance = instance
+          smartContractAddress = instance.options.address
+          const setInfo = instance.methods.setInfo(tokenSymbol, tokenName, initialSupply)
+          return sendWithEstimateGas(setInfo, accs[0])
+        })
+        .then(() => {
+          return props.createToken({
+            source: sourceCode,
+            chain_id: getNetType(netId),
+            tokenSymbol,
+            abi: selectedContractInterface.abi,
+            initialSupply: initialSupply,
+            tokenName,
+            account: accs[0],
+            description,
+            address: smartContractAddress
+          })
+        })
+        .then(res => {
+          if (res.code) {
+            resetState()
+            props.setModalOpen("")
+            props.getListToken()
+            toast.success('Create token success')
+            setLoading(false)
+          } else {
+            setLoading(false)
+          }
+        })
+        .catch(error => {
+          setLoading(false)
+          console.log(error)
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something error'
+          })
+        })
+    } else {
+      console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
+      props.createToken({
+        source: sourceCode,
+        network_id: selectedNetwork.id,
+        constructorData: dataConstructorDeploy,
+        bytecode: selectedContractInterface.bytecode,
+        tokenSymbol,
+        abi: selectedContractInterface.abi,
+        initialSupply: initialSupply,
+        tokenName,
+        description
+      })
+        .then(res => {
+          if (res.code) {
+            resetState()
+            props.setModalOpen("")
+            props.getListToken()
+            toast.success('Create token success')
+            setLoading(false)
+          } else {
+            setLoading(false)
+          }
+        })
     }
   }
 

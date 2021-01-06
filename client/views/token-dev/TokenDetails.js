@@ -12,7 +12,7 @@ import { cancelRequest, createRequest, getTokenById, setModalOpen, getListToken 
 import { getListVCoin } from '../../redux/actions/vcoin'
 import { writeBatchFile, clearAll } from '../../utility/file'
 import { exporSdkWorker } from '../../utility/sdk'
-import { getWeb3, getNetType } from '../../utility/web3'
+import { getWeb3, getNetType, sendWithEstimateGas } from '../../utility/web3'
 import { toast } from "react-toastify"
 
 const TokenDetails = props => {
@@ -110,38 +110,24 @@ const TokenDetails = props => {
         return
       }
       const myContract = new web3.eth.Contract(interfaceX, i.address)
-      myContract.methods.setVChain(vcoin.address)
-        .estimateGas()
-        .then(gas => {
-          console.log('estimate gas ', gas)
-          return myContract.methods.setVChain(vcoin.address)
-            .send({
-              from: accs[0],
-              gas: gas + 1000000
-            })
-            .on('transactionHash', (hash) => {
-              console.log('transactionHash', hash)
-            })
-            .on('receipt', async (receipt) => {
-              console.log('receipt', receipt)
-              const res = await props.createRequest({
-                id: i.id
-              })
-              props.getTokenById(props.data.id)
-                .then(res => {
-                  if (res.code) {
-                    setData(res.data)
-                    toast.success('Created request add token to V-Coin')
-
-                  }
-                  setLoading(false)
-                })
-            })
-            .on('error', async err => {
-              console.log('error')
-
+      const transaction = myContract.methods.setVChain(vcoin.address)
+      sendWithEstimateGas(transaction, accs[0])
+        .then(async () => {
+          const res = await props.createRequest({
+            id: i.id
+          })
+          props.getTokenById(props.data.id)
+            .then(res => {
+              if (res.code) {
+                setData(res.data)
+                toast.success('Created request add token to V-Coin')
+              }
               setLoading(false)
-            });
+            })
+        })
+        .catch(error => {
+          console.log(error)
+          setLoading(false)
         })
     } else {
       const res = await props.createRequest({
@@ -353,7 +339,7 @@ const TokenDetails = props => {
                 </div>
                 <div className="token-detail-general">
                   <div className="font-weight-bold token-detail-title">Total supply</div>
-                  <div>{parseInt(data?.initial_supply||0).toLocaleString()}</div>
+                  <div>{parseInt(data?.initial_supply || 0).toLocaleString()}</div>
                 </div>
               </Col>
               <Col md={3}>

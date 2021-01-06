@@ -58,8 +58,7 @@ const sendWithEstimateGas = (send, from) => {
         send.estimateGas()
             .then(gas => {
                 console.log('estimate gas')
-                send.estimateGas()
-                    .send({
+                send.send({
                         from,
                         gas: gas + 1000000
                     })
@@ -79,13 +78,13 @@ const sendWithEstimateGas = (send, from) => {
 }
 
 const deployWithEstimateGas = (send, from) => {
+    console.log(send)
     let address
     return new Promise((resolve, reject) => {
         send.estimateGas()
             .then(gas => {
                 console.log('estimate gas')
-                send.estimateGas()
-                    .send({
+                send.send({
                         from,
                         gas: gas + 1000000
                     })

@@ -8,7 +8,7 @@ import { Button, Col, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane, 
 import { acceptRequest, deleteToken, denyRequest, getListToken, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
 import { getListVCoin } from '../../redux/actions/vcoin'
 import { clearAll, writeBatchFile } from '../../utility/file'
-import { getWeb3 } from '../../utility/web3'
+import { getWeb3, deployWithEstimateGas, sendWithEstimateGas } from '../../utility/web3'
 
 
 const TokenDetails = props => {
@@ -97,132 +97,74 @@ const TokenDetails = props => {
     const interfaceX = JSON.parse(vcoin.abi)
     const vcoinContract = new web3.eth.Contract(interfaceX, vcoin.address)
     if (i.address) {
-      vcoinContract.methods.addToken(i.address).estimateGas()
-        .then(gas => {
-          console.log('estimate gas', gas)
-          vcoinContract.methods.addToken(i.address)
-            .send({
-              from: accs[0],
-              gas: gas + 1000000
+      const trans = vcoinContract.methods.addToken(i.address)
+      sendWithEstimateGas(trans, accs[0])
+        .then(async () => {
+          const res = await props.acceptRequest({
+            id: i.id
+          })
+          setLoading(false)
+          props.getListToken()
+          resetState()
+          props.getTokenById(props.data.id)
+            .then(res => {
+              if (res.code) {
+                if (res.data) {
+                  setData(res.data)
+                } else {
+                  props.setModalOpen('')
+                }
+              }
             })
-            .on('transactionHash', (hash) => {
-              console.log('transactionHash', hash)
-            })
-            .on('receipt', async (receipt) => {
-              console.log('receipt', receipt)
-              const res = await props.acceptRequest({
-                id: i.id
-              })
-              setLoading(false)
-              props.getListToken()
-              resetState()
-              props.getTokenById(props.data.id)
-                .then(res => {
-                  if (res.code) {
-                    if (res.data) {
-                      setData(res.data)
-                    } else {
-                      props.setModalOpen('')
-                    }
-                  }
-                })
-            })
-            .on('error', async err => {
-              console.log('error')
-              setLoading(false)
-            });
+        })
+        .catch(error => {
+          console.log(error)
+          setLoading(false)
         })
     } else {
       let smartContractAddress
-      let instance
+      let newInstance
       const token = new web3.eth.Contract(JSON.parse(i.abi))
-      token.deploy({
+      const deploy = token.deploy({
         data: i.bytecode,
         arguments: JSON.parse(i.constructor_data)
       })
-        .estimateGas()
-        .then(gas => {
-          console.log('estimate gas', gas)
-          return token.deploy({
-            data: i.bytecode,
-            arguments: JSON.parse(i.constructor_data)
+      deployWithEstimateGas(deploy, accs[0])
+        .then(instance => {
+          smartContractAddress = instance.options.address
+          newInstance = instance
+          const setInfo = instance.methods.setInfo(data.symbol, data.name, data.initial_supply)
+          return sendWithEstimateGas(setInfo, accs[0])
+        })
+        .then(() => {
+          const setVcoin = newInstance.methods.setVChain(vcoin.address)
+          return sendWithEstimateGas(setVcoin, accs[0])
+        })
+        .then(() => {
+          const addToken = vcoinContract.methods.addToken(smartContractAddress)
+          return sendWithEstimateGas(addToken, accs[0])
+        })
+        .then(async () => {
+          const res = await props.acceptRequest({
+            id: i.id,
+            address: smartContractAddress
           })
-            .send({
-              from: accs[0],
-              gas: gas + 1000000
-            })
-            .on('error', (error) => {
-              console.log(error)
-              setLoading(false)
-            })
-            .on('transactionHash', async (transactionHash) => {
-              console.log('transactionHash', transactionHash)
-            })
-            .on('receipt', async (receipt) => {
-              console.log('receipt', receipt)
-              smartContractAddress = receipt.contractAddress
-            })
-            .on('confirmation', async (confirmationNumber, receipt) => {
-              console.log('confirm', confirmationNumber, receipt)
+          setLoading(false)
+          props.getListToken()
+          resetState()
+          props.getTokenById(props.data.id)
+            .then(res => {
+              if (res.code) {
+                if (res.data) {
+                  setData(res.data)
+                } else {
+                  props.setModalOpen('')
+                }
+              }
             })
         })
-        .then(async i => {
-          instance = i
-          return i.methods.setVChain(vcoin.address)
-            .estimateGas()
-        })
-        .then(gas => {
-          console.log('estimate gas', gas)
-          return instance.methods.setVChain(vcoin.address)
-            .send({
-              from: accs[0],
-              gas: gas + 1000000
-            })
-            .on('transactionHash', (hash) => {
-              console.log('transactionHash', hash)
-            })
-            .on('receipt', async (receipt) => {
-              console.log('receipt', receipt)
-              vcoinContract.methods.addToken(smartContractAddress).estimateGas()
-                .then(gas => {
-                  console.log('estimate gas', gas)
-                  vcoinContract.methods.addToken(smartContractAddress)
-                    .send({
-                      from: accs[0],
-                      gas: gas + 1000000
-                    })
-                    .on('transactionHash', (hash) => {
-                      console.log('transactionHash', hash)
-                    })
-                    .on('receipt', async (receipt) => {
-                      console.log('receipt', receipt)
-                      const res = await props.acceptRequest({
-                        id: i.id
-                      })
-                      setLoading(false)
-                      props.getListToken()
-                      resetState()
-                      props.getTokenById(props.data.id)
-                        .then(res => {
-                          if (res.code) {
-                            if (res.data) {
-                              setData(res.data)
-                            } else {
-                              props.setModalOpen('')
-                            }
-                          }
-                        })
-                    })
-                    .on('error', async err => {
-                      console.log('error')
-                      setLoading(false)
-                    });
-                })
-            })
-            .on('error', async err => {
-              console.log('error')
-              setLoading(false)
-            });
+        .catch(error => {
+          console.log(error)
         })
 
     }
@@ -284,40 +226,28 @@ const TokenDetails = props => {
       return
     }
     const interfaceX = JSON.parse(vcoin.abi)
-
-
     const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
-    myContract.methods.removeToken(data.symbol)
-      .estimateGas()
-      .then(gas => {
-        return myContract.methods.removeToken(data.symbol)
-          .send({
-            from: accs[0],
-            gas: gas + 1000000
+    const removeTk = myContract.methods.removeToken(data.symbol)
+    sendWithEstimateGas(removeTk, accs[0])
+      .then(async () => {
+        const res = await props.deleteToken(i.id)
+        props.getListToken()
+        resetState()
+        setLoading(false)
+        props.getTokenById(props.data.id)
+          .then(res => {
+            if (res.code) {
+              if (res.data) {
+                setData(res.data)
+              } else {
+                props.setModalOpen('')
+              }
+            }
           })
-          .on('transactionHash', (hash) => {
-            console.log('transactionHash', hash)
-          })
-          .on('receipt', async (receipt) => {
-            console.log('receipt', receipt)
-            const res = await props.deleteToken(i.id)
-            props.getListToken()
-            resetState()
-            setLoading(false)
-            props.getTokenById(props.data.id)
-              .then(res => {
-                if (res.code) {
-                  if (res.data) {
-                    setData(res.data)
-                  } else {
-                    props.setModalOpen('')
-                  }
-                }
-              })
-          })
-          .on('error', async err => {
-            console.log('error')
-          });
+      })
+      .catch(error => {
+        console.log(error)
+        setLoading(false)
       })
   }
 

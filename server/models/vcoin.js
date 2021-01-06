@@ -11,6 +11,9 @@ const VCoin = sequelize.define('VCoin', {
     address: {
         type: DataTypes.STRING,
     },
+    swap_fee: {
+        type: DataTypes.STRING,
+    },
     network_id: {
         type: DataTypes.BIGINT,
     }

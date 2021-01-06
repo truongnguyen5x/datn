@@ -8,11 +8,13 @@ import { getListVCoin } from "../../redux/actions/vcoin/index"
 import CreateVCoin from './CreateVcoin'
 import { getNetType } from '../../utility/web3'
 import { ToastContainer } from 'react-toastify'
-
+import DetailVcoin from './DetailVcoin'
 
 const ListVCoin = (props) => {
 
     const [modalCreate, openModalCreate] = useState(false)
+    const [modalDetail, openModalDetail] = useState(false)
+    const [vcoin, setVcoin] = useState(false)
 
     useEffect(() => {
         props.getListVCoin()
@@ -32,7 +34,10 @@ const ListVCoin = (props) => {
                         <div>Account: {i.account}</div>
                         <div className="d-flex justify-content-between mt-1">
                             <Button
-                                // onClick={() => onDownloadSDK(i.vcoins[0].id)}
+                                onClick={() => {
+                                    openModalDetail(true)
+                                    setVcoin(i)
+                                }}
                                 color="primary"
                             >
                                 <Edit size={15} />
@@ -57,8 +62,15 @@ const ListVCoin = (props) => {
                 visible={modalCreate}
                 onClose={() => openModalCreate(false)}
             />
+            <DetailVcoin
+                data={vcoin}
+                visible={modalDetail}
+                onClose={() => {
+                    openModalDetail(false)
+                }}
+            />
         </div>
-        <ToastContainer/>
+        <ToastContainer />
     </div>
 }
 
