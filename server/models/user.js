@@ -25,17 +25,10 @@ const User = sequelize.define('User', {
     role: {
         type: DataTypes.INTEGER,
         defaultValue: 1
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'users'
+    tableName: 'users',
+    timestamps: true
 });
 
 module.exports = User

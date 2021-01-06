@@ -6,27 +6,24 @@ const Token = sequelize.define('Token', {
         type: DataTypes.STRING
     },
     exchange_rate: {
-        type: DataTypes.INTEGER.UNSIGNED
+        type: DataTypes.INTEGER.UNSIGNED,
+        defaultValue: 100
     },
     image: {
         type: DataTypes.STRING
     },
+    initial_supply: {
+        type: DataTypes.STRING
+    }, 
     name: {
         type: DataTypes.STRING
     },
     symbol: {
         type: DataTypes.STRING
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'tokens'
+    tableName: 'tokens',
+    timestamps: true
 });
 
 module.exports = Token

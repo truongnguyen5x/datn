@@ -9,17 +9,10 @@ const Request = sequelize.define('Request', {
     del: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'requests'
+    tableName: 'requests',
+    timestamps: true
 });
 
 module.exports = Request

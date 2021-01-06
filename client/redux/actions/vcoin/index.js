@@ -26,3 +26,7 @@ export const createVcoin = (data) => dispatch => {
 export const testDeploy = (data) => dispatch => {
     return FetchApi(`/api/vcoin/testDeploy`, 'post', data)
 }
+
+export const validateSource = (data) => dispatch => {
+    return FetchApi(`/api/vcoin/validate`, "POST", data)
+}

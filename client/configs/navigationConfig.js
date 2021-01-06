@@ -10,14 +10,6 @@ const navigationConfig = [
     navLink: "/"
   },
   {
-    id: "account",
-    title: "Account",
-    type: "item",
-    icon: <Icon.CreditCard size={20} />,
-    permissions: ["editor"],
-    navLink: "/accounts"
-  },
-  {
     id: "token-admin",
     title: "Token",
     type: "item",

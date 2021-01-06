@@ -5,14 +5,15 @@ import React, { useEffect, useState } from "react"
 import { ArrowLeft, Download, Edit, Trash } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip, Spinner } from 'reactstrap'
 import Swal from 'sweetalert2'
 import noImage from "../../assets/img/coin/no-image.png"
-import { cancelRequest, createRequest, getTokenById, setModalOpen } from "../../redux/actions/token-dev"
+import { cancelRequest, createRequest, getTokenById, setModalOpen, getListToken } from "../../redux/actions/token-dev"
 import { getListVCoin } from '../../redux/actions/vcoin'
-import { writeBatchFile } from '../../utility/file'
+import { writeBatchFile, clearAll } from '../../utility/file'
 import { exporSdkWorker } from '../../utility/sdk'
 import { getWeb3, getNetType } from '../../utility/web3'
+import { toast } from "react-toastify"
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -20,6 +21,8 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [clicked, setClicked] = useState(0)
 
   useEffect(() => {
     props.getListVCoin()
@@ -32,6 +35,10 @@ const TokenDetails = props => {
         })
     }
   }, [props.data])
+
+  const resetState = () => {
+    setActiveTab(1)
+  }
 
   useEffect(() => {
     getWeb3()
@@ -56,68 +63,128 @@ const TokenDetails = props => {
     }
   }
 
-  const handleAddVChain = async (i) => {
-
+  const handleAddToVCoin = async (i) => {
+    setLoading(true)
+    setClicked(i.id)
     const interfaceX = JSON.parse(i.abi)
     let vcoin
     if (netId == 1) {
       vcoin = props.listVCoin[0]
-    } else if (netId == 2) {
+    } else if (netId == 42) {
       vcoin = props.listVCoin[1]
     } else if (netId == 3) {
       vcoin = props.listVCoin[2]
-    } else {
+    } else if (netId == 4) {
       vcoin = props.listVCoin[3]
+    } else if (netId == 5) {
+      vcoin = props.listVCoin[4]
+    } else {
+      vcoin = props.listVCoin[5]
     }
-
-    const myContract = new web3.eth.Contract(interfaceX, i.address)
-    myContract.methods.setVChain(vcoin.address)
-      .send({
-        from: accs[0],
-        gas: 500000
+    if (!vcoin) {
+      Swal.fire({
+        icon: 'Error',
+        title: 'Not found VCoin for this network !',
+        text: 'Plese contact Admin !'
       })
-      .on('transactionHash', (hash) => {
-        console.log('transactionHash', hash)
-      })
-      .on('receipt', async (receipt) => {
-        console.log('receipt', receipt)
-        const res = await props.createRequest({
-          id: i.id
+      setLoading(false)
+      return
+    }
+    if (i.address) {
+      if (!web3) {
+        Swal.fire({
+          icon: 'Error',
+          title: 'Not found Metamask !',
+          text: 'Plese enable Metamask !'
         })
-        props.getTokenById(props.data.id)
-          .then(res => {
-            if (res.code) {
-              setData(res.data)
-            }
-          })
+        setLoading(false)
+        return
+      }
+      if (i.account != accs[0]) {
+        Swal.fire({
+          icon: 'Error',
+          title: 'Account metamask not match !',
+          text: `Please use account ${i.account} !`
+        })
+        setLoading(false)
+        return
+      }
+      const myContract = new web3.eth.Contract(interfaceX, i.address)
+      myContract.methods.setVChain(vcoin.address)
+        .estimateGas()
+        .then(gas => {
+          console.log('estimate gas ', gas)
+          return myContract.methods.setVChain(vcoin.address)
+            .send({
+              from: accs[0],
+              gas: gas + 1000000
+            })
+            .on('transactionHash', (hash) => {
+              console.log('transactionHash', hash)
+            })
+            .on('receipt', async (receipt) => {
+              console.log('receipt', receipt)
+              const res = await props.createRequest({
+                id: i.id
+              })
+              props.getTokenById(props.data.id)
+                .then(res => {
+                  if (res.code) {
+                    setData(res.data)
+                    toast.success('Created request add token to V-Coin')
+
+                  }
+                  setLoading(false)
+                })
+            })
+            .on('error', async err => {
+              console.log('error')
+
+              setLoading(false)
+            });
+        })
+    } else {
+      const res = await props.createRequest({
+        id: i.id
       })
-      .on('error', async err => {
-        console.log('error')
-      });
-
-
-
-
-  }
-
-  const handleCancelVChain = async (id) => {
-    const res = await props.cancelRequest({ id })
-    if (res.code) {
       props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
             setData(res.data)
+            toast.success('Created request add token to V-Coin')
+
           }
+          setLoading(false)
+        })
+    }
+  }
+
+  const handleCancelVCoin = async (id) => {
+    setLoading(true)
+    setClicked(id)
+    const res = await props.cancelRequest({ id })
+    if (res.code) {
+      props.getListToken()
+      props.getTokenById(props.data.id)
+        .then(res => {
+          if (res.code) {
+            if (res.data) {
+              setData(res.data)
+            } else {
+              props.setModalOpen('')
+            }
+            toast.success('Removed request add token to VCoin')
+          }
+          setLoading(false)
         })
     } else {
       console.log('error')
     }
+    setLoading(false)
   }
 
   const handleDownloadSdk = async (i) => {
-
     const zip = exporSdkWorker(data.symbol, i.account, i.address, i.network_id, JSON.parse(i.abi), data.owner.name)
-
     zip.generateAsync({ type: "blob" })
       .then(function (content) {
         saveAs(content, `${data.symbol}.zip`);
@@ -128,6 +195,7 @@ const TokenDetails = props => {
 
   const handleOpenSourceCode = (i) => {
     // console.log(i)
+    clearAll()
     writeBatchFile(i.files)
     window.open("/ide", "_blank")
   }
@@ -141,15 +209,18 @@ const TokenDetails = props => {
         <UncontrolledTooltip target={"remove" + i.id}>
           Cancel add request
             </UncontrolledTooltip>
-        <Button size="sm" id={"remove" + i.id} color="danger" onClick={() => handleCancelVChain(i.id)}>
-          <Trash size={14} />
+        <Button size="sm" id={"remove" + i.id} color="danger" onClick={() => handleCancelVCoin(i.id)}>
+          {(loading && clicked == i.id) ? <Spinner color="white" size="sm" />
+            : <Trash size={14} />}
         </Button>
       </React.Fragment>
     }
     else {
       return <React.Fragment>
-        <Button size="sm" id={"add" + i.id} color="success" onClick={() => handleAddVChain(i)}>
-          <i className="fas fa-cloud-upload-alt" style={{ fontSize: '15px' }}></i>
+        <Button size="sm" id={"add" + i.id} color="success" onClick={() => handleAddToVCoin(i)}>
+          {(loading && clicked == i.id)
+            ? <Spinner color="white" size="sm" />
+            : <i className="fas fa-cloud-upload-alt" style={{ fontSize: '15px' }}></i>}
         </Button>
         <UncontrolledTooltip target={"add" + i.id}>
           Add to VChain
@@ -173,12 +244,12 @@ const TokenDetails = props => {
           Address: {i.address}
         </div>
         <div>
-          Status: {i?.request?.accepted ? "on VChain" : "not on Vchain"}
+          Status: {i?.request?.accepted ? "on VCoin" : "not on VCoin"}
         </div>
       </div>
       <div>
         <div>
-          Network: {getNetType(i.network_id)}
+          Network: {i?.network?.chain_id}
         </div>
         <div>
           Created at: {moment(i.createdAt).format("hh:mm DD/MM/YYYY")}
@@ -215,6 +286,7 @@ const TokenDetails = props => {
             size={20}
             className="mr-1 cursor-pointer"
             onClick={() => {
+              resetState()
               props.setModalOpen("")
             }}
           />
@@ -246,7 +318,7 @@ const TokenDetails = props => {
                 toggle(2)
               }}
             >
-              List deployed contract
+              List smart contract
           </NavLink>
           </NavItem>
 
@@ -257,7 +329,7 @@ const TokenDetails = props => {
 
 
             <Row className="mb-1 mx-0 token-detail-general-wp">
-              <Col md={6}>
+              <Col md={9}>
                 <div className="token-detail-general">
                   <div className="font-weight-bold token-detail-title">Token symbol</div>
                   <div>{data?.symbol}</div>
@@ -276,30 +348,15 @@ const TokenDetails = props => {
                 </div>
                 <div className="token-detail-general">
                   <div className="font-weight-bold token-detail-title">Exchange rate</div>
-                  <div>{data?.exchange_rate ? `${data.exchange_rate} %` : `empty`}
-                    <Button
-                      outline
-                      size="sm"
-                      color="primary"
-                      className="ml-1"
-                      onClick={() => {
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Oops...',
-                          text: 'Not implement !'
-                        })
-                      }}
-                    >
-                      <Edit size={12} />
-                    </Button>
+                  <div>{data?.exchange_rate ? `1 ${data?.symbol} = ${(data.exchange_rate / 100.0).toFixed(2)} Vcoin` : `empty`}
                   </div>
                 </div>
                 <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">On Vchain</div>
-                  <div>None</div>
+                  <div className="font-weight-bold token-detail-title">Total supply</div>
+                  <div>{parseInt(data?.initial_supply||0).toLocaleString()}</div>
                 </div>
               </Col>
-              <Col md={6}>
+              <Col md={3}>
                 <div className="d-flex justify-content-center mb-5 flex-direction-column align-items-center">
                   <div>
                     <div className="avatar mr-1 avatar-xl">
@@ -346,6 +403,7 @@ const mapDispatchToProps = {
   createRequest,
   cancelRequest,
   setModalOpen,
-  getListVCoin
+  getListVCoin,
+  getListToken
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

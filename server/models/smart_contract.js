@@ -11,9 +11,15 @@ const SmartContract = sequelize.define('SmartContract', {
     address: {
         type: DataTypes.STRING,
     },
-    network_id: {
-        type: DataTypes.BIGINT,
+    bytecode: {
+        type: DataTypes.TEXT,
+    }, 
+    constructor_data: {
+        type: DataTypes.STRING,
     },
+    // network_id: {
+    //     type: DataTypes.BIGINT,
+    // },
     del: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
@@ -21,16 +27,17 @@ const SmartContract = sequelize.define('SmartContract', {
     deploy_status: {
         type: DataTypes.INTEGER,
     },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    }
+    // createdAt: {
+    //     type: DataTypes.DATE,
+    //     defaultValue: new Date()
+    // },
+    // updatedAt: {
+    //     type: DataTypes.DATE,
+    //     defaultValue: new Date()
+    // }
 }, {
-    tableName: 'smart_contracts'
+    tableName: 'smart_contracts',
+    timestamps: true
 });
 
 module.exports = SmartContract

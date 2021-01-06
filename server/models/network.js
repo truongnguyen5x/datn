@@ -2,22 +2,21 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../configs')
 
 const Network = sequelize.define('Network', {
-    name: {
+    chain_id: {
         type: DataTypes.STRING,
+    },
+    net_id: {
+        type: DataTypes.INTEGER
     },
     path: {
         type: DataTypes.STRING,
     },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
+    type: {
+        type: DataTypes.STRING,
     }
 }, {
-    tableName: 'networks'
+    tableName: 'networks',
+    timestamps: true
 });
 
 module.exports = Network

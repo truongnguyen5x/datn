@@ -53,10 +53,10 @@ export const getTokenById = (id) => (dispatch, getState) => {
 }
 
 export const createRequest = (data) => dispatch => {
-    return FetchApi(`/api/token-dev/request`, 'post', data)
+    return FetchApi(`/api/token-dev/request`, 'POST', data)
 }
 export const cancelRequest = (data) => dispatch => {
-    return FetchApi(`/api/token-dev/request`, 'delete', data)
+    return FetchApi(`/api/token-dev/request`, 'DELETE', data)
 }
 
 export const getConfig = (key) => dispatch => {
@@ -65,9 +65,13 @@ export const getConfig = (key) => dispatch => {
 
 
 export const setModalOpen = (modalName) => dispatch => {
-    dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
+    dispatch({ type: 'SET_MODAL_OPEN', payload: modalName })
 }
 
 export const testDeploy = (data) => dispatch => {
-    return FetchApi(`/api/token-dev/testDeploy`, 'post', data)
+    return FetchApi(`/api/token-dev/testDeploy`, 'POST', data)
+}
+
+export const checkTokenSymbolExists = (symbol) => dispatch => {
+    return FetchApi(`/api/token-dev/checkTokenSymbol`, 'GET', { symbol })
 }

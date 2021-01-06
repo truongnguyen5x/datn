@@ -4,7 +4,6 @@ const getWeb3 = () =>
     new Promise(async (resolve, reject) => {
         // Wait for loading completion to avoid race conditions with web3 injection timing.
         // window.addEventListener("load", async () => {
-        console.log('window on load')
         // Modern dapp browsers...
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum);
@@ -25,14 +24,15 @@ const getWeb3 = () =>
             resolve(web3);
         }
         // Fallback to localhost; use dev console port by default...
-        else {
-            const provider = new Web3.providers.HttpProvider(
-                "http://127.0.0.1:8545"
-            );
-            const web3 = new Web3(provider);
-            console.log("No web3 instance injected, using Local web3.");
-            resolve(web3);
-        }
+        // else {
+        //     const provider = new Web3.providers.HttpProvider(
+        //         "http://127.0.0.1:8545"
+        //     );
+        //     const web3 = new Web3(provider);
+        //     console.log("No web3 instance injected, using Local web3.");
+        //     resolve(web3);
+        // }
+        resolve(null)
         // });
     });
 
@@ -49,10 +49,67 @@ const getNetType = (netId) => {
         case 5:
             return 'goerli'
         default:
-            return 'unknown'
+            return 'localhost'
     }
 }
 
+const sendWithEstimateGas = (send, from) => {
+    return new Promise((resolve, reject) => {
+        send.estimateGas()
+            .then(gas => {
+                console.log('estimate gas')
+                send.estimateGas()
+                    .send({
+                        from,
+                        gas: gas + 1000000
+                    })
+                    .on('transactionHash', (hash) => {
+                        console.log('transactionHash', hash)
+                    })
+                    .on('receipt', async (receipt) => {
+                        console.log('receipt', receipt)
+                        resolve()
+                    })
+                    .on('error', err => {
+                        console.log('err')
+                        reject(err)
+                    });
+            })
+    })
+}
+
+const deployWithEstimateGas = (send, from) => {
+    let address
+    return new Promise((resolve, reject) => {
+        send.estimateGas()
+            .then(gas => {
+                console.log('estimate gas')
+                send.estimateGas()
+                    .send({
+                        from,
+                        gas: gas + 1000000
+                    })
+                    .on('error', (error) => {
+                        console.log(error)
+                        reject(error)
+                    })
+                    .on('transactionHash', async (transactionHash) => {
+                        console.log('transactionHash', transactionHash)
+                    })
+                    .on('receipt', async (receipt) => {
+                        console.log('receipt', receipt)
+                        address = receipt.contractAddress
+                    })
+                    .on('confirmation', async (confirmationNumber, receipt) => {
+                        console.log('confirm', confirmationNumber, receipt)
+                    })
+                    .then(instance => {
+                        resolve(instance)
+                    })
+            })
+    })
+}
+
 export {
-    getWeb3, getNetType
+    getWeb3, getNetType, sendWithEstimateGas, deployWithEstimateGas
 };

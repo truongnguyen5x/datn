@@ -13,17 +13,10 @@ const VCoin = sequelize.define('VCoin', {
     },
     network_id: {
         type: DataTypes.BIGINT,
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'vcoins'
+    tableName: 'vcoins',
+    timestamps: true
 });
 
 module.exports = VCoin

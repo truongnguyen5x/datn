@@ -26,9 +26,10 @@ User.hasMany(Token, { as: "tokens", foreignKey: "user_id" })
 
 Request.belongsTo(SmartContract, { as: "smartContract", foreignKey: "smart_contract_id" })
 SmartContract.hasOne(Request, { as: "request", foreignKey: "smart_contract_id" })
+SmartContract.belongsTo(Network, {as: 'network', foreignKey: 'network_id'})
 
 // sequelize.sync({ force: true })
-// VCoin.sync({ alter: true })
+// Token.sync({ alter: true })
 // SmartContract.sync({ alter: true })
 // sequelize.sync()
 

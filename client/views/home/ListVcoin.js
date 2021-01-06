@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Download } from 'react-feather'
+import { Download, Edit } from 'react-feather'
 import { connect } from "react-redux"
 import { Button, Card, Col, Row } from "reactstrap"
 import "../../assets/scss/pages/vcoin.scss"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { getListVCoin } from "../../redux/actions/vcoin/index"
-import CreateVCoin from './CreateToken'
+import CreateVCoin from './CreateVcoin'
 import { getNetType } from '../../utility/web3'
-
+import { ToastContainer } from 'react-toastify'
 
 
 const ListVCoin = (props) => {
@@ -15,16 +15,9 @@ const ListVCoin = (props) => {
     const [modalCreate, openModalCreate] = useState(false)
 
     useEffect(() => {
-        props.getProfile()
         props.getListVCoin()
 
     }, [])
-
-
-    const onDownloadSDK = async (i) => {
-
-    }
-
 
 
     return <div className="vcoin-application">
@@ -42,8 +35,8 @@ const ListVCoin = (props) => {
                                 // onClick={() => onDownloadSDK(i.vcoins[0].id)}
                                 color="primary"
                             >
-                                <Download size={15} />
-                                <span className="align-middle ml-50">Download SDK</span>
+                                <Edit size={15} />
+                                <span className="align-middle ml-50">Edit</span>
                             </Button>
                         </div>
                     </Card>
@@ -53,6 +46,7 @@ const ListVCoin = (props) => {
             <div className="full-width d-flex align-items-center flex-direction-column">
 
                 <Button type="success"
+                    color='danger'
                     onClick={() => openModalCreate(true)}
                 >
                     Deploy a V-Coin
@@ -64,7 +58,7 @@ const ListVCoin = (props) => {
                 onClose={() => openModalCreate(false)}
             />
         </div>
-
+        <ToastContainer/>
     </div>
 }
 

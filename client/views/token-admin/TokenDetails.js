@@ -1,16 +1,15 @@
 import classnames from "classnames"
-import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useEffect, useState } from "react"
-import { ArrowLeft, Check, Download, Trash, X } from "react-feather"
+import { ArrowLeft, Check, Trash, X } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
-import { acceptRequest, deleteToken, denyRequest, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
+import { Button, Col, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+import { acceptRequest, deleteToken, denyRequest, getListToken, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
 import { getListVCoin } from '../../redux/actions/vcoin'
-import { writeBatchFile } from '../../utility/file'
-import { exporSdkWorker } from '../../utility/sdk'
-import { getNetType, getWeb3 } from '../../utility/web3'
+import { clearAll, writeBatchFile } from '../../utility/file'
+import { getWeb3 } from '../../utility/web3'
+
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -18,6 +17,8 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [clicked, setClicked] = useState(0)
 
   useEffect(() => {
     props.getListVCoin()
@@ -31,6 +32,10 @@ const TokenDetails = props => {
     }
   }, [props.data])
 
+  const resetState = () => {
+    setActiveTab(1)
+  }
+
   useEffect(() => {
     getWeb3()
       .then(res => {
@@ -43,7 +48,6 @@ const TokenDetails = props => {
   const getInfo = async (web3) => {
     web3.eth.getAccounts().then(listAcc => {
       setAccs(listAcc)
-
     })
     web3.eth.net.getId().then(netId => setNetId(netId))
   }
@@ -55,123 +59,270 @@ const TokenDetails = props => {
   }
 
   const handleAddVChain = async (i) => {
-    try {
-      console.log(props.listVCoin)
-      let vcoin
-      if (netId == 1) {
-        vcoin = props.listVCoin[0]
-      } else if (netId == 2) {
-        vcoin = props.listVCoin[1]
-      } else if (netId == 3) {
-        vcoin = props.listVCoin[2]
-      } else {
-        vcoin = props.listVCoin[3]
-      }
+    setLoading(true)
+    setClicked(i.id)
 
-      const interfaceX = JSON.parse(vcoin.abi)
-
-      console.log(i, vcoin)
-      const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
-      myContract.methods.addToken(i.address)
-        .send({
-          from: accs[0],
-          gas: 500000
+    let vcoin
+    if (netId == 1) {
+      vcoin = props.listVCoin[0]
+    } else if (netId == 42) {
+      vcoin = props.listVCoin[1]
+    } else if (netId == 3) {
+      vcoin = props.listVCoin[2]
+    } else if (netId == 4) {
+      vcoin = props.listVCoin[3]
+    } else if (netId == 5) {
+      vcoin = props.listVCoin[4]
+    } else {
+      vcoin = props.listVCoin[5]
+    }
+    if (!web3) {
+      Swal.fire({
+        icon: 'Error',
+        title: 'Not found Metamask !',
+        text: 'Plese enable Metamask !'
+      })
+      setLoading(false)
+      return
+    }
+    if (vcoin.account != accs[0]) {
+      Swal.fire({
+        icon: 'Error',
+        title: 'Account metamask not match !',
+        text: `Please use account ${i.account} !`
+      })
+      setLoading(false)
+      return
+    }
+    const interfaceX = JSON.parse(vcoin.abi)
+    const vcoinContract = new web3.eth.Contract(interfaceX, vcoin.address)
+    if (i.address) {
+      vcoinContract.methods.addToken(i.address).estimateGas()
+        .then(gas => {
+          console.log('estimate gas', gas)
+          vcoinContract.methods.addToken(i.address)
+            .send({
+              from: accs[0],
+              gas: gas + 1000000
+            })
+            .on('transactionHash', (hash) => {
+              console.log('transactionHash', hash)
+            })
+            .on('receipt', async (receipt) => {
+              console.log('receipt', receipt)
+              const res = await props.acceptRequest({
+                id: i.id
+              })
+              setLoading(false)
+              props.getListToken()
+              resetState()
+              props.getTokenById(props.data.id)
+                .then(res => {
+                  if (res.code) {
+                    if (res.data) {
+                      setData(res.data)
+                    } else {
+                      props.setModalOpen('')
+                    }
+                  }
+                })
+            })
+            .on('error', async err => {
+              console.log('error')
+              setLoading(false)
+            });
         })
-        .on('transactionHash', (hash) => {
-          console.log('transactionHash', hash)
-        })
-        .on('receipt', async (receipt) => {
-          console.log('receipt', receipt)
-          const res = await props.acceptRequest({
-            id: i.id
+    } else {
+      let smartContractAddress
+      let instance
+      const token = new web3.eth.Contract(JSON.parse(i.abi))
+      token.deploy({
+        data: i.bytecode,
+        arguments: JSON.parse(i.constructor_data)
+      })
+        .estimateGas()
+        .then(gas => {
+          console.log('estimate gas', gas)
+          return token.deploy({
+            data: i.bytecode,
+            arguments: JSON.parse(i.constructor_data)
           })
-          props.getTokenById(props.data.id)
-            .then(res => {
-              if (res.code) {
-                setData(res.data)
-              }
+            .send({
+              from: accs[0],
+              gas: gas + 1000000
+            })
+            .on('error', (error) => {
+              console.log(error)
+              setLoading(false)
+            })
+            .on('transactionHash', async (transactionHash) => {
+              console.log('transactionHash', transactionHash)
+            })
+            .on('receipt', async (receipt) => {
+              console.log('receipt', receipt)
+              smartContractAddress = receipt.contractAddress
+            })
+            .on('confirmation', async (confirmationNumber, receipt) => {
+              console.log('confirm', confirmationNumber, receipt)
             })
         })
-        .on('error', async err => {
-          console.log('error')
-        });
-    } catch (error) {
-      console.log(error)
+        .then(async i => {
+          instance = i
+          return i.methods.setVChain(vcoin.address)
+            .estimateGas()
+        })
+        .then(gas => {
+          console.log('estimate gas', gas)
+          return instance.methods.setVChain(vcoin.address)
+            .send({
+              from: accs[0],
+              gas: gas + 1000000
+            })
+            .on('transactionHash', (hash) => {
+              console.log('transactionHash', hash)
+            })
+            .on('receipt', async (receipt) => {
+              console.log('receipt', receipt)
+              vcoinContract.methods.addToken(smartContractAddress).estimateGas()
+                .then(gas => {
+                  console.log('estimate gas', gas)
+                  vcoinContract.methods.addToken(smartContractAddress)
+                    .send({
+                      from: accs[0],
+                      gas: gas + 1000000
+                    })
+                    .on('transactionHash', (hash) => {
+                      console.log('transactionHash', hash)
+                    })
+                    .on('receipt', async (receipt) => {
+                      console.log('receipt', receipt)
+                      const res = await props.acceptRequest({
+                        id: i.id
+                      })
+                      setLoading(false)
+                      props.getListToken()
+                      resetState()
+                      props.getTokenById(props.data.id)
+                        .then(res => {
+                          if (res.code) {
+                            if (res.data) {
+                              setData(res.data)
+                            } else {
+                              props.setModalOpen('')
+                            }
+                          }
+                        })
+                    })
+                    .on('error', async err => {
+                      console.log('error')
+                      setLoading(false)
+                    });
+                })
+            })
+            .on('error', async err => {
+              console.log('error')
+              setLoading(false)
+            });
+        })
+
     }
+
   }
 
   const handleDenyVChain = async (id) => {
+    setLoading(true)
+    setClicked(id)
     const res = await props.denyRequest({ id })
     if (res.code) {
+      resetState()
+      props.getListToken()
       props.getTokenById(props.data.id)
         .then(res => {
           if (res.code) {
-            setData(res.data)
+            if (res.data) {
+              setData(res.data)
+            } else {
+              props.setModalOpen('')
+            }
           }
+          setLoading(false)
         })
     } else {
       console.log('error')
     }
+    setLoading(false)
   }
 
-  const handleDownloadSdk = async (i) => {
-
-    const zip = exporSdkWorker(data.symbol, i.account, i.address, i.network_id, JSON.parse(i.abi), data.owner.name)
-
-    zip.generateAsync({ type: "blob" })
-      .then(function (content) {
-        saveAs(content, `${data.symbol}.zip`);
-      });
-
-  }
 
   const handleDeleteToken = async (i) => {
-    try {
-      console.log(props.listVCoin)
-      let vcoin
-      if (netId == 1) {
-        vcoin = props.listVCoin[0]
-      } else if (netId == 2) {
-        vcoin = props.listVCoin[1]
-      } else if (netId == 3) {
-        vcoin = props.listVCoin[2]
-      } else {
-        vcoin = props.listVCoin[3]
-      }
 
-      const interfaceX = JSON.parse(vcoin.abi)
 
-      console.log(i, vcoin)
-      const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
-      myContract.methods.removeToken(data.symbol)
-        .send({
-          from: accs[0],
-          gas: 500000
-        })
-        .on('transactionHash', (hash) => {
-          console.log('transactionHash', hash)
-        })
-        .on('receipt', async (receipt) => {
-          console.log('receipt', receipt)
-          const res = await props.deleteToken(i.id)
-          props.getTokenById(props.data.id)
-            .then(res => {
-              if (res.code) {
-                setData(res.data)
-              }
-            })
-        })
-        .on('error', async err => {
-          console.log('error')
-        });
-    } catch (error) {
-      console.log(error)
+    setLoading(true)
+    setClicked(i.id)
+
+    let vcoin
+    if (netId == 1) {
+      vcoin = props.listVCoin[0]
+    } else if (netId == 42) {
+      vcoin = props.listVCoin[1]
+    } else if (netId == 3) {
+      vcoin = props.listVCoin[2]
+    } else if (netId == 4) {
+      vcoin = props.listVCoin[3]
+    } else if (netId == 5) {
+      vcoin = props.listVCoin[4]
+    } else {
+      vcoin = props.listVCoin[5]
     }
+    if (vcoin.account != accs[0]) {
+      Swal.fire({
+        icon: 'Error',
+        title: 'Account metamask not match !',
+        text: `Please use account ${i.account} !`
+      })
+      setLoading(false)
+      return
+    }
+    const interfaceX = JSON.parse(vcoin.abi)
 
+
+    const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
+    myContract.methods.removeToken(data.symbol)
+      .estimateGas()
+      .then(gas => {
+        return myContract.methods.removeToken(data.symbol)
+          .send({
+            from: accs[0],
+            gas: gas + 1000000
+          })
+          .on('transactionHash', (hash) => {
+            console.log('transactionHash', hash)
+          })
+          .on('receipt', async (receipt) => {
+            console.log('receipt', receipt)
+            const res = await props.deleteToken(i.id)
+            props.getListToken()
+            resetState()
+            setLoading(false)
+            props.getTokenById(props.data.id)
+              .then(res => {
+                if (res.code) {
+                  if (res.data) {
+                    setData(res.data)
+                  } else {
+                    props.setModalOpen('')
+                  }
+                }
+              })
+          })
+          .on('error', async err => {
+            console.log('error')
+          });
+      })
   }
 
   const handleOpenSourceCode = (i) => {
-    // console.log(i)
+    clearAll()
     writeBatchFile(i.files)
     window.open("/ide", "_blank")
   }
@@ -180,7 +331,7 @@ const TokenDetails = props => {
     if (props.listType == "in-vchain") {
       return <React.Fragment>
         <Button size="sm" id={"add" + i.id} color="danger" className="ml-1" onClick={() => handleDeleteToken(i)}>
-          <Trash size={14} />
+          {(loading && clicked == i.id) ? <Spinner color="white" size="sm" /> : <Trash size={14} />}
         </Button>
         <UncontrolledTooltip target={"add" + i.id}>
           Delete from vcoin
@@ -191,7 +342,7 @@ const TokenDetails = props => {
 
     return <React.Fragment>
       <Button size="sm" id={"remove" + i.id} color="success" onClick={() => handleAddVChain(i)}>
-        <Check size={14} />
+        {(loading && clicked == i.id) ? <Spinner color="white" size="sm" /> : <Check size={14} />}
       </Button>
       <UncontrolledTooltip target={"remove" + i.id}>
         Accept
@@ -221,12 +372,12 @@ const TokenDetails = props => {
           Address: {i.address}
         </div>
         <div>
-          Status: {i?.request?.accepted ? "on VChain" : "not on Vchain"}
+          Status: {i?.request?.accepted ? "on VCoin" : "not on VCoin"}
         </div>
       </div>
       <div>
         <div>
-          Network: {getNetType(i.network_id)}
+          Network: {i?.network?.chain_id}
         </div>
         <div>
           Created at: {moment(i.createdAt).format("hh:mm DD/MM/YYYY")}
@@ -234,14 +385,6 @@ const TokenDetails = props => {
       </div>
       <div>
         {renderButtonAction(i)}
-        <Button size="sm" id="sdk" color="primary" className="ml-1"
-          onClick={() => handleDownloadSdk(i)}
-        >
-          <Download size={14} />
-        </Button>
-        <UncontrolledTooltip target="sdk">
-          Download SDK
-            </UncontrolledTooltip>
         <Button size="sm" id="code" color="primary" className="ml-1"
           onClick={() => handleOpenSourceCode(i)}>
           <i className="fas fa-code" style={{ fontSize: '15px' }}></i>
@@ -294,7 +437,7 @@ const TokenDetails = props => {
                 toggle(2)
               }}
             >
-              List deployed contract
+              List smart contract
           </NavLink>
           </NavItem>
 
@@ -305,7 +448,7 @@ const TokenDetails = props => {
 
 
             <Row className="mb-1 mx-0 token-detail-general-wp">
-              <Col md={6}>
+              <Col md={9}>
                 <div className="token-detail-general">
                   <div className="font-weight-bold token-detail-title">Token symbol</div>
                   <div>{data?.symbol}</div>
@@ -324,11 +467,11 @@ const TokenDetails = props => {
                 </div>
                 <div className="token-detail-general">
                   <div className="font-weight-bold token-detail-title">Exchange rate</div>
-                  <div>{data?.exchange_rate ? `${data.exchange_rate} %` : `empty`}  </div>
+                  <div>{data?.exchange_rate ? `1 ${data.symbol} = ${(data.exchange_rate / 100.0).toFixed(2)} VCoin` : `empty`}  </div>
                 </div>
                 <div className="token-detail-general">
-                  <div className="font-weight-bold token-detail-title">On Vchain</div>
-                  <div>None</div>
+                  <div className="font-weight-bold token-detail-title">Total supply</div>
+                  <div>{parseInt(data?.initial_supply || 0).toLocaleString()}</div>
                 </div>
               </Col>
             </Row>
@@ -370,6 +513,7 @@ const mapDispatchToProps = {
   getListVCoin,
   acceptRequest,
   denyRequest,
-  deleteToken
+  deleteToken,
+  getListToken
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

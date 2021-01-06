@@ -16,17 +16,10 @@ const Account = sequelize.define('Account', {
     },
     name: {
         type: DataTypes.STRING,
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'accounts'
+    tableName: 'accounts',
+    timestamps: true
 });
 
 module.exports = Account

@@ -25,13 +25,13 @@ const VuexyCustom = props => {
     const { checkDoneStep } = props
     setLoading(true)
     checkDoneStep[activeStep]()
-      .then(() => {
+      .then((res) => {
         if (activeStep !== props.steps.length - 1) {
-          console.log('step success 1', activeStep, props.steps)
+          console.log('step success', activeStep, props.steps)
           setActiveStep(activeStep + 1)
           setReachedStep(Math.max(reachedStep, activeStep + 1))
         } else {
-          console.log('step success 2')
+          console.log('step last success')
           setActiveStep(0)
           setReachedStep(0)
         }
@@ -128,7 +128,8 @@ VuexyCustom.propTypes = {
   className: PropTypes.string,
   tabPaneClass: PropTypes.string,
   steps: PropTypes.array.isRequired,
-  finishBtnText: PropTypes.string
+  finishBtnText: PropTypes.string,
+  stepsSkip: PropTypes.array
 }
 
 

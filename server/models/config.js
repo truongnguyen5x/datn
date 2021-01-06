@@ -9,17 +9,10 @@ const Config = sequelize.define('Config', {
     },
     value: {
         type: DataTypes.TEXT
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: new Date()
     }
 }, {
-    tableName: 'configs'
+    tableName: 'configs',
+    timestamps: true
 });
 
 module.exports = Config

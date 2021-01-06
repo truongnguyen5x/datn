@@ -15,7 +15,7 @@ const readBatchFile = () => {
             path: i
         }
     })
-    console.log(res)
+    // console.log(res)
     return res
 }
 
@@ -55,10 +55,11 @@ const writeOneFile = (path, content) => {
 
 const clearAll = () => {
     const fs = window.remixFileSystem;
+    // console.log(fs)
     // unlinkSync
     // fs.unlinkSync('/')
     let files = fs.readdirSync('/')
-    console.log(files)
+    // console.log(files)
     files.forEach(i => {
         removeFile('/' + i)
     })
@@ -70,11 +71,11 @@ const removeFile = (path) => {
         const fs = window.remixFileSystem;
         const stats = fs.statSync(path)
         if (stats.isFile()) {
-            console.log('is file', path)
+            // console.log('is file', path)
             fs.unlinkSync(path)
         } else {
 
-            console.log('is dir', path)
+            // console.log('is dir', path)
             let files = fs.readdirSync(path)
             // console.log(files)
             files.forEach(i => removeFile(path + '/' + i))

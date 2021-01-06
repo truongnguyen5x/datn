@@ -75,6 +75,17 @@ const testDeploy = async (req, res, next) => {
     }
 }
 
+const checkTokenSymbol = async (req, res, next) => {
+    try {
+        const { symbol } = req.query
+        const { user } = req
+        const rs = await tokenDevService.checkTokenSymbol(symbol, user.id)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
 
 module.exports = {
     createToken,
@@ -83,5 +94,6 @@ module.exports = {
     validateSource,
     createRequest,
     cancelRequest,
-    testDeploy
+    testDeploy,
+    checkTokenSymbol
 }

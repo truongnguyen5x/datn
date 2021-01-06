@@ -45,7 +45,7 @@ const Token = props => {
       <TokenList
         mainSidebar={open => setSidebarOpen(open)}
       />
-      <ToastContainer />
+      <ToastContainer/>
     </div>
   )
 

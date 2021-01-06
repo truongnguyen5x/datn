@@ -19,7 +19,7 @@ const getListToken = async (type) => {
                 }, {
                     model: SmartContract,
                     as: 'smartContracts',
-                    include: {
+                    include: [{
                         model: Request,
                         as: "request",
                         where: {
@@ -27,7 +27,10 @@ const getListToken = async (type) => {
                             accepted: 0
                         },
                         required: true
-                    },
+                    }, {
+                        model: Network,
+                        as: 'network'
+                    }],
                     required: true
                 }]
             })
@@ -40,7 +43,7 @@ const getListToken = async (type) => {
                 }, {
                     model: SmartContract,
                     as: 'smartContracts',
-                    include: {
+                    include: [{
                         model: Request,
                         as: "request",
                         where: {
@@ -48,7 +51,10 @@ const getListToken = async (type) => {
                             accepted: 1
                         },
                         required: true
-                    },
+                    }, {
+                        model: Network,
+                        as: 'network'
+                    }],
                     required: true
                 }]
             })
@@ -81,6 +87,9 @@ const getTokenById = async (id, type) => {
                         accepted: 0
                     },
                     required: true
+                }, {
+                    model: Network,
+                    as: 'network'
                 }],
                 required: true
             }],
@@ -107,6 +116,9 @@ const getTokenById = async (id, type) => {
                         del: 0,
                         accepted: 1
                     }
+                }, {
+                    model: Network,
+                    as: 'network'
                 }]
             }],
             order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]

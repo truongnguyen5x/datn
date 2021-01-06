@@ -59,6 +59,16 @@ const testDeploy = async (req, res, next) => {
         const rs = await vcoinService.testDeploy(req.body, user.id)
         ResponseSuccess(res, rs)
     } catch (error) {
+        console.log(error)
+        ResponseError(res, error, "ERROR")
+    }
+}
+
+const validateSource = async (req, res, next) => {
+    try {
+        const rs = await vcoinService.validateSource(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
         ResponseError(res, error, "ERROR")
     }
 }
@@ -70,5 +80,6 @@ module.exports = {
     getVCoinById,
     updateVCoin,
     deleteVCoin,
-    testDeploy
+    testDeploy,
+    validateSource
 }
