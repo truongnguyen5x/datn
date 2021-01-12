@@ -3,24 +3,35 @@ const writeBatchFile = (data) => {
 }
 
 const readBatchFile = () => {
-    const fs = window.remixFileSystem;
-    let files = fs.readdirSync('/')
-    files = files.filter(i => {
-        const stats = fs.statSync(i)
-        return stats.isFile()
-    })
-    const res =  files.map(i => {
-        return {
-            code: fs.readFileSync(i, { encoding: 'utf8' }),
-            path: i
-        }
-    })
-    // console.log(res)
-    return res
+    try {
+        const res = readOneFile('')
+        // console.log(res)
+        return res
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-const readOneFile = () => {
-
+const readOneFile = (path) => {
+    // console.log('path', path)
+    const fs = window.remixFileSystem;
+    const stats = fs.statSync('/' + path)
+    if (stats.isFile()) {
+        // console.log('is file', path)
+        return [{
+            code: fs.readFileSync('/' + path, { encoding: 'utf8' }),
+            path
+        }]
+    } else {
+        const files = fs.readdirSync('/' + path)
+        // console.log('is folder', path, files)
+        // console.log(files)
+        return files.filter(i => i != 'artifacts').reduce((total, i) => {
+            // console.log('reduce', i)
+            const rs = readOneFile(path + '/' + i);
+            return total.concat(rs)
+        }, [])
+    }
 }
 
 const writeOneFile = (path, content) => {
