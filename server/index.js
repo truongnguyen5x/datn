@@ -37,13 +37,14 @@ app.use((req, res, next) => {
 // configuration file as a base.
 app.use(express.static(path.resolve(__dirname, '../content')))
 app.use(express.static(path.resolve(__dirname, '../public')))
+app.use(express.static(path.resolve(__dirname, '../ide')))
 app.use(express.static(path.resolve(__dirname, '../dist')))
 
 app.use('/api', routes)
 
 
 app.get('/ide', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '../ide/index.html'));
+    res.sendFile(path.resolve(__dirname, '../ide/index-ide.html'));
 })
 app.get('/*', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../dist/index.html'));
