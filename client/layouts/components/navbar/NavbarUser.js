@@ -27,14 +27,7 @@ const handleNavigation = (e, path) => {
 const UserDropdown = props => {
   return (
     <DropdownMenu right>
-      <DropdownItem
-        tag="a"
-        href="#"
-        onClick={e => handleNavigation(e, "/pages/profile")}
-      >
-        <Icon.User size={14} className="mr-50" />
-        <span className="align-middle">Edit Profile</span>
-      </DropdownItem>
+   
       <DropdownItem
         tag="a"
         href="/pages/login"
