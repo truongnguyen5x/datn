@@ -49,18 +49,7 @@ class LoginJWT extends React.Component {
               </div>
               <Label>Password</Label>
             </FormGroup>
-            <FormGroup className="d-flex justify-content-between align-items-center">
-              <Checkbox
-                color="primary"
-                icon={<Check className="vx-icon" size={16} />}
-                label="Remember me"
-                defaultChecked={false}
-                onChange={this.handleRemember}
-              />
-              <div className="float-right">
-                <Link to="/pages/forgot-password">Forgot Password?</Link>
-              </div>
-            </FormGroup>
+         
             <div className="d-flex justify-content-between">
               <Button.Ripple
                 color="primary"

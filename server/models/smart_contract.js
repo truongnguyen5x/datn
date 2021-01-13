@@ -24,9 +24,9 @@ const SmartContract = sequelize.define('SmartContract', {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    deploy_status: {
-        type: DataTypes.INTEGER,
-    },
+    // deploy_status: {
+    //     type: DataTypes.INTEGER,
+    // },
     // createdAt: {
     //     type: DataTypes.DATE,
     //     defaultValue: new Date()

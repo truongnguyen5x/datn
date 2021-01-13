@@ -8,14 +8,14 @@
 .token-application {
   // border: 1px solid $gray-300;
   border-radius: $border-radius-sm;
-  height: calc(100vh - 12rem);
+  height: calc(100vh - 10rem);
   // Sidebar area starts
   .sidebar-children {
     display: none;
   }
   .token-app-sidebar {
     width: $menu-expanded-width;
-    height: calc(100vh - 13rem);
+    height: calc(100vh - 10.05rem);
     background-color: $white;
     border-top-left-radius: $border-radius-sm;
     border-bottom-left-radius: $border-radius-sm;
@@ -124,7 +124,7 @@
 
   .token-user-list {
     position: relative;
-    height: calc(100vh - 13.2rem);
+    height: calc(100vh - 10.2rem);
     .users-list-wrapper {
       padding: 0;
       margin: 0;
@@ -177,7 +177,7 @@
     height: 100%;
     // padding: 1.5rem 0;
     border-bottom: 1px solid $gray-300;
-    height: calc(100vh - 13rem);
+    height: calc(100vh - 10.1rem);
     &.show {
       visibility: visible;
       transition: all 0.3s ease;
@@ -259,7 +259,7 @@
     height: 100%;
     // padding: 1.5rem 0;
     border-bottom: 1px solid $gray-300;
-    height: calc(100vh - 13rem);
+    height: calc(100vh - 10.1rem);
     &.open {
       visibility: visible;
       transition: all 0.3s ease;

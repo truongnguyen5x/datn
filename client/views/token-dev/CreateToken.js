@@ -1,29 +1,29 @@
 import classnames from "classnames"
+import PerfectScrollbar from "react-perfect-scrollbar"
 import React, { useEffect, useState } from "react"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { ArrowLeft, Box, Folder, Info, Layers } from "react-feather"
 import { connect } from "react-redux"
 import Select from 'react-select'
+import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import {
   Button, Col, Input, Nav,
   NavItem,
   NavLink, Row,
-  TabContent,
-  TabPane, Spinner
+
+  Spinner, TabContent,
+  TabPane
 } from "reactstrap"
 import Swal from 'sweetalert2'
 import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
 import { getAccountBalance } from '../../redux/actions/account'
+import { getListNetwork } from '../../redux/actions/network'
 import { checkTokenSymbolExists, createToken, getConfig, getListToken, setModalOpen, testDeploy, validateSource } from "../../redux/actions/token-dev"
 import { sleep } from '../../utility'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
-import { getNetType, getWeb3, sendWithEstimateGas, deployWithEstimateGas } from '../../utility/web3'
-import { getListNetwork } from '../../redux/actions/network'
-import { toast } from "react-toastify"
-// import Loading from '../../components/@vuexy/spinner/Loading-spinner'
-import { useFormik } from 'formik';
+import { deployWithEstimateGas, getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
 
 const CreateToken = props => {
 
@@ -558,76 +558,92 @@ const CreateToken = props => {
         return <TabPane
           className={`step-content step-1-content`}
           key={1}
-          tabId={1}> <Row className="mb-2">
-            <Col md={3} sm={0}></Col>
-            <Col md={6} sm={12}>
-              <h5>Select a smart contract</h5>
-              <Select
-                placeholder="Select a smart contract to deploy"
-                options={listContractInterface}
-                value={selectedContractInterface}
-                onChange={onChangeContractInterface}
-              />
-              {selectedContractInterface && selectedContractInterface.inputs && renderConstructorDeploy()}
-            </Col>
-          </Row>
+          tabId={1}>
+          <PerfectScrollbar
+            options={{
+              suppressScrollX: true,
+              wheelPropagation: false
+            }}
+          >
+            <Row className="mb-2" style={{ height: '100px' }}>
+              <Col md={3} sm={0}></Col>
+              <Col md={6} sm={12}>
+                <h5>Select a smart contract</h5>
+                <Select
+                  placeholder="Select a smart contract to deploy"
+                  options={listContractInterface}
+                  value={selectedContractInterface}
+                  onChange={onChangeContractInterface}
+                />
+                {selectedContractInterface && selectedContractInterface.inputs && renderConstructorDeploy()}
+              </Col>
+            </Row>
+          </PerfectScrollbar>
         </TabPane>
 
       case 2:
         return <TabPane
           className={`step-content step-2-content`}
           key={2}
-          tabId={2}><Row className="mb-2">
-            <Col md={3} sm={0}></Col>
-            <Col md={6} sm={12}>
-              <h4 className="mb-1">Enter some information for new token</h4>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <div className="mt-2">
-                <h6 className="">Token symbol</h6>
-                <Input
-                  type="text"
-                  placeholder="Token's symbol"
-                  value={tokenSymbol}
-                  onChange={e => setTokenSymbol(e.target.value)}
-                />
+          tabId={2}>
+          <PerfectScrollbar
+            options={{
+              suppressScrollX: true,
+              wheelPropagation: false
+            }}
+          >
+            <Row className="mb-1">
+              <Col md={3} sm={0}></Col>
+              <Col md={6} sm={12}>
+                <h4 className="mb-1">Enter some information for new token</h4>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <div className="">
+                  <h6 className="">Token symbol</h6>
+                  <Input
+                    type="text"
+                    placeholder="Token's symbol"
+                    value={tokenSymbol}
+                    onChange={e => setTokenSymbol(e.target.value)}
+                  />
 
-              </div>
-              <div className="mt-2">
-                <h6 className="">Token name</h6>
-                <Input
-                  type="text"
-                  placeholder="Token's name"
-                  value={tokenName}
-                  onChange={e => setTokenName(e.target.value)}
-                />
-              </div>
-              <div className="mt-2">
-                <h6 className="">Total supply</h6>
-                <Input
-                  type="number"
-                  placeholder="Initial supply"
+                </div>
+                <div className="mt-2">
+                  <h6 className="">Token name</h6>
+                  <Input
+                    type="text"
+                    placeholder="Token's name"
+                    value={tokenName}
+                    onChange={e => setTokenName(e.target.value)}
+                  />
+                </div>
+                <div className="mt-2">
+                  <h6 className="">Total supply</h6>
+                  <Input
+                    type="number"
+                    placeholder="Initial supply"
 
-                  value={initialSupply}
-                  onChange={e => setInitialSupply(e.target.value)}
-                />
-              </div>
-            </Col>
-            <Col md={6}>
-              <div className="mt-2">
-                <h6 className="">Description</h6>
-                <Input
-                  type="text"
-                  placeholder="Description"
+                    value={initialSupply}
+                    onChange={e => setInitialSupply(e.target.value)}
+                  />
+                </div>
+              </Col>
+              <Col md={6}>
+                <div className="">
+                  <h6 className="">Description</h6>
+                  <Input
+                    type="text"
+                    placeholder="Description"
 
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                />
-              </div>
-            </Col>
-          </Row>
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </PerfectScrollbar>
         </TabPane>
       case 3:
         return <TabPane
@@ -689,9 +705,11 @@ const CreateToken = props => {
         <TabContent
           className={`vx-wizard-content`}
           activeTab={activeStep}>
+
           {renderStepContent()}
+
         </TabContent>
-        <div className="wizard-actions d-flex justify-content-between">
+        <div className="wizard-actions d-flex justify-content-between mt-1">
           <Button
             type="button"
             color="primary"

@@ -11,7 +11,7 @@
 // Stick footer to the bottom of the page
 footer {
   &.footer {
-    padding: $spacer ($spacer * 2.2);
+    padding: 0 ($spacer * 2.2);
 
     // a tag margin - PIXINVENT text
     a {

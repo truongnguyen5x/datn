@@ -29,7 +29,7 @@ const TokenList = props => {
       </div>
     }
     return props.listToken.map((i, idx) => {
-      return <Col md={3} key={i.id} className="">
+      return <Col md={4} key={i.id} className="">
         <Card>
           <CardHeader className="mx-auto">
             <div className="avatar mr-1 avatar-xl">
