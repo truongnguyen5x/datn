@@ -1,8 +1,10 @@
 import classnames from "classnames"
-import PerfectScrollbar from "react-perfect-scrollbar"
+import { useFormik } from 'formik'
+import _ from 'lodash'
 import React, { useEffect, useState } from "react"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { ArrowLeft, Box, Folder, Info, Layers } from "react-feather"
+import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import Select from 'react-select'
 import { toast } from "react-toastify"
@@ -29,15 +31,9 @@ const CreateToken = props => {
 
   const [sourceCode, setSourceCode] = useState([])
   const [activeStep, setActiveStep] = useState(0)
-  const [selectedContractInterface, setSelectedContractInterface] = useState()
   const [listContractInterface, setListContractInterface] = useState([])
-  const [dataConstructorDeploy, setDataConstructorDeploy] = useState([])
   const [accs, setAccs] = useState([])
   const [netId, setNetId] = useState(0)
-  const [tokenSymbol, setTokenSymbol] = useState()
-  const [tokenName, setTokenName] = useState()
-  const [initialSupply, setInitialSupply] = useState()
-  const [existToken, setExistToken] = useState(null)
   const [balance, setBalance] = useState("")
   const [web3, setWeb3] = useState()
   const [sourceEdited, setSourceEdited] = useState(false)
@@ -45,9 +41,64 @@ const CreateToken = props => {
   const [tokenSol, setTokenSol] = useState('')
   const [useMetaMask, setUseMetaMask] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [selectedNetwork, setSelectedNetwork] = useState()
-  const [description, setDescription] = useState('')
-  // const [contractAdd, setContractAdd] = useState("")
+
+  const validate1 = values => {
+    const errors = {}
+    if (!values.interface) {
+      errors.interface = 'Required !'
+    }
+    errors.dataConstructor = formik1.values.dataConstructor.map(i => !i)
+    console.log('validate1', errors, formik1.values.dataConstructor)
+    return errors
+  }
+  const formik1 = useFormik({
+    initialValues: {
+      interface: null,
+      dataConstructor: []
+    },
+    validate: validate1
+  })
+
+  const validate2 = values => {
+    const errors = {}
+    if (!values.symbol) {
+      errors.symbol = 'Required !'
+    }
+    if (!values.name) {
+      errors.name = 'Required !'
+    }
+    if (!values.supply) {
+      errors.supply = 'Required !'
+    }
+    // console.log('validate', errors)
+    return errors
+  }
+
+  const formik2 = useFormik({
+    initialValues: {
+      symbol: '',
+      name: '',
+      description: '',
+      supply: ''
+    },
+    validate: validate2
+  });
+
+
+  const validate3 = values => {
+    const errors = {}
+    if (!values.network) {
+      errors.network = 'Required !'
+    }
+    return errors
+  }
+
+  const formik3 = useFormik({
+    initialValues: {
+      network: null
+    },
+    validate: validate3
+  })
 
 
   useEffect(() => {
@@ -65,8 +116,9 @@ const CreateToken = props => {
   }, [])
 
   const resetState = () => {
-    setSelectedContractInterface(null)
-    setDataConstructorDeploy([])
+    formik1.resetForm()
+    formik2.resetForm()
+    formik3.resetForm()
     setActiveStep(0)
     setSourceEdited(false)
     setUseMetaMask(false)
@@ -98,7 +150,6 @@ const CreateToken = props => {
 
 
   const getAndWriteTemplateCode = async () => {
-    console.log('from dev')
     while (!window.remixFileSystem) {
       // console.log('loop')
       await sleep(500)
@@ -124,55 +175,51 @@ const CreateToken = props => {
   }
 
   const onChangeContractInterface = (e) => {
-    setSelectedContractInterface(e)
     if (e?.inputs) {
       console.log("🚀 ~ file: CreateToken.js ~ line 132 ~ onChangeContractInterface ~ e", e)
-      setDataConstructorDeploy(Array(e.inputs.length).fill(""))
+      formik1.setFieldError('dataConstructor', Array(e.inputs.length).fill(""))
+      formik1.setFieldValue('dataConstructor', Array(e.inputs.length).fill(""))
     }
+    formik1.setFieldValue('interface', e)
   }
 
 
   const onChangeDataConstructorDeploy = (idx, e) => {
     console.log("🚀 ~ file: CreateToken.js ~ line 136 ~ onChangeDataConstructorDeploy ~ idx, e", idx, e)
-    dataConstructorDeploy[idx] = e.target.value
-    setDataConstructorDeploy([...dataConstructorDeploy])
+    const { dataConstructor } = formik1.values
+    dataConstructor[idx] = e.target.value
+    formik1.setFieldValue('dataConstructor', dataConstructor)
   }
+
   const checkDoneStep0 = async () => {
     setLoading(true)
     const source1 = readBatchFile();
     setSourceCode(source1)
     const res = await props.validateSource(source1)
-
     if (res.code && res.data.length) {
       setListContractInterface(res.data.map((i, idx) => {
         i.label = i.file + '/' + i.contract
         i.value = idx
         return i
       }))
-
-      if (source1[0].path == 'Lib.sol' && source1[0].code == libSol
-        && source1[1].path == 'Token.sol' && source1[1].code == tokenSol) {
+      console.log(source1)
+      if (source1[0].path == '/Lib.sol' && source1[0].code == libSol
+        && source1[1].path == '/Token.sol' && source1[1].code == tokenSol) {
         setSourceEdited(false)
-        setTokenSymbol('TK1')
-        const temp = res.data.find(i => i.file == 'Token.sol')
-        setSelectedContractInterface(temp)
-        setDataConstructorDeploy(['1000000'])
+        const temp = res.data.find(i => i.file == '/Token.sol')
+        formik1.setValues({ interface: temp, dataConstructor: ['1000000'] })
         const { abi, bytecode } = temp
         const res1 = await props.testDeploy({ abi, bytecode, constructor: ['1000000'] })
         if (res1.code && res1.data.existToken) {
           const { name, description, initial_supply } = res1.data.existToken
           console.log("🚀 ~ file: CreateToken.js ~ line 166 ~ checkDoneStep0 ~ res.data.existToken", res.data.existToken)
-          setTokenName(name)
-          setDescription(description)
-          setInitialSupply(initial_supply)
+          formik2.setValues({ symbol: 'TK1', name, description, supply: initial_supply })
         } else {
-          setTokenName('token1')
-          setInitialSupply('1000000000000000000000000')
+          formik2.setValues({ symbol: 'TK1', name: 'token1', supply: '1000000000000000000000000' })
         }
         setActiveStep(2)
       } else {
-        setSelectedContractInterface(null)
-        setDataConstructorDeploy([])
+        formik1.resetForm()
         setSourceEdited(true)
         setActiveStep(1)
         Swal.fire({
@@ -188,36 +235,26 @@ const CreateToken = props => {
         text: 'Your source code error, review your code again !'
       })
       setLoading(false)
-
     }
-
     setLoading(false)
   }
+
   const checkDoneStep1 = async () => {
-    console.log("🚀 ~ file: CreateToken.js ~ line 194 ~ checkDoneStep1 ~ dataConstructorDeploy", dataConstructorDeploy)
-    setLoading(true)
-    if (!selectedContractInterface) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please choose a smart contract to deploy !'
-      })
-      setLoading(false)
+    const errors = await formik1.validateForm()
+    if (errors.interface || errors.dataConstructor.every(i => i)) {
+      return
     }
-    const { abi, bytecode } = selectedContractInterface
-    const res = await props.testDeploy({ abi, bytecode, constructor: dataConstructorDeploy })
+    setLoading(true)
+    // TODO
+    const { abi, bytecode } = formik1.values.interface
+    const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
     if (res.code) {
       const { data } = res
-      setTokenSymbol(data.symbol)
-      setExistToken(data.existToken)
       if (data.existToken) {
         const { name, description, initial_supply } = data.existToken
-        setInitialSupply(initial_supply)
-        setTokenName(name)
-        setDescription(description)
+        formik2.setValues({ symbol: data.symbol, name, description, supply: initial_supply })
       } else {
-        setInitialSupply(data.totalSupply)
-        setTokenName(data.name)
+        formik2.setValues({ symbol: data.symbol, supply: data.totalSupply, name: data.name })
       }
       setActiveStep(2)
       setLoading(false)
@@ -232,16 +269,13 @@ const CreateToken = props => {
   }
 
   const checkDoneStep2 = async () => {
-    setLoading(true)
-    if (!tokenSymbol || !tokenName || !initialSupply) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please enter information !'
-      })
+    const errors = await formik2.validateForm()
+    if (!_.isEmpty(errors)) {
+      return
     }
+    setLoading(true)
 
-    const res = await props.checkTokenSymbolExists(tokenSymbol)
+    const res = await props.checkTokenSymbolExists(formik2.values.symbol)
     console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
     if (res.code) {
       setActiveStep(3)
@@ -256,30 +290,34 @@ const CreateToken = props => {
     }
   }
   const checkDoneStep3 = async () => {
+    const errors = await formik3.validateForm()
+    if (!_.isEmpty(errors)) {
+      return
+    }
     setLoading(true)
+    const { abi, bytecode } = formik1.values.interface
+    const { name, symbol, supply, description } = formik2.values
     if (useMetaMask) {
       let smartContractAddress
-      let newContractInstance
-      const myContract = new web3.eth.Contract(selectedContractInterface.abi)
+      const myContract = new web3.eth.Contract(abi)
       const deploy = myContract.deploy({
-        data: selectedContractInterface.bytecode,
-        arguments: dataConstructorDeploy
+        data: bytecode,
+        arguments: formik1.values.dataConstructor
       })
       deployWithEstimateGas(deploy, accs[0])
         .then(instance => {
-          newContractInstance = instance
           smartContractAddress = instance.options.address
-          const setInfo = instance.methods.setInfo(tokenSymbol, tokenName, initialSupply)
+          const setInfo = instance.methods.setInfo(symbol, name, supply)
           return sendWithEstimateGas(setInfo, accs[0])
         })
         .then(() => {
           return props.createToken({
             source: sourceCode,
             chain_id: getNetType(netId),
-            tokenSymbol,
-            abi: selectedContractInterface.abi,
-            initialSupply: initialSupply,
-            tokenName,
+            tokenSymbol: symbol,
+            abi,
+            initialSupply: supply,
+            tokenName: name,
             account: accs[0],
             description,
             address: smartContractAddress
@@ -306,16 +344,16 @@ const CreateToken = props => {
           })
         })
     } else {
-      console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
+      // console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
       props.createToken({
         source: sourceCode,
-        network_id: selectedNetwork.id,
-        constructorData: dataConstructorDeploy,
-        bytecode: selectedContractInterface.bytecode,
-        tokenSymbol,
-        abi: selectedContractInterface.abi,
-        initialSupply: initialSupply,
-        tokenName,
+        network_id: formik3.values.network.id,
+        constructorData: formik1.values.dataConstructor,
+        bytecode: bytecode,
+        tokenSymbol: symbol,
+        abi,
+        initialSupply: supply,
+        tokenName: name,
         description
       })
         .then(res => {
@@ -388,20 +426,24 @@ const CreateToken = props => {
 
   const renderConstructorDeploy = () => {
     return <div className="mt-2">
-      <h5>Enter params to deploy {selectedContractInterface.label}</h5>
-      {selectedContractInterface.inputs.map((i, idx) => {
+      <h5>Enter params to deploy {formik1.values.interface.label}</h5>
+      {formik1.values.interface.inputs.map((i, idx) => {
         let type = "text"
         switch (i.type) {
           case "uint256":
             type = "number"
         }
-        return <Input
-          className="mb-1"
-          type={type}
-          placeholder={i.name}
-          value={dataConstructorDeploy[idx]}
-          onChange={e => onChangeDataConstructorDeploy(idx, e)}
-        />
+        return <React.Fragment>
+          <Input
+            className="mt-1"
+            invalid={formik1.errors?.dataConstructor?.[idx]}
+            type={type}
+            placeholder={i.name}
+            value={formik1.values.dataConstructor[idx]}
+            onChange={e => onChangeDataConstructorDeploy(idx, e)}
+          />
+          {formik1.errors?.dataConstructor?.[idx] && <div className="error-text">Required !</div>}
+        </React.Fragment>
       })}
     </div>
   }
@@ -414,9 +456,10 @@ const CreateToken = props => {
         <Select
           placeholder="Select a blockchain to deploy"
           options={optionNetwork}
-          value={selectedNetwork}
-          onChange={e => setSelectedNetwork(e)}
+          value={formik3.values.network}
+          onChange={e => formik3.setFieldValue('network', e)}
         />
+        {formik3.errors.network && <div className="error-text">Required !</div>}
       </div>
     </div>
     if (useMetaMask) {
@@ -425,7 +468,7 @@ const CreateToken = props => {
           <div className="font-weight-bold info-title">
             Use metamask:
         </div>
-          <div style={{ width: '50px', textAlign: 'center' }}>
+          <div style={{ width: '38px', textAlign: 'center' }}>
             <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(false)} />
           </div>
         </div>
@@ -466,9 +509,11 @@ const CreateToken = props => {
             <Select
               placeholder="Select a blockchain to deploy"
               options={optionNetwork}
-              value={selectedNetwork}
-              onChange={e => setSelectedNetwork(e)}
+              value={formik3.values.network}
+              onChange={e => formik3.setFieldValue('network', e)}
             />
+
+            {formik3.errors.network && <div className="error-text">Required !</div>}
           </div>
         </div>
       </React.Fragment>
@@ -570,12 +615,14 @@ const CreateToken = props => {
               <Col md={6} sm={12}>
                 <h5>Select a smart contract</h5>
                 <Select
+                  name="interface"
                   placeholder="Select a smart contract to deploy"
                   options={listContractInterface}
-                  value={selectedContractInterface}
+                  value={formik1.values.interface}
                   onChange={onChangeContractInterface}
                 />
-                {selectedContractInterface && selectedContractInterface.inputs && renderConstructorDeploy()}
+                {formik1.errors.interface ? <div className="error-text">{formik1.errors.interface}</div> : null}
+                {formik1.values.interface && formik1.values.interface.inputs && renderConstructorDeploy()}
               </Col>
             </Row>
           </PerfectScrollbar>
@@ -603,31 +650,40 @@ const CreateToken = props => {
                 <div className="">
                   <h6 className="">Token symbol</h6>
                   <Input
+                    invalid={formik2.errors.symbol && formik2.touched.symbol}
+                    name="symbol"
                     type="text"
                     placeholder="Token's symbol"
-                    value={tokenSymbol}
-                    onChange={e => setTokenSymbol(e.target.value)}
+                    value={formik2.values.symbol}
+                    onBlur={formik2.handleBlur}
+                    onChange={formik2.handleChange}
                   />
-
+                  {formik2.errors.symbol && formik2.touched.symbol ? <div className="error-text">{formik2.errors.symbol}</div> : null}
                 </div>
                 <div className="mt-2">
                   <h6 className="">Token name</h6>
                   <Input
+                    invalid={formik2.errors.name && formik2.touched.name}
+                    name="name"
                     type="text"
-                    placeholder="Token's name"
-                    value={tokenName}
-                    onChange={e => setTokenName(e.target.value)}
+                    value={formik2.values.name}
+                    onBlur={formik2.handleBlur}
+                    onChange={formik2.handleChange}
                   />
+                  {formik2.errors.name && formik2.touched.name ? <div className="error-text">{formik2.errors.name}</div> : null}
                 </div>
                 <div className="mt-2">
                   <h6 className="">Total supply</h6>
                   <Input
+                    invalid={formik2.errors.supply && formik2.touched.supply}
+                    name="supply"
                     type="number"
                     placeholder="Initial supply"
-
-                    value={initialSupply}
-                    onChange={e => setInitialSupply(e.target.value)}
+                    value={formik2.values.supply}
+                    onBlur={formik2.handleBlur}
+                    onChange={formik2.handleChange}
                   />
+                  {formik2.errors.supply && formik2.touched.supply ? <div className="error-text">{formik2.errors.supply}</div> : null}
                 </div>
               </Col>
               <Col md={6}>
@@ -636,9 +692,9 @@ const CreateToken = props => {
                   <Input
                     type="text"
                     placeholder="Description"
-
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
+                    name="description"
+                    value={formik2.values.description}
+                    onChange={formik2.handleChange}
                   />
                 </div>
               </Col>
@@ -649,33 +705,41 @@ const CreateToken = props => {
         return <TabPane
           className={`step-content step-3-content`}
           key={3}
-          tabId={3}> <Row className="mb-2">
-            <Col md="6" sm="12">
-              <h4 className="m-1">Confirm Information</h4>
-              {renderDeployCheckBox()}
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Token symbol:
+          tabId={3}>
+          <PerfectScrollbar
+            options={{
+              suppressScrollX: true,
+              wheelPropagation: false
+            }}
+          >
+            <Row className="mb-2" style={{ height: '100px' }}>
+              <Col md="6" sm="12">
+                <h4 className="m-1">Confirm Information</h4>
+                {renderDeployCheckBox()}
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Token symbol:
               </div>
-                <div> {tokenSymbol}</div>
+                  <div> {formik2.values.symbol}</div>
+                </div>
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Token name:
               </div>
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Token name:
-              </div>
-                <div> {tokenName}</div>
-              </div>
+                  <div> {formik2.values.name}</div>
+                </div>
 
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Total Supply:
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Total Supply:
               </div>
-                <div> {initialSupply}</div>
-              </div>
-            </Col>
-            <Col md="6" sm="12">
-            </Col>
-          </Row>
+                  <div> {formik2.values.supply}</div>
+                </div>
+              </Col>
+              <Col md="6" sm="12">
+              </Col>
+            </Row>
+          </PerfectScrollbar>
         </TabPane>
     }
   }

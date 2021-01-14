@@ -1,2 +1,7 @@
 @import "../node_modules/prismjs/themes/prism-tomorrow";
 @import "./assets/scss/app.scss";
+
+.error-text {
+    font-size: 12px;
+    color: red;
+}
