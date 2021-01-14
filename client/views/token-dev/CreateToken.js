@@ -469,7 +469,7 @@ const CreateToken = props => {
           <div className="font-weight-bold info-title">
             Use metamask:
         </div>
-          <div style={{ width: '38px'}} className="text-center">
+          <div style={{ width: '38px' }} className="text-center">
             <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(false)} />
           </div>
         </div>
@@ -498,7 +498,7 @@ const CreateToken = props => {
           <div className="font-weight-bold info-title">
             Use metamask:
         </div>
-          <div style={{ width: '38px'}} className="text-center">
+          <div style={{ width: '38px' }} className="text-center">
             <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(true)} />
           </div>
         </div>
@@ -640,66 +640,69 @@ const CreateToken = props => {
               wheelPropagation: false
             }}
           >
-            <Row className="mb-1 child-scroll">
-              <Col md={3} sm={0}></Col>
-              <Col md={6} sm={12}>
-                <h4 className="mb-1">Enter some information for new token</h4>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <div className="">
-                  <h6 className="">Token symbol</h6>
-                  <Input
-                    invalid={formik2.errors.symbol && formik2.touched.symbol}
-                    name="symbol"
-                    type="text"
-                    placeholder="Token's symbol"
-                    value={formik2.values.symbol}
-                    onBlur={formik2.handleBlur}
-                    onChange={formik2.handleChange}
-                  />
-                  {formik2.errors.symbol && formik2.touched.symbol ? <div className="error-text">{formik2.errors.symbol}</div> : null}
-                </div>
-                <div className="mt-2">
-                  <h6 className="">Token name</h6>
-                  <Input
-                    invalid={formik2.errors.name && formik2.touched.name}
-                    name="name"
-                    type="text"
-                    value={formik2.values.name}
-                    onBlur={formik2.handleBlur}
-                    onChange={formik2.handleChange}
-                  />
-                  {formik2.errors.name && formik2.touched.name ? <div className="error-text">{formik2.errors.name}</div> : null}
-                </div>
-                <div className="mt-2">
-                  <h6 className="">Total supply</h6>
-                  <Input
-                    invalid={formik2.errors.supply && formik2.touched.supply}
-                    name="supply"
-                    type="number"
-                    placeholder="Initial supply"
-                    value={formik2.values.supply}
-                    onBlur={formik2.handleBlur}
-                    onChange={formik2.handleChange}
-                  />
-                  {formik2.errors.supply && formik2.touched.supply ? <div className="error-text">{formik2.errors.supply}</div> : null}
-                </div>
-              </Col>
-              <Col md={6}>
-                <div className="">
-                  <h6 className="">Description</h6>
-                  <Input
-                    type="text"
-                    placeholder="Description"
-                    name="description"
-                    value={formik2.values.description}
-                    onChange={formik2.handleChange}
-                  />
-                </div>
-              </Col>
-            </Row>
+            <div className=" child-scroll">
+              <Row className="mb-1">
+                <Col md={3} sm={0}></Col>
+                <Col md={6} sm={12}>
+                  <h4 className="mb-1">Enter some information for new token</h4>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <div className="">
+                    <h6 className="">Token symbol</h6>
+                    <Input
+                      invalid={formik2.errors.symbol && formik2.touched.symbol}
+                      name="symbol"
+                      type="text"
+                      placeholder="Token's symbol"
+                      value={formik2.values.symbol}
+                      onBlur={formik2.handleBlur}
+                      onChange={formik2.handleChange}
+                    />
+                    {formik2.errors.symbol && formik2.touched.symbol ? <div className="error-text">{formik2.errors.symbol}</div> : null}
+                  </div>
+                  <div className="mt-2">
+                    <h6 className="">Token name</h6>
+                    <Input
+                      invalid={formik2.errors.name && formik2.touched.name}
+                      name="name"
+                      type="text"
+                      value={formik2.values.name}
+                      onBlur={formik2.handleBlur}
+                      onChange={formik2.handleChange}
+                    />
+                    {formik2.errors.name && formik2.touched.name ? <div className="error-text">{formik2.errors.name}</div> : null}
+                  </div>
+                  <div className="mt-2">
+                    <h6 className="">Total supply</h6>
+                    <Input
+                      invalid={formik2.errors.supply && formik2.touched.supply}
+                      name="supply"
+                      type="number"
+                      placeholder="Initial supply"
+                      value={formik2.values.supply}
+                      onBlur={formik2.handleBlur}
+                      onChange={formik2.handleChange}
+                    />
+                    {formik2.errors.supply && formik2.touched.supply ? <div className="error-text">{formik2.errors.supply}</div> : null}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="">
+                    <h6 className="">Description</h6>
+                    <Input
+                      type="text"
+                      placeholder="Description"
+                      name="description"
+                      value={formik2.values.description}
+                      onChange={formik2.handleChange}
+                    />
+                  </div>
+                </Col>
+              </Row>
+
+            </div>
           </PerfectScrollbar>
         </TabPane>
       case 3:
@@ -788,7 +791,7 @@ const CreateToken = props => {
             className='d-flex align-items-center'
             onClick={handleNextStep}
           >
-            { 3 === activeStep
+            {3 === activeStep
               ? 'Create token'
               : "Next"
             }
