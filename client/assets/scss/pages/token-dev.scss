@@ -292,6 +292,17 @@
         .step-content {
           height: 100%;
         }
+        .step-0-content {
+          .fa-file-code {
+            font-size: 80px;
+          }
+          .ctrl-s {
+            color: red;
+          }
+        }
+        .child-scroll {
+          height: 100px;
+        }
       }
       .info-title {
         min-width: 200px;

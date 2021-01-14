@@ -1,17 +1,18 @@
 import { combineReducers } from "redux"
-import calenderReducer from "./calendar/"
-import emailReducer from "./email/"
-import chatReducer from "./chat/"
-import todoReducer from "./todo/"
-import customizer from "./customizer/"
-import auth from "./auth/"
-import navbar from "./navbar/Index"
-import dataList from "./data-list/"
 import account from "./account"
-import vcoin from "./vcoin"
+import auth from "./auth/"
+import calenderReducer from "./calendar/"
+import chatReducer from "./chat/"
+import customizer from "./customizer/"
+import dataList from "./data-list/"
+import emailReducer from "./email/"
+import navbar from "./navbar/Index"
+import network from "./network"
+import todoReducer from "./todo/"
 import tokenAdmin from "./token-admin"
 import tokenDev from "./token-dev"
-import network from "./network"
+import vcoin from "./vcoin"
+import home from "./home"
 
 const rootReducer = combineReducers({
   calendar: calenderReducer,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   vcoin: vcoin,
   tokenAdmin: tokenAdmin,
   tokenDev: tokenDev,
-  network: network
+  network: network,
+  home
 })
 
 export default rootReducer

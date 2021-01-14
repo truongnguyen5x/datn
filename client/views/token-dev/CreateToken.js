@@ -14,13 +14,14 @@ import {
   NavItem,
   NavLink, Row,
 
-  Spinner, TabContent,
+  TabContent,
   TabPane
 } from "reactstrap"
 import Swal from 'sweetalert2'
 import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
 import { getAccountBalance } from '../../redux/actions/account'
+import { setLoading } from '../../redux/actions/home'
 import { getListNetwork } from '../../redux/actions/network'
 import { checkTokenSymbolExists, createToken, getConfig, getListToken, setModalOpen, testDeploy, validateSource } from "../../redux/actions/token-dev"
 import { sleep } from '../../utility'
@@ -40,7 +41,6 @@ const CreateToken = props => {
   const [libSol, setLibSol] = useState('')
   const [tokenSol, setTokenSol] = useState('')
   const [useMetaMask, setUseMetaMask] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   const validate1 = values => {
     const errors = {}
@@ -192,7 +192,7 @@ const CreateToken = props => {
   }
 
   const checkDoneStep0 = async () => {
-    setLoading(true)
+    props.setLoading(true)
     const source1 = readBatchFile();
     setSourceCode(source1)
     const res = await props.validateSource(source1)
@@ -234,9 +234,9 @@ const CreateToken = props => {
         title: 'Oops...',
         text: 'Your source code error, review your code again !'
       })
-      setLoading(false)
+      props.setLoading(false)
     }
-    setLoading(false)
+    props.setLoading(false)
   }
 
   const checkDoneStep1 = async () => {
@@ -244,7 +244,7 @@ const CreateToken = props => {
     if (errors.interface || errors.dataConstructor.every(i => i)) {
       return
     }
-    setLoading(true)
+    props.setLoading(true)
     // TODO
     const { abi, bytecode } = formik1.values.interface
     const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
@@ -257,14 +257,14 @@ const CreateToken = props => {
         formik2.setValues({ symbol: data.symbol, supply: data.totalSupply, name: data.name })
       }
       setActiveStep(2)
-      setLoading(false)
+      props.setLoading(false)
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Your smart contract invalid !'
       })
-      setLoading(false)
+      props.setLoading(false)
     }
   }
 
@@ -273,20 +273,20 @@ const CreateToken = props => {
     if (!_.isEmpty(errors)) {
       return
     }
-    setLoading(true)
+    props.setLoading(true)
 
     const res = await props.checkTokenSymbolExists(formik2.values.symbol)
     console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
     if (res.code) {
       setActiveStep(3)
-      setLoading(false)
+      props.setLoading(false)
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Token symbol already taken !'
       })
-      setLoading(false)
+      props.setLoading(false)
     }
   }
   const checkDoneStep3 = async () => {
@@ -294,7 +294,7 @@ const CreateToken = props => {
     if (!_.isEmpty(errors)) {
       return
     }
-    setLoading(true)
+    props.setLoading(true)
     const { abi, bytecode } = formik1.values.interface
     const { name, symbol, supply, description } = formik2.values
     if (useMetaMask) {
@@ -329,13 +329,13 @@ const CreateToken = props => {
             props.setModalOpen("")
             props.getListToken()
             toast.success('Create token success')
-            setLoading(false)
+            props.setLoading(false)
           } else {
-            setLoading(false)
+            props.setLoading(false)
           }
         })
         .catch(error => {
-          setLoading(false)
+          props.setLoading(false)
           console.log(error)
           Swal.fire({
             icon: 'error',
@@ -362,9 +362,9 @@ const CreateToken = props => {
             props.setModalOpen("")
             props.getListToken()
             toast.success('Create token success')
-            setLoading(false)
+            props.setLoading(false)
           } else {
-            setLoading(false)
+            props.setLoading(false)
           }
         })
     }
@@ -468,7 +468,7 @@ const CreateToken = props => {
           <div className="font-weight-bold info-title">
             Use metamask:
         </div>
-          <div style={{ width: '38px', textAlign: 'center' }}>
+          <div style={{ width: '38px'}} className="text-center">
             <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(false)} />
           </div>
         </div>
@@ -497,7 +497,7 @@ const CreateToken = props => {
           <div className="font-weight-bold info-title">
             Use metamask:
         </div>
-          <div style={{ width: '50px', textAlign: 'center' }}>
+          <div style={{ width: '38px'}} className="text-center">
             <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(true)} />
           </div>
         </div>
@@ -592,10 +592,10 @@ const CreateToken = props => {
 
           <div className="full-height d-flex justify-content-center align-items-center">
             <a className="d-block cursor-pointer text-center" href="/ide" target="_blank">
-              <i style={{ fontSize: "80px" }} className="far fa-file-code"></i>
-
+              <i className="far fa-file-code"></i>
               <h2> Click here to custom  </h2>
               <h2> our Token source code </h2>
+              <h2> then <span className="ctrl-s">Ctrl + S</span> to save</h2>
             </a>
           </div>
         </TabPane>
@@ -610,7 +610,7 @@ const CreateToken = props => {
               wheelPropagation: false
             }}
           >
-            <Row className="mb-2" style={{ height: '100px' }}>
+            <Row className="mb-2 child-scroll">
               <Col md={3} sm={0}></Col>
               <Col md={6} sm={12}>
                 <h5>Select a smart contract</h5>
@@ -639,7 +639,7 @@ const CreateToken = props => {
               wheelPropagation: false
             }}
           >
-            <Row className="mb-1">
+            <Row className="mb-1 child-scroll">
               <Col md={3} sm={0}></Col>
               <Col md={6} sm={12}>
                 <h4 className="mb-1">Enter some information for new token</h4>
@@ -712,7 +712,7 @@ const CreateToken = props => {
               wheelPropagation: false
             }}
           >
-            <Row className="mb-2" style={{ height: '100px' }}>
+            <Row className="mb-2 child-scroll">
               <Col md="6" sm="12">
                 <h4 className="m-1">Confirm Information</h4>
                 {renderDeployCheckBox()}
@@ -787,7 +787,7 @@ const CreateToken = props => {
             className='d-flex align-items-center'
             onClick={handleNextStep}
           >
-            {loading ? <Spinner color="white" size="sm" /> : 3 === activeStep
+            { 3 === activeStep
               ? 'Create token'
               : "Next"
             }
@@ -817,7 +817,8 @@ const mapDispatchToProps = {
   getListToken,
   setModalOpen,
   testDeploy,
-  checkTokenSymbolExists
+  checkTokenSymbolExists,
+  setLoading
 }
 
 

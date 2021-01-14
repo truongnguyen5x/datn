@@ -4,3 +4,15 @@
 @import "./colors.scss";
 @import "./iconfont.scss";
 @import "./custom-rtl.scss";
+
+.global-loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+    background: black;
+    opacity: 0.5;
+    cursor: pointer;
+}

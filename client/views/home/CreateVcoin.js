@@ -292,12 +292,12 @@ const CreateVcoin = props => {
           key={0}
           tabId={0}>
 
-          <div className="full-height d-flex justify-content-center align-items-center">
+          <div className="full-height d-flex justify-content-center align-items-center ">
             <a className="d-block cursor-pointer text-center" href="/ide" target="_blank">
-              <i style={{ fontSize: "80px" }} className="far fa-file-code"></i>
-
+              <i className="far fa-file-code"></i>
               <h2> Click here to custom  </h2>
               <h2> our Token source code </h2>
+              <h2> then <span className="ctrl-s">Ctrl + S</span> to save</h2>
             </a>
           </div>
         </TabPane>
