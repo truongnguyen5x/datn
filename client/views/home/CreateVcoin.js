@@ -94,7 +94,7 @@ const CreateVcoin = props => {
             setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
-            setNetId(chainId)
+            setNetId(res.utils.hexToNumber(chainId))
           });
         }
         if (res) {

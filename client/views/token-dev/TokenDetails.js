@@ -47,7 +47,7 @@ const TokenDetails = props => {
             setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
-            setNetId(chainId)
+            setNetId(res.utils.hexToNumber(chainId))
           });
         }
         setWeb3(res)
@@ -72,30 +72,40 @@ const TokenDetails = props => {
   const handleAddToVCoin = async (i) => {
     props.setLoading(true)
     const interfaceX = JSON.parse(i.abi)
-    let vcoin
-    if (netId == 1) {
-      vcoin = props.listVCoin[0]
-    } else if (netId == 42) {
-      vcoin = props.listVCoin[1]
-    } else if (netId == 3) {
-      vcoin = props.listVCoin[2]
-    } else if (netId == 4) {
-      vcoin = props.listVCoin[3]
-    } else if (netId == 5) {
-      vcoin = props.listVCoin[4]
-    } else {
-      vcoin = props.listVCoin[5]
-    }
-    if (!vcoin) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Not found VCoin for this network !',
-        text: 'Plese contact Admin !'
-      })
-      props.setLoading(false)
-      return
-    }
     if (i.address) {
+      const chainId = getNetType(netId)
+      if (chainId != i.network.chain_id) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Blockchain network not match !',
+          text: `Please use network ${i.network.chain_id} on Metamask !`
+        })
+        props.setLoading(false)
+        return
+      }
+      let vcoin
+      if (netId == 1) {
+        vcoin = props.listVCoin[0]
+      } else if (netId == 42) {
+        vcoin = props.listVCoin[1]
+      } else if (netId == 3) {
+        vcoin = props.listVCoin[2]
+      } else if (netId == 4) {
+        vcoin = props.listVCoin[3]
+      } else if (netId == 5) {
+        vcoin = props.listVCoin[4]
+      } else {
+        vcoin = props.listVCoin[5]
+      }
+      if (!vcoin) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Not found VCoin for this network !',
+          text: 'Plese contact Admin !'
+        })
+        props.setLoading(false)
+        return
+      }
       if (!web3) {
         Swal.fire({
           icon: 'error',
@@ -110,16 +120,6 @@ const TokenDetails = props => {
           icon: 'error',
           title: 'Account metamask not match !',
           text: `Please use account ${i.account} !`
-        })
-        props.setLoading(false)
-        return
-      }
-      const chainId = getNetType(netId)
-      if (chainId != i.network.chain_id) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Blockchain network not match !',
-          text: `Please use network ${chainId} on Metamask !`
         })
         props.setLoading(false)
         return

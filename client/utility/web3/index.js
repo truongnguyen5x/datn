@@ -81,7 +81,6 @@ const sendWithEstimateGas = (send, from) => {
 }
 
 const deployWithEstimateGas = (send, from) => {
-    console.log(send)
     let address
     return new Promise((resolve, reject) => {
         send.estimateGas()
