@@ -60,11 +60,6 @@ const createToken = async (data, user_id) => {
         await token.addSmartContract(newSmartContract)
         await token.setOwner(user)
     }
-    if (address) {
-
-    } else {
-
-    }
     return token
 }
 

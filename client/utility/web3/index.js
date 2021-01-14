@@ -74,6 +74,9 @@ const sendWithEstimateGas = (send, from) => {
                         reject(err)
                     });
             })
+            .catch(error => {
+                console.log(error)
+            })
     })
 }
 

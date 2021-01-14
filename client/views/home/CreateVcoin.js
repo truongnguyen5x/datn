@@ -90,6 +90,14 @@ const CreateVcoin = props => {
 
     getWeb3()
       .then(res => {
+        if (window.ethereum) {
+          window.ethereum.on('accountsChanged', (accounts) => {
+            setAccs(accounts)
+          });
+          window.ethereum.on('chainChanged', (chainId) => {
+            setNetId(chainId)
+          });
+        }
         if (res) {
           setWeb3(res)
           getInfo(res)
@@ -106,7 +114,7 @@ const CreateVcoin = props => {
 
   const getInfo = async (web3) => {
     web3.eth.getAccounts().then(listAcc => {
-      setAccs(listAcc)
+      setAccs(listAcc.map(i => i.toUpperCase()))
       web3.eth.getBalance(listAcc[0])
         .then(e => {
           setBalance(web3.utils.fromWei(e))
@@ -229,7 +237,7 @@ const CreateVcoin = props => {
   const checkDoneStep2 = async () => {
     props.setLoading(true)
     const { abi, bytecode } = formik1.values.interface
-    const myContract = new web3.eth.Contract(abi)
+    const myContract = new web3.eth.Contract(JSON.parse(abi))
     const deploy = myContract.deploy({
       data: bytecode,
       arguments: formik1.values.dataConstructor
@@ -270,10 +278,10 @@ const CreateVcoin = props => {
           case "uint256":
             type = "number"
         }
-        return <React.Fragment>
+        return <React.Fragment key={idx}>
           <Input
             className="mt-1"
-            invalid={formik1.errors?.dataConstructor?.[idx]}
+            invalid={formik1.errors?.dataConstructor?.[idx] ? true : false}
             type={type}
             placeholder={i.name}
             value={formik1.values.dataConstructor[idx]}
@@ -445,14 +453,14 @@ const CreateVcoin = props => {
         <div className="wizard-actions d-flex justify-content-between mt-1">
           <Button
             type="button"
-            color="primary"
+            color='danger'
             disabled={activeStep === 0}
             onClick={handlePreviousStep}>
             Prev
-        </Button>
+          </Button>
           <Button
             type="button"
-            color="primary"
+            color='danger'
             className='d-flex align-items-center'
             onClick={handleNextStep}
           >

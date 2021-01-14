@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { ArrowLeft, Check, Trash, X } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
+import { toast } from "react-toastify"
 import { Button, Col, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
 import { acceptRequest, deleteToken, denyRequest, getListToken, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
 import { getListVCoin } from '../../redux/actions/vcoin'
@@ -39,6 +40,14 @@ const TokenDetails = props => {
   useEffect(() => {
     getWeb3()
       .then(res => {
+        if (window.ethereum) {
+          window.ethereum.on('accountsChanged', (accounts) => {
+            setAccs(accounts)
+          });
+          window.ethereum.on('chainChanged', (chainId) => {
+            setNetId(chainId)
+          });
+        }
         setWeb3(res)
         getInfo(res)
       })
@@ -190,6 +199,7 @@ const TokenDetails = props => {
           setLoading(false)
         })
     } else {
+      toast.error("Deny request error")
       console.log('error')
     }
     setLoading(false)

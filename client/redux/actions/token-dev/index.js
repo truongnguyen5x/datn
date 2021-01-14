@@ -21,6 +21,10 @@ export const getListToken = () => (dispatch, getState) => {
 
 export const changeFilter = (type) => dispatch => {
     dispatch({
+        type: "SET_LOADING",
+        payload: true
+    })
+    dispatch({
         type: "CHANGE_LIST_TYPE_TOKEN",
         payload: type
     })
@@ -34,6 +38,10 @@ export const changeFilter = (type) => dispatch => {
                 dispatch({
                     type: "GET_LIST_TOKEN",
                     payload: res.data
+                })
+                dispatch({
+                    type: "SET_LOADING",
+                    payload: false
                 })
             }
         })

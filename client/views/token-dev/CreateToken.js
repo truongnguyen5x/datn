@@ -108,6 +108,14 @@ const CreateToken = props => {
     // .then(res => console.log(res))
     getWeb3()
       .then(res => {
+        if (window.ethereum) {
+          window.ethereum.on('accountsChanged', (accounts) => {
+            setAccs(accounts)
+          });
+          window.ethereum.on('chainChanged', (chainId) => {
+            setNetId(chainId)
+          });
+        }
         if (res) {
           setWeb3(res)
           getInfo(res)
@@ -132,30 +140,25 @@ const CreateToken = props => {
       return i
     })
 
-  // console.log(optionNetwork)
-
   const getInfo = async (web3) => {
     web3.eth.getAccounts().then(listAcc => {
-      setAccs(listAcc)
+      setAccs(listAcc.map(i => i.toUpperCase()))
+      // setAccs(listAcc)
       web3.eth.getBalance(listAcc[0])
         .then(e => {
           setBalance(web3.utils.fromWei(e))
         })
     })
     web3.eth.net.getId().then(netId => {
-      // console.log(netId)
       setNetId(netId)
     })
-    // console.log(web3.eth.accounts.wallet)
   }
 
 
   const getAndWriteTemplateCode = async () => {
     while (!window.remixFileSystem) {
-      // console.log('loop')
       await sleep(500)
     }
-    // console.log('clear', window.remixFileSystem)
     clearAll()
     props.getConfig('LIB.SOL')
       .then(res => {
@@ -275,7 +278,6 @@ const CreateToken = props => {
       return
     }
     props.setLoading(true)
-
     const res = await props.checkTokenSymbolExists(formik2.values.symbol)
     console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
     if (res.code) {
@@ -290,16 +292,20 @@ const CreateToken = props => {
       props.setLoading(false)
     }
   }
+
   const checkDoneStep3 = async () => {
-    const errors = await formik3.validateForm()
-    if (!_.isEmpty(errors)) {
-      return
+    if (!useMetaMask || !web3 || !sourceEdited) {
+      const errors = await formik3.validateForm()
+      if (!_.isEmpty(errors)) {
+        return
+      }
     }
     props.setLoading(true)
     const { abi, bytecode } = formik1.values.interface
     const { name, symbol, supply, description } = formik2.values
     if (useMetaMask) {
       let smartContractAddress
+    
       const myContract = new web3.eth.Contract(abi)
       const deploy = myContract.deploy({
         data: bytecode,
@@ -308,6 +314,7 @@ const CreateToken = props => {
       deployWithEstimateGas(deploy, accs[0])
         .then(instance => {
           smartContractAddress = instance.options.address
+          console.log(symbol, name, supply, accs[0], smartContractAddress)
           const setInfo = instance.methods.setInfo(symbol, name, supply)
           return sendWithEstimateGas(setInfo, accs[0])
         })
@@ -332,6 +339,7 @@ const CreateToken = props => {
             toast.success('Create token success')
             props.setLoading(false)
           } else {
+            toast.error('Create token error')
             props.setLoading(false)
           }
         })
@@ -365,6 +373,7 @@ const CreateToken = props => {
             toast.success('Create token success')
             props.setLoading(false)
           } else {
+            toast.error('Create token error')
             props.setLoading(false)
           }
         })
@@ -374,14 +383,6 @@ const CreateToken = props => {
   const onCloseModal = () => {
     props.setModalOpen("")
   }
-
-  // const CustomOption = ({ innerProps, innerRef, data, ...rest }) => {
-  //   // console.log(rest)
-  //   return <div className="list-option-select" ref={innerRef} {...innerProps}>
-  //     <div>{data.name}</div>
-  //     <div>{data.path}</div>
-  //   </div>
-  // }
 
   const handleNextStep = async () => {
     switch (activeStep) {
@@ -398,13 +399,6 @@ const CreateToken = props => {
         checkDoneStep3()
         break
     }
-
-    // setReachedStep(Math.max(reachedStep, activeStep + 1))
-
-    // setActiveStep(0)
-    // setReachedStep(0)
-
-
   }
 
   const handlePreviousStep = () => {
@@ -415,16 +409,6 @@ const CreateToken = props => {
     }
   }
 
-  // const handleEnableAllSteps = index => {
-  //   if (index < reachedStep) {
-  //     setActiveStep(index)
-  //   }
-  //   if (index - activeStep == 1) {
-  //     handleNextStep()
-  //   }
-  // }
-
-
   const renderConstructorDeploy = () => {
     return <div className="mt-2">
       <h5>Enter params to deploy {formik1.values.interface.label}</h5>
@@ -434,10 +418,10 @@ const CreateToken = props => {
           case "uint256":
             type = "number"
         }
-        return <React.Fragment>
+        return <React.Fragment key={idx}>
           <Input
             className="mt-1"
-            invalid={formik1.errors?.dataConstructor?.[idx]}
+            invalid={formik1.errors?.dataConstructor?.[idx] ? true : false}
             type={type}
             placeholder={i.name}
             value={formik1.values.dataConstructor[idx]}
@@ -448,6 +432,7 @@ const CreateToken = props => {
       })}
     </div>
   }
+
   const renderDeployCheckBox = () => {
     if (!web3 || sourceEdited == false) return <div className="d-flex m-1">
       <div className="font-weight-bold info-title">
@@ -758,7 +743,7 @@ const CreateToken = props => {
           <ArrowLeft
             size={20}
             className="mr-1 cursor-pointer"
-            onClick={onCloseModal}
+            onClick={() => { onCloseModal(); resetState() }}
           />
           <h4 className="mb-0">New token</h4>
         </div>
@@ -780,14 +765,14 @@ const CreateToken = props => {
         <div className="wizard-actions d-flex justify-content-between mt-1">
           <Button
             type="button"
-            color="primary"
+            color='danger'
             disabled={activeStep === 0}
             onClick={handlePreviousStep}>
             Prev
         </Button>
           <Button
             type="button"
-            color="primary"
+            color='danger'
             className='d-flex align-items-center'
             onClick={handleNextStep}
           >

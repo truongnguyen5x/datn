@@ -63,11 +63,10 @@ const createVCoin = async (data, user_id) => {
 }
 
 const updateVCoin = async (data) => {
-    const { network, address } = data
-    const sendNetwork = await networkService.getNetWorkById(network)
-    const coin = await VCoin.create({ address })
-    await coin.setNetwork(sendNetwork)
-    return coin
+    const { id, fee } = data
+    const vcoin = await VCoin.findOne({ where: { id } })
+    await vcoin.update({ swap_fee: fee })
+    return vcoin
 }
 
 const deleteVCoin = async (id) => {
