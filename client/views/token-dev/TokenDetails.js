@@ -2,19 +2,19 @@ import classnames from "classnames"
 import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useEffect, useState } from "react"
-import { ArrowLeft, Download, Edit, Trash } from "react-feather"
+import { ArrowLeft, Download, Trash } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
-import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip, Spinner } from 'reactstrap'
+import { toast } from "react-toastify"
+import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
 import Swal from 'sweetalert2'
 import noImage from "../../assets/img/coin/no-image.png"
-import { cancelRequest, createRequest, getTokenById, setModalOpen, getListToken } from "../../redux/actions/token-dev"
-import { getListVCoin } from '../../redux/actions/vcoin'
-import { writeBatchFile, clearAll } from '../../utility/file'
-import { exporSdkWorker } from '../../utility/sdk'
-import { getWeb3, getNetType, sendWithEstimateGas } from '../../utility/web3'
-import { toast } from "react-toastify"
 import { setLoading } from '../../redux/actions/home'
+import { cancelRequest, createRequest, getListToken, getTokenById, setModalOpen } from "../../redux/actions/token-dev"
+import { getListVCoin } from '../../redux/actions/vcoin'
+import { clearAll, writeBatchFile } from '../../utility/file'
+import { exporSdkWorker } from '../../utility/sdk'
+import { getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -44,7 +44,7 @@ const TokenDetails = props => {
       .then(res => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
-            setAccs(accounts)
+            setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(chainId)
@@ -70,7 +70,6 @@ const TokenDetails = props => {
   }
 
   const handleAddToVCoin = async (i) => {
-    console.log(i)
     props.setLoading(true)
     const interfaceX = JSON.parse(i.abi)
     let vcoin

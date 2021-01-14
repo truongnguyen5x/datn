@@ -1,6 +1,5 @@
 import classnames from "classnames"
 import { useFormik } from 'formik'
-import _ from 'lodash'
 import React, { useEffect, useState } from "react"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { ArrowLeft, Box, Folder, Layers } from "react-feather"
@@ -22,8 +21,8 @@ import {
 import Swal from 'sweetalert2'
 import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
-import { getConfig } from "../../redux/actions/token-dev"
 import { setLoading } from '../../redux/actions/home'
+import { getConfig } from "../../redux/actions/token-dev"
 import { createVcoin, getListVCoin, testDeploy, validateSource } from '../../redux/actions/vcoin'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
 import { deployWithEstimateGas, getNetType, getWeb3 } from '../../utility/web3'
@@ -92,7 +91,7 @@ const CreateVcoin = props => {
       .then(res => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
-            setAccs(accounts)
+            setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(chainId)
@@ -237,7 +236,7 @@ const CreateVcoin = props => {
   const checkDoneStep2 = async () => {
     props.setLoading(true)
     const { abi, bytecode } = formik1.values.interface
-    const myContract = new web3.eth.Contract(JSON.parse(abi))
+    const myContract = new web3.eth.Contract(abi)
     const deploy = myContract.deploy({
       data: bytecode,
       arguments: formik1.values.dataConstructor

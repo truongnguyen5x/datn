@@ -110,7 +110,7 @@ const CreateToken = props => {
       .then(res => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
-            setAccs(accounts)
+            setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(chainId)
@@ -305,7 +305,6 @@ const CreateToken = props => {
     const { name, symbol, supply, description } = formik2.values
     if (useMetaMask) {
       let smartContractAddress
-    
       const myContract = new web3.eth.Contract(abi)
       const deploy = myContract.deploy({
         data: bytecode,
@@ -314,7 +313,6 @@ const CreateToken = props => {
       deployWithEstimateGas(deploy, accs[0])
         .then(instance => {
           smartContractAddress = instance.options.address
-          console.log(symbol, name, supply, accs[0], smartContractAddress)
           const setInfo = instance.methods.setInfo(symbol, name, supply)
           return sendWithEstimateGas(setInfo, accs[0])
         })

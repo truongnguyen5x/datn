@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Input } from 'reactstrap'
-import { Edit } from 'react-feather'
-import { getNetType, sendWithEstimateGas, getWeb3 } from '../../utility/web3'
 import { useFormik } from 'formik'
-import { setLoading } from '../../redux/actions/home'
-import { updateVCoin, getListVCoin } from '../../redux/actions/vcoin'
 import _ from 'lodash'
+import React, { useEffect, useState } from "react"
+import { Edit } from 'react-feather'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
+import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import { setLoading } from '../../redux/actions/home'
+import { getListVCoin, updateVCoin } from '../../redux/actions/vcoin'
+import { getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
 
 const validate = values => {
     const errors = {}
@@ -37,7 +37,7 @@ const EditVcoin = props => {
         const { address, account, abi, network_id, id } = props.data
         if (!web3) {
             Swal.fire({
-                icon: 'Error',
+                icon: 'error',
                 title: 'Not found Metamask !',
                 text: 'Plese enable Metamask !'
             })
@@ -45,7 +45,7 @@ const EditVcoin = props => {
         }
         if (account != accs[0]) {
             Swal.fire({
-                icon: 'Error',
+                icon: 'error',
                 title: 'Account metamask not match !',
                 text: `Please use account ${account} !`
             })
@@ -83,6 +83,14 @@ const EditVcoin = props => {
     useEffect(() => {
         getWeb3()
             .then(res => {
+                if (window.ethereum) {
+                    window.ethereum.on('accountsChanged', (accounts) => {
+                      setAccs(accounts.map(i => i.toUpperCase()))
+                    });
+                    window.ethereum.on('chainChanged', (chainId) => {
+                      setNetId(chainId)
+                    });
+                  }
                 if (res) {
                     setWeb3(res)
                     getInfo(res)
@@ -93,7 +101,7 @@ const EditVcoin = props => {
 
     const getInfo = async (web3) => {
         web3.eth.getAccounts().then(listAcc => {
-            setAccs(listAcc)
+            setAccs(listAcc.map(i => i.toUpperCase()))
         })
         web3.eth.net.getId().then(netId => {
             setNetId(netId)

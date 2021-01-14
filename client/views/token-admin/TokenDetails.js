@@ -5,12 +5,13 @@ import { ArrowLeft, Check, Trash, X } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { toast } from "react-toastify"
-import { Button, Col, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+import Swal from 'sweetalert2'
+import { setLoading } from '../../redux/actions/home'
 import { acceptRequest, deleteToken, denyRequest, getListToken, getTokenById, setModalOpen } from "../../redux/actions/token-admin"
 import { getListVCoin } from '../../redux/actions/vcoin'
 import { clearAll, writeBatchFile } from '../../utility/file'
-import { getWeb3, deployWithEstimateGas, sendWithEstimateGas } from '../../utility/web3'
-
+import { deployWithEstimateGas, getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -18,8 +19,6 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [clicked, setClicked] = useState(0)
 
   useEffect(() => {
     props.getListVCoin()
@@ -42,7 +41,7 @@ const TokenDetails = props => {
       .then(res => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
-            setAccs(accounts)
+            setAccs(accounts.map(i => i.toUpperCase()))
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(chainId)
@@ -56,7 +55,7 @@ const TokenDetails = props => {
 
   const getInfo = async (web3) => {
     web3.eth.getAccounts().then(listAcc => {
-      setAccs(listAcc)
+      setAccs(listAcc.map(i => i.toUpperCase()))
     })
     web3.eth.net.getId().then(netId => setNetId(netId))
   }
@@ -68,8 +67,7 @@ const TokenDetails = props => {
   }
 
   const handleAddVChain = async (i) => {
-    setLoading(true)
-    setClicked(i.id)
+    props.setLoading(true)
 
     let vcoin
     if (netId == 1) {
@@ -85,22 +83,41 @@ const TokenDetails = props => {
     } else {
       vcoin = props.listVCoin[5]
     }
+    if (!vcoin) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not found VCoin for this network !',
+        text: `Plese create VCoin on ${getNetType(netId)} !`
+      })
+      props.setLoading(false)
+      return
+    }
     if (!web3) {
       Swal.fire({
-        icon: 'Error',
+        icon: 'error',
         title: 'Not found Metamask !',
         text: 'Plese enable Metamask !'
       })
-      setLoading(false)
+      props.setLoading(false)
       return
     }
     if (vcoin.account != accs[0]) {
       Swal.fire({
-        icon: 'Error',
+        icon: 'error',
         title: 'Account metamask not match !',
         text: `Please use account ${i.account} !`
       })
-      setLoading(false)
+      props.setLoading(false)
+      return
+    }
+    const chainId = getNetType(netId)
+    if (chainId != i.network.chain_id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Blockchain network not match !',
+        text: `Please use network ${i.network.chain_id} on Metamask !`
+      })
+      props.setLoading(false)
       return
     }
     const interfaceX = JSON.parse(vcoin.abi)
@@ -112,7 +129,7 @@ const TokenDetails = props => {
           const res = await props.acceptRequest({
             id: i.id
           })
-          setLoading(false)
+          props.setLoading(false)
           props.getListToken()
           resetState()
           props.getTokenById(props.data.id)
@@ -128,7 +145,7 @@ const TokenDetails = props => {
         })
         .catch(error => {
           console.log(error)
-          setLoading(false)
+          props.setLoading(false)
         })
     } else {
       let smartContractAddress
@@ -158,7 +175,7 @@ const TokenDetails = props => {
             id: i.id,
             address: smartContractAddress
           })
-          setLoading(false)
+          props.setLoading(false)
           props.getListToken()
           resetState()
           props.getTokenById(props.data.id)
@@ -181,8 +198,7 @@ const TokenDetails = props => {
   }
 
   const handleDenyVChain = async (id) => {
-    setLoading(true)
-    setClicked(id)
+    props.setLoading(true)
     const res = await props.denyRequest({ id })
     if (res.code) {
       resetState()
@@ -196,22 +212,18 @@ const TokenDetails = props => {
               props.setModalOpen('')
             }
           }
-          setLoading(false)
+          props.setLoading(false)
         })
     } else {
       toast.error("Deny request error")
       console.log('error')
     }
-    setLoading(false)
+    props.setLoading(false)
   }
 
 
   const handleDeleteToken = async (i) => {
-
-
-    setLoading(true)
-    setClicked(i.id)
-
+    props.setLoading(true)
     let vcoin
     if (netId == 1) {
       vcoin = props.listVCoin[0]
@@ -226,13 +238,41 @@ const TokenDetails = props => {
     } else {
       vcoin = props.listVCoin[5]
     }
+    if (!vcoin) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not found VCoin for this network !',
+        text: `Plese create VCoin on ${getNetType(netId)} !`
+      })
+      props.setLoading(false)
+      return
+    }
+    if (!web3) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Not found Metamask !',
+        text: 'Plese enable Metamask !'
+      })
+      props.setLoading(false)
+      return
+    }
     if (vcoin.account != accs[0]) {
       Swal.fire({
-        icon: 'Error',
+        icon: 'error',
         title: 'Account metamask not match !',
         text: `Please use account ${i.account} !`
       })
-      setLoading(false)
+      props.setLoading(false)
+      return
+    }
+    const chainId = getNetType(netId)
+    if (chainId != i.network.chain_id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Blockchain network not match !',
+        text: `Please use network ${i.network.chain_id} on Metamask !`
+      })
+      props.setLoading(false)
       return
     }
     const interfaceX = JSON.parse(vcoin.abi)
@@ -243,7 +283,7 @@ const TokenDetails = props => {
         const res = await props.deleteToken(i.id)
         props.getListToken()
         resetState()
-        setLoading(false)
+        props.setLoading(false)
         props.getTokenById(props.data.id)
           .then(res => {
             if (res.code) {
@@ -257,7 +297,7 @@ const TokenDetails = props => {
       })
       .catch(error => {
         console.log(error)
-        setLoading(false)
+        props.setLoading(false)
       })
   }
 
@@ -271,7 +311,7 @@ const TokenDetails = props => {
     if (props.listType == "in-vchain") {
       return <React.Fragment>
         <Button size="sm" id={"add" + i.id} color="danger" className="ml-1" onClick={() => handleDeleteToken(i)}>
-          {(loading && clicked == i.id) ? <Spinner color="white" size="sm" /> : <Trash size={14} />}
+          <Trash size={14} />
         </Button>
         <UncontrolledTooltip target={"add" + i.id}>
           Delete from vcoin
@@ -282,7 +322,7 @@ const TokenDetails = props => {
 
     return <React.Fragment>
       <Button size="sm" id={"remove" + i.id} color="success" onClick={() => handleAddVChain(i)}>
-        {(loading && clicked == i.id) ? <Spinner color="white" size="sm" /> : <Check size={14} />}
+        <Check size={14} />
       </Button>
       <UncontrolledTooltip target={"remove" + i.id}>
         Accept
@@ -457,6 +497,7 @@ const mapDispatchToProps = {
   acceptRequest,
   denyRequest,
   deleteToken,
-  getListToken
+  getListToken,
+  setLoading
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TokenDetails)

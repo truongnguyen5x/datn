@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Download, Edit } from 'react-feather'
+import { Edit } from 'react-feather'
 import { connect } from "react-redux"
+import { ToastContainer } from 'react-toastify'
 import { Button, Card, Col, Row } from "reactstrap"
 import "../../assets/scss/pages/vcoin.scss"
 import { getProfile } from "../../redux/actions/auth/loginActions"
 import { getListVCoin } from "../../redux/actions/vcoin/index"
-import CreateVCoin from './CreateVcoin'
 import { getNetType } from '../../utility/web3'
-import { ToastContainer } from 'react-toastify'
+import CreateVCoin from './CreateVcoin'
 import DetailVcoin from './DetailVcoin'
 
 const ListVCoin = (props) => {
