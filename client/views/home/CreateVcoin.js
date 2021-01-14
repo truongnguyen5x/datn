@@ -1,7 +1,10 @@
 import classnames from "classnames"
+import { useFormik } from 'formik'
+import _ from 'lodash'
 import React, { useEffect, useState } from "react"
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { ArrowLeft, Box, Folder, Layers } from "react-feather"
+import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import Select from 'react-select'
 import { toast } from 'react-toastify'
@@ -13,32 +16,73 @@ import {
 
 
 
-  Spinner, TabContent,
+  TabContent,
   TabPane
 } from "reactstrap"
 import Swal from 'sweetalert2'
 import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
 import { getConfig } from "../../redux/actions/token-dev"
+import { setLoading } from '../../redux/actions/home'
 import { createVcoin, getListVCoin, testDeploy, validateSource } from '../../redux/actions/vcoin'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
-import { getNetType, getWeb3, deployWithEstimateGas } from '../../utility/web3'
-
+import { deployWithEstimateGas, getNetType, getWeb3 } from '../../utility/web3'
 
 
 
 const CreateVcoin = props => {
 
   const [sourceCode, setSourceCode] = useState([])
-  const [loading, setLoading] = useState(false)
   const [activeStep, setActiveStep] = useState(0)
-  const [selectedContractInterface, setSelectedContractInterface] = useState()
   const [listContractInterface, setListContractInterface] = useState([])
-  const [dataConstructorDeploy, setDataConstructorDeploy] = useState([])
   const [accs, setAccs] = useState([])
   const [netId, setNetId] = useState(0)
   const [balance, setBalance] = useState("")
   const [web3, setWeb3] = useState()
+
+  const validate1 = values => {
+    const errors = {}
+    if (!values.interface) {
+      errors.interface = 'Required !'
+    }
+    errors.dataConstructor = values.dataConstructor.map(i => !i)
+    console.log(errors)
+    // console.log('validate1', errors, formik1.values.dataConstructor)
+    return errors
+  }
+  const formik1 = useFormik({
+    initialValues: {
+      interface: null,
+      dataConstructor: []
+    },
+    validateOnChange: false,
+    validate: validate1
+  })
+
+  const validate2 = values => {
+    const errors = {}
+    if (!values.symbol) {
+      errors.symbol = 'Required !'
+    }
+    if (!values.name) {
+      errors.name = 'Required !'
+    }
+    if (!values.supply) {
+      errors.supply = 'Required !'
+    }
+    // console.log('validate', errors)
+    return errors
+  }
+
+  const formik2 = useFormik({
+    initialValues: {
+      symbol: '',
+      name: '',
+      description: '',
+      supply: ''
+    },
+    validate: validate2
+  });
 
 
   useEffect(() => {
@@ -46,15 +90,17 @@ const CreateVcoin = props => {
 
     getWeb3()
       .then(res => {
-        setWeb3(res)
-        getInfo(res)
+        if (res) {
+          setWeb3(res)
+          getInfo(res)
+        }
       })
       .catch(err => console.log(err))
   }, [])
 
   const resetState = () => {
-    setSelectedContractInterface(null)
-    setDataConstructorDeploy([])
+    formik1.resetForm()
+    formik2.resetForm()
     setActiveStep(0)
   }
 
@@ -67,13 +113,13 @@ const CreateVcoin = props => {
         })
     })
     web3.eth.net.getId().then(netId => {
-      console.log('net id', netId)
+      // console.log('net id', netId)
       setNetId(netId)
     })
   }
 
+
   const getAndWriteTemplateCode = async () => {
-    console.log('from vcoin')
     while (!window.remixFileSystem) {
       // console.log('loop')
       await sleep(500)
@@ -107,40 +153,40 @@ const CreateVcoin = props => {
       case 2:
         checkDoneStep2()
         break
-      case 3:
-        checkDoneStep3()
-        break
     }
 
   }
   const handlePreviousStep = () => {
-
     setActiveStep(activeStep - 1)
-
   }
 
   const onChangeContractInterface = (e) => {
-
-    setSelectedContractInterface(e)
     if (e?.inputs) {
-      setDataConstructorDeploy(Array(e.inputs.length).fill(""))
+      console.log("🚀 ~ file: CreateToken.js ~ line 132 ~ onChangeContractInterface ~ e", e)
+      formik1.setFieldError('dataConstructor', Array(e.inputs.length).fill(""))
+      formik1.setFieldValue('dataConstructor', Array(e.inputs.length).fill(""))
     }
+    formik1.setFieldValue('interface', e)
   }
 
+
   const onChangeDataConstructorDeploy = (idx, e) => {
-    dataConstructorDeploy[idx] = e.target.value
-    setDataConstructorDeploy([...dataConstructorDeploy])
+    // console.log("🚀 ~ file: CreateToken.js ~ line 136 ~ onChangeDataConstructorDeploy ~ idx, e", idx, e)
+    const { dataConstructor } = formik1.values
+    dataConstructor[idx] = e.target.value
+    formik1.setFieldValue('dataConstructor', dataConstructor)
   }
 
   const onCloseModal = () => {
     props.onClose()
   }
+
   const checkDoneStep0 = async () => {
+    props.setLoading(true)
     const source1 = readBatchFile();
     setSourceCode(source1)
-    setLoading(true)
     const res = await props.validateSource(source1)
-    if (res.code) {
+    if (res.code && res.data.length) {
       setListContractInterface(res.data.map((i, idx) => {
         i.label = i.file + '/' + i.contract
         i.value = idx
@@ -151,56 +197,49 @@ const CreateVcoin = props => {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Validate source code error, review your code again !'
+        text: 'Your source code error, review your code again !'
       })
-
-      // throw new Error("error")
+      props.setLoading(false)
     }
-    setLoading(false)
+    props.setLoading(false)
   }
 
   const checkDoneStep1 = async () => {
-    setLoading(true)
-    if (!selectedContractInterface) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please choose a smart contract to deploy !'
-      })
-      setLoading(false)
-      // throw new Error()
+    const errors = await formik1.validateForm()
+    if (errors.interface || errors.dataConstructor.some(i => i)) {
+      return
     }
-    const { abi, bytecode } = selectedContractInterface
-    const res = await props.testDeploy({ abi, bytecode, constructor: dataConstructorDeploy })
+    props.setLoading(true)
+    const { abi, bytecode } = formik1.values.interface
+    const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
     if (res.code) {
       setActiveStep(2)
+      props.setLoading(false)
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Your smart contract invalid !'
       })
-      // throw new Error()
+      props.setLoading(false)
     }
-    // console.log('1111111111')
-    setLoading(false)
   }
 
 
   const checkDoneStep2 = async () => {
-    setLoading(true)
-    let smartContractAddress
-    const myContract = new web3.eth.Contract(selectedContractInterface.abi)
+    props.setLoading(true)
+    const { abi, bytecode } = formik1.values.interface
+    const myContract = new web3.eth.Contract(abi)
     const deploy = myContract.deploy({
-      data: selectedContractInterface.bytecode,
-      arguments: dataConstructorDeploy
+      data: bytecode,
+      arguments: formik1.values.dataConstructor
     })
     deployWithEstimateGas(deploy, accs[0])
       .then(instance => {
         return props.createVcoin({
           account: accs[0],
           network_id: netId,
-          abi: selectedContractInterface.abi,
+          abi,
           address: instance.options.address
         })
       })
@@ -213,30 +252,35 @@ const CreateVcoin = props => {
         } else {
           toast.error("Create token error !")
         }
-        setLoading(false)
+        props.setLoading(false)
       })
       .catch(error => {
         console.log(error)
+        props.setLoading(false)
       })
   }
 
 
   const renderConstructorDeploy = () => {
     return <div className="mt-2">
-      <h5>Enter params to deploy {selectedContractInterface.label}</h5>
-      {selectedContractInterface.inputs.map((i, idx) => {
+      <h5>Enter params to deploy {formik1.values.interface.label}</h5>
+      {formik1.values.interface.inputs.map((i, idx) => {
         let type = "text"
         switch (i.type) {
           case "uint256":
             type = "number"
         }
-        return <Input
-          className="mb-1"
-          type={type}
-          placeholder={i.name}
-          value={dataConstructorDeploy[idx]}
-          onChange={e => onChangeDataConstructorDeploy(idx, e)}
-        />
+        return <React.Fragment>
+          <Input
+            className="mt-1"
+            invalid={formik1.errors?.dataConstructor?.[idx]}
+            type={type}
+            placeholder={i.name}
+            value={formik1.values.dataConstructor[idx]}
+            onChange={e => onChangeDataConstructorDeploy(idx, e)}
+          />
+          {formik1.errors?.dataConstructor?.[idx] && <div className="error-text">Required !</div>}
+        </React.Fragment>
       })}
     </div>
   }
@@ -305,50 +349,68 @@ const CreateVcoin = props => {
         return <TabPane
           className={`step-content step-1-content`}
           key={1}
-          tabId={1}>  <Row className="mb-2">
-            <Col md={3} sm={0}></Col>
-            <Col md={6} sm={12}>
-              <h5>Select a smart contract</h5>
-              <Select
-                placeholder="Select a smart contract to deploy"
-                options={listContractInterface}
-                value={selectedContractInterface}
-                onChange={onChangeContractInterface}
-              />
-              {selectedContractInterface && selectedContractInterface.inputs && renderConstructorDeploy()}
-            </Col>
-          </Row>
+          tabId={1}>
+          <PerfectScrollbar
+            options={{
+              suppressScrollX: true,
+              wheelPropagation: false
+            }}
+          >
+            <Row className="mb-2 child-scroll">
+              <Col md={3} sm={0}></Col>
+              <Col md={6} sm={12}>
+                <h5>Select a smart contract</h5>
+                <Select
+                  name="interface"
+                  placeholder="Select a smart contract to deploy"
+                  options={listContractInterface}
+                  value={formik1.values.interface}
+                  onChange={onChangeContractInterface}
+                />
+                {formik1.errors.interface ? <div className="error-text">{formik1.errors.interface}</div> : null}
+                {formik1.values.interface && formik1.values.interface.inputs && renderConstructorDeploy()}
+              </Col>
+            </Row>
+          </PerfectScrollbar>
         </TabPane>
 
       case 2:
         return <TabPane
           className={`step-content step-2-content`}
           key={2}
-          tabId={2}>  <Row className="mb-2">
-            <Col md="6" sm="12">
-              <h4 className="m-1">Confirm Information</h4>
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Account to deploy:
+          tabId={2}>
+          <PerfectScrollbar
+            options={{
+              suppressScrollX: true,
+              wheelPropagation: false
+            }}
+          >
+            <Row className="mb-2 child-scroll">
+              <Col md="6" sm="12">
+                <h4 className="m-1">Confirm Information</h4>
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Account to deploy:
                 </div>
-                <div> {accs?.[0] || ""}</div>
-              </div>
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Account balance:
+                  <div> {accs?.[0] || ""}</div>
                 </div>
-                <div> {balance} ETH</div>
-              </div>
-              <div className="d-flex m-1">
-                <div className="font-weight-bold info-title">
-                  Current network:
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Account balance:
                 </div>
-                <div> {getNetType(netId)}</div>
-              </div>
-            </Col>
-            <Col md="6" sm="12">
-            </Col>
-          </Row>
+                  <div> {balance} ETH</div>
+                </div>
+                <div className="d-flex m-1">
+                  <div className="font-weight-bold info-title">
+                    Current network:
+                </div>
+                  <div> {getNetType(netId)}</div>
+                </div>
+              </Col>
+              <Col md="6" sm="12">
+              </Col>
+            </Row>
+          </PerfectScrollbar>
         </TabPane>
 
     }
@@ -380,7 +442,7 @@ const CreateVcoin = props => {
           activeTab={activeStep}>
           {renderStepContent()}
         </TabContent>
-        <div className="wizard-actions d-flex justify-content-between">
+        <div className="wizard-actions d-flex justify-content-between mt-1">
           <Button
             type="button"
             color="primary"
@@ -394,7 +456,7 @@ const CreateVcoin = props => {
             className='d-flex align-items-center'
             onClick={handleNextStep}
           >
-            {loading ? <Spinner color="white" size="sm" /> : 3 === activeStep
+            {2 === activeStep
               ? 'Create V-Coin'
               : "Next"
             }
@@ -416,7 +478,8 @@ const mapDispatchToProps = {
   validateSource,
   createVcoin,
   testDeploy,
-  getListVCoin
+  getListVCoin,
+  setLoading
 }
 
 

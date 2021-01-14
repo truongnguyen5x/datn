@@ -56,6 +56,7 @@ const CreateToken = props => {
       interface: null,
       dataConstructor: []
     },
+    validateOnChange: false,
     validate: validate1
   })
 
@@ -185,7 +186,7 @@ const CreateToken = props => {
 
 
   const onChangeDataConstructorDeploy = (idx, e) => {
-    console.log("🚀 ~ file: CreateToken.js ~ line 136 ~ onChangeDataConstructorDeploy ~ idx, e", idx, e)
+    // console.log("🚀 ~ file: CreateToken.js ~ line 136 ~ onChangeDataConstructorDeploy ~ idx, e", idx, e)
     const { dataConstructor } = formik1.values
     dataConstructor[idx] = e.target.value
     formik1.setFieldValue('dataConstructor', dataConstructor)
@@ -241,7 +242,7 @@ const CreateToken = props => {
 
   const checkDoneStep1 = async () => {
     const errors = await formik1.validateForm()
-    if (errors.interface || errors.dataConstructor.every(i => i)) {
+    if (errors.interface || errors.dataConstructor.some(i => i)) {
       return
     }
     props.setLoading(true)
