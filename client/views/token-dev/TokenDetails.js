@@ -222,42 +222,44 @@ const TokenDetails = props => {
       </div>
     }
     return data.smartContracts.map((i, idx) => <li key={i.id} className="">
-      <div>
+      <div className="d-flex justify-content-between">
         <div>
-          Id: {i.id}
+          <div>
+            Id: {i.id}
+          </div>
+          <div>
+            Status: {i?.request?.accepted ? "on VCoin" : "not on VCoin"}
+          </div>
         </div>
         <div>
-          Address: {i.address}
+          <div>
+            Network: {i?.network?.chain_id}
+          </div>
+          <div>
+            Created at: {moment(i.createdAt).format("hh:mm DD/MM/YYYY")}
+          </div>
         </div>
         <div>
-          Status: {i?.request?.accepted ? "on VCoin" : "not on VCoin"}
+          {renderButtonAction(i)}
+          <Button size="sm" id="sdk" color="primary" className="ml-1"
+            onClick={() => handleDownloadSdk(i)}
+          >
+            <Download size={14} />
+          </Button>
+          <UncontrolledTooltip target="sdk">
+            Download SDK
+            </UncontrolledTooltip>
+          <Button size="sm" id="code" color="primary" className="ml-1"
+            onClick={() => handleOpenSourceCode(i)}>
+            <i className="fas fa-code" style={{ fontSize: '15px' }}></i>
+          </Button>
+          <UncontrolledTooltip target="code">
+            View source code
+            </UncontrolledTooltip>
         </div>
       </div>
       <div>
-        <div>
-          Network: {i?.network?.chain_id}
-        </div>
-        <div>
-          Created at: {moment(i.createdAt).format("hh:mm DD/MM/YYYY")}
-        </div>
-      </div>
-      <div>
-        {renderButtonAction(i)}
-        <Button size="sm" id="sdk" color="primary" className="ml-1"
-          onClick={() => handleDownloadSdk(i)}
-        >
-          <Download size={14} />
-        </Button>
-        <UncontrolledTooltip target="sdk">
-          Download SDK
-            </UncontrolledTooltip>
-        <Button size="sm" id="code" color="primary" className="ml-1"
-          onClick={() => handleOpenSourceCode(i)}>
-          <i className="fas fa-code" style={{ fontSize: '15px' }}></i>
-        </Button>
-        <UncontrolledTooltip target="code">
-          View source code
-            </UncontrolledTooltip>
+        Address: {i.address}
       </div>
     </li>)
   }
