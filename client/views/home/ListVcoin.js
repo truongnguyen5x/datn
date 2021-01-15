@@ -18,7 +18,6 @@ const ListVCoin = (props) => {
 
     useEffect(() => {
         props.getListVCoin()
-
     }, [])
 
 
@@ -41,7 +40,7 @@ const ListVCoin = (props) => {
                                 color="primary"
                             >
                                 <Edit size={15} />
-                                <span className="align-middle ml-50">Edit</span>
+                                <span className="align-middle ml-50">Detail</span>
                             </Button>
                         </div>
                     </Card>

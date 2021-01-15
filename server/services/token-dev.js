@@ -358,7 +358,7 @@ const createRequest = async (data) => {
         const requestNew = await Request.create({})
         await requestNew.setSmartContract(smartContract)
     } else {
-        oldRequest.update({ del: 0 })
+        oldRequest.update({ del: 0, accepted: 0 })
     }
     return 'new '
 }

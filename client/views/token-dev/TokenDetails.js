@@ -89,6 +89,21 @@ const TokenDetails = props => {
     try {
       props.setLoading(true)
       const interfaceX = JSON.parse(i.abi)
+      
+      let vcoin
+      if (netId == 1) {
+        vcoin = props.listVCoin[0]
+      } else if (netId == 42) {
+        vcoin = props.listVCoin[1]
+      } else if (netId == 3) {
+        vcoin = props.listVCoin[2]
+      } else if (netId == 4) {
+        vcoin = props.listVCoin[3]
+      } else if (netId == 5) {
+        vcoin = props.listVCoin[4]
+      } else {
+        vcoin = props.listVCoin[5]
+      }
       if (i.address) {
         if (!web3) {
           Swal.fire({
@@ -98,20 +113,6 @@ const TokenDetails = props => {
           })
           props.setLoading(false)
           return
-        }
-        let vcoin
-        if (netId == 1) {
-          vcoin = props.listVCoin[0]
-        } else if (netId == 42) {
-          vcoin = props.listVCoin[1]
-        } else if (netId == 3) {
-          vcoin = props.listVCoin[2]
-        } else if (netId == 4) {
-          vcoin = props.listVCoin[3]
-        } else if (netId == 5) {
-          vcoin = props.listVCoin[4]
-        } else {
-          vcoin = props.listVCoin[5]
         }
         if (!vcoin) {
           Swal.fire({
@@ -155,6 +156,15 @@ const TokenDetails = props => {
         setData(res2.data)
         props.setLoading(false)
       } else {
+        if (!vcoin) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Not found VCoin for this network !',
+            text: 'Plese contact Admin !'
+          })
+          props.setLoading(false)
+          return
+        }
         const res = await props.createRequest({
           id: i.id
         })

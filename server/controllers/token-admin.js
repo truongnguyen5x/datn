@@ -54,6 +54,15 @@ const denyRequest = async (req, res, next) => {
     }
 }
 
+const updateToken = async (req, res, next) => {
+    try {
+        const rs = await tokenAdminService.updateToken(req.body)
+        ResponseSuccess(res, rs)
+    } catch (error) {
+        ResponseError(res, error, "ERROR")
+    }
+}
+
 
 
 module.exports = {
@@ -62,4 +71,5 @@ module.exports = {
     deleteToken,
     acceptRequest,
     denyRequest,
+    updateToken
 }

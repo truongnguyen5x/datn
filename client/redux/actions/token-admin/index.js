@@ -25,6 +25,10 @@ export const changeFilter = (type) => dispatch => {
         payload: ''
     })
     dispatch({
+        type: 'SET_LOADING',
+        payload: true
+    })
+    dispatch({
         type: "CHANGE_LIST_TYPE_TOKEN",
         payload: type
     })
@@ -34,6 +38,11 @@ export const changeFilter = (type) => dispatch => {
                 dispatch({
                     type: "GET_LIST_TOKEN",
                     payload: res.data
+                })
+
+                dispatch({
+                    type: 'SET_LOADING',
+                    payload: false
                 })
             }
         })
@@ -56,5 +65,9 @@ export const denyRequest = (data) => dispatch => {
     return FetchApi(`/api/token-admin/deny`, 'POST', data)
 }
 export const setModalOpen = (modalName) => dispatch => {
-    dispatch({type: 'SET_MODAL_OPEN', payload: modalName})
+    dispatch({ type: 'SET_MODAL_OPEN', payload: modalName })
+}
+
+export const updateToken = (data) => dispatch => {
+    return FetchApi(`/api/token-admin`, 'PUT', data)
 }

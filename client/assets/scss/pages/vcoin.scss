@@ -139,8 +139,21 @@
       }
     }
   }
-}
 
+
+  
+}
+.vcoin-detail {
+  display: flex;
+  margin-bottom: 10px;
+  .vcoin-detail-title {
+    font-weight: bold;
+    width: 200px;
+  }
+  .vcoin-detail-info {
+    text-align: left;
+  }
+}
 
 // Keyframe animation
 @keyframes fadeIn {

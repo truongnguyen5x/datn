@@ -1,4 +1,4 @@
-const { VCoin, SmartContract, Network, Account, File, Token, Config } = require('../models')
+const { VCoin, SmartContract, Network, Account, File, Token, Config, Request } = require('../models')
 const userService = require("./user")
 const accountService = require("./account")
 const networkService = require("./network")
@@ -7,7 +7,7 @@ const configService = require("./config")
 const ApiError = require("../middlewares/error")
 const { Op } = require('sequelize')
 const Web3 = require('web3')
-const { getWeb3Instance, compileSourceCode } = require("../utils/network_util");
+const { getWeb3Instance, compileSourceCode, getNetType } = require("../utils/network_util");
 
 
 
@@ -59,6 +59,21 @@ const getVCoinById = async (id) => {
 
 const createVCoin = async (data, user_id) => {
     const { abi, network_id, account, address } = data
+    const netChain = getNetType(network_id)
+    const network = await Network.findOne({ where: { chain_id: netChain } })
+    await Request.update({ del: true, accepted: false }, {
+        where: {
+            accepted: 1,
+            del: 0
+        },
+        include: {
+            model: SmartContract,
+            as: 'smartContract',
+            where: {
+                network_id: network.id
+            }
+        }
+    })
     return VCoin.create({ abi: JSON.stringify(abi), network_id, account, address })
 }
 

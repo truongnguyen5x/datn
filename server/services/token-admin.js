@@ -153,7 +153,7 @@ const acceptRequest = async (data) => {
         }
     })
     if (data.address) {
-        await smartContract.update({ address: data.address })
+        await smartContract.update({ address: data.address, account: data.account })
     }
     await requestNew.update({ accepted: 1 })
     return 'success'
@@ -170,11 +170,22 @@ const denyRequest = async (data) => {
 }
 
 
+const updateToken = async (data) => {
+    const { id, exchange_rate } = data
+    await Token.update({ exchange_rate }, {
+        where: {
+            id
+        }
+    })
+    return 'success'
+}
+
 
 module.exports = {
     getListToken,
     getTokenById,
     deleteToken,
     acceptRequest,
-    denyRequest
+    denyRequest,
+    updateToken
 }

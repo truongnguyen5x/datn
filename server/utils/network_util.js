@@ -55,10 +55,28 @@ const compileSourceCode = async (data) => {
     return output
 }
 
+const getNetType = (netId) => {
+    switch (netId) {
+        case 1:
+            return 'mainnet'
+        case 42:
+            return 'kovan'
+        case 3:
+            return 'ropsten'
+        case 4:
+            return 'rinkeby'
+        case 5:
+            return 'goerli'
+        default:
+            return 'localhost'
+    }
+}
+
 
 module.exports = {
     getWeb3Instance,
     getListAccount,
-    compileSourceCode
+    compileSourceCode,
+    getNetType
 }
 

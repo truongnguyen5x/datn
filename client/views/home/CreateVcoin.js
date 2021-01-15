@@ -26,7 +26,7 @@ import { getConfig } from "../../redux/actions/token-dev"
 import { createVcoin, getListVCoin, testDeploy, validateSource } from '../../redux/actions/vcoin'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
 import { deployWithEstimateGas, getNetType, getWeb3 } from '../../utility/web3'
-
+import { sleep } from '../../utility'
 
 
 const CreateVcoin = props => {

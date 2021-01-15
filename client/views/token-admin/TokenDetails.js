@@ -1,7 +1,7 @@
 import classnames from "classnames"
 import moment from "moment"
 import React, { useEffect, useState } from "react"
-import { ArrowLeft, Check, Trash, X } from "react-feather"
+import { ArrowLeft, Check, Trash, X, Edit2 } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { toast } from "react-toastify"
@@ -12,6 +12,7 @@ import { acceptRequest, deleteToken, denyRequest, getListToken, getTokenById, se
 import { getListVCoin } from '../../redux/actions/vcoin'
 import { clearAll, writeBatchFile } from '../../utility/file'
 import { deployWithEstimateGas, getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
+import EditToken from './EditToken'
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -19,6 +20,7 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
+  const [modalEdit, openModalEdit] = useState(false)
 
   useEffect(() => {
     props.getListVCoin()
@@ -153,7 +155,8 @@ const TokenDetails = props => {
         await sendWithEstimateGas(addToken, accs[0])
         const res = await props.acceptRequest({
           id: i.id,
-          address: instance.options.address
+          address: instance.options.address,
+          account: accs[0]
         })
         if (!res.code) {
           throw new Error(res)
@@ -168,6 +171,7 @@ const TokenDetails = props => {
             props.setModalOpen('')
           }
         }
+        toast.success("Add token success!")
       }
       props.setLoading(false)
     } catch (error) {
@@ -186,7 +190,7 @@ const TokenDetails = props => {
       }
       resetState()
       props.getListToken()
-      const res2 =  await props.getTokenById(props.data.id)
+      const res2 = await props.getTokenById(props.data.id)
       if (res2.code) {
         if (res2.data) {
           setData(res2.data)
@@ -194,6 +198,7 @@ const TokenDetails = props => {
           props.setModalOpen('')
         }
       }
+      toast.success("Deny request success")
       props.setLoading(false)
     } catch (error) {
       props.setLoading(false)
@@ -271,6 +276,8 @@ const TokenDetails = props => {
           props.setModalOpen('')
         }
       }
+
+      toast.success('Delete token success !')
       props.setLoading(false)
     } catch (error) {
       toast.error('Delete token fail !')
@@ -436,7 +443,12 @@ const TokenDetails = props => {
                 </div>
               </Col>
             </Row>
-
+            {props.listType == "in-vchain"
+              && <Button size="sm" className="ml-2" color="danger"
+                onClick={() => { openModalEdit(true) }}
+              >
+                <Edit2 size={12} /> <span className="">Edit</span>
+              </Button>}
           </TabPane>
           <TabPane tabId={2}>
 
@@ -456,7 +468,13 @@ const TokenDetails = props => {
         </TabContent>
 
       </div>
-
+      <EditToken
+        data={data}
+        visible={modalEdit}
+        onClose={() => {
+          openModalEdit(false)
+        }}
+      />
     </div>
   )
 

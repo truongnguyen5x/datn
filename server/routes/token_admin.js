@@ -9,5 +9,6 @@ routes.get('/:id', checkRole(0), tokenAdminController.getTokenById)
 routes.post('/accept', checkRole(0), tokenAdminController.acceptRequest)
 routes.post('/deny', checkRole(0), tokenAdminController.denyRequest)
 routes.delete('/:id', checkRole(0), tokenAdminController.deleteToken)
+routes.put('/', checkRole(0), tokenAdminController.updateToken)
 
 module.exports = routes
