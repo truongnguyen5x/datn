@@ -55,13 +55,13 @@ const getNetType = (netId) => {
 
 const sendWithEstimateGas = (send, from) => {
     return new Promise((resolve, reject) => {
-        send.estimateGas()
+        send.estimateGas({ from })
             .then(gas => {
                 console.log('estimate gas')
                 send.send({
-                        from,
-                        gas: gas + 1000000
-                    })
+                    from,
+                    gas: gas + 1000000
+                })
                     .on('transactionHash', (hash) => {
                         console.log('transactionHash', hash)
                     })
@@ -80,6 +80,26 @@ const sendWithEstimateGas = (send, from) => {
     })
 }
 
+const sendWithoutEstimateGas = (send, from, gas) => {
+    return new Promise((resolve, reject) => {
+        send.send({
+            from,
+            gas
+        })
+            .on('transactionHash', (hash) => {
+                console.log('transactionHash', hash)
+            })
+            .on('receipt', async (receipt) => {
+                console.log('receipt', receipt)
+                resolve()
+            })
+            .on('error', err => {
+                console.log('err')
+                reject(err)
+            });
+    })
+}
+
 const deployWithEstimateGas = (send, from) => {
     let address
     return new Promise((resolve, reject) => {
@@ -87,9 +107,9 @@ const deployWithEstimateGas = (send, from) => {
             .then(gas => {
                 console.log('estimate gas')
                 send.send({
-                        from,
-                        gas: gas + 1000000
-                    })
+                    from,
+                    gas: gas + 1000000
+                })
                     .on('error', (error) => {
                         console.log('deploy error', error)
                         reject(error)
@@ -112,5 +132,5 @@ const deployWithEstimateGas = (send, from) => {
 }
 
 export {
-    getWeb3, getNetType, sendWithEstimateGas, deployWithEstimateGas
+    getWeb3, getNetType, sendWithEstimateGas, deployWithEstimateGas, sendWithoutEstimateGas
 };
