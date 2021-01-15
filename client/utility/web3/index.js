@@ -75,7 +75,7 @@ const sendWithEstimateGas = (send, from) => {
                     });
             })
             .catch(error => {
-                console.log(error)
+                console.log('estimate error', error)
             })
     })
 }
@@ -91,7 +91,7 @@ const deployWithEstimateGas = (send, from) => {
                         gas: gas + 1000000
                     })
                     .on('error', (error) => {
-                        console.log(error)
+                        console.log('deploy error', error)
                         reject(error)
                     })
                     .on('transactionHash', async (transactionHash) => {
