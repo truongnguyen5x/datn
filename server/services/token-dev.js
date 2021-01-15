@@ -7,7 +7,6 @@ const { getWeb3Instance, compileSourceCode } = require("../utils/network_util");
 
 
 const ApiError = require('../middlewares/error')
-const { await } = require('signale')
 
 
 

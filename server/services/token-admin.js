@@ -7,7 +7,7 @@ const fileService = require("./file")
 const { Op } = require("sequelize");
 const { getWeb3Instance } = require("../utils/network_util");
 const VCoin = require("../models/vcoin");
-const { await } = require('signale')
+
 
 
 const getListToken = async (type) => {
