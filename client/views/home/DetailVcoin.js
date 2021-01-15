@@ -29,49 +29,55 @@ const EditVcoin = props => {
         },
         validate
     })
+
     const onSave = async () => {
-        const errors = await formik.validateForm()
-        if (!_.isEmpty(errors)) {
-            return
-        }
-        const { address, account, abi, network_id, id } = props.data
-        if (!web3) {
-            Swal.fire({
+        try {
+            const errors = await formik.validateForm()
+            if (!_.isEmpty(errors)) {
+                return
+            }
+            const { address, account, abi, network_id, id } = props.data
+            if (!web3) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Not found Metamask !',
+                    text: 'Plese enable Metamask !'
+                })
+                return
+            }
+            if (account != accs[0]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Account metamask not match !',
+                    text: `Please use account ${account} !`
+                })
+                return
+            }
+            if (netId != network_id) {
+              Swal.fire({
                 icon: 'error',
-                title: 'Not found Metamask !',
-                text: 'Plese enable Metamask !'
-            })
-            return
+                title: 'Blockchain network not match !',
+                text: `Please use network ${getNetType(network_id)} on Metamask !`
+              })
+              return
+            }
+            props.setLoading(true)
+            const vcoinContract = new web3.eth.Contract(JSON.parse(abi), address)
+            const transaction = vcoinContract.methods.setSwapFee(formik.values.fee)
+            await sendWithEstimateGas(transaction, accs[0])
+            const res = await props.updateVCoin({ id, fee: formik.values.fee })
+            if (!res.code) {
+                throw new Error(res)
+            }
+            props.onClose()
+            props.getListVCoin()
+            toast.success('Edit vcoin success')
+            props.setLoading(false)
+        } catch (error) {
+            console.log(error)
+            toast.error('Edit vcoin fail')
+            props.setLoading(false)
         }
-        if (account != accs[0]) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Account metamask not match !',
-                text: `Please use account ${account} !`
-            })
-            return
-        }
-        props.setLoading(true)
-        // console.log(props.data, JSON.parse(abi))
-        const vcoinContract = new web3.eth.Contract(JSON.parse(abi), address)
-        const transaction = vcoinContract.methods.setSwapFee(formik.values.fee)
-        sendWithEstimateGas(transaction, accs[0])
-            .then(async () => {
-                const res = await props.updateVCoin({ id, fee: formik.values.fee })
-                if (res.code) {
-                    props.onClose()
-                    props.getListVCoin()
-                    toast.success('Edit vcoin success')
-                } else {
-                    toast.error('Edit vcoin fail')
-                }
-                props.setLoading(false)
-            })
-            .catch(error => {
-                console.log(error)
-                toast.error('Edit vcoin fail')
-                props.setLoading(false)
-            })
     }
 
     useEffect(() => {
@@ -85,12 +91,12 @@ const EditVcoin = props => {
             .then(res => {
                 if (window.ethereum) {
                     window.ethereum.on('accountsChanged', (accounts) => {
-                      setAccs(accounts.map(i => i.toUpperCase()))
+                        setAccs(accounts.map(i => i.toUpperCase()))
                     });
                     window.ethereum.on('chainChanged', (chainId) => {
-                      setNetId(res.utils.hexToNumber(chainId))
+                        setNetId(res.utils.hexToNumber(chainId))
                     });
-                  }
+                }
                 if (res) {
                     setWeb3(res)
                     getInfo(res)

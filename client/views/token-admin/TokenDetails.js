@@ -67,238 +67,216 @@ const TokenDetails = props => {
   }
 
   const handleAddVChain = async (i) => {
-    props.setLoading(true)
-    const chainId = getNetType(netId)
-    console.log(chainId, i.network.chain_id)
-    if (chainId != i.network.chain_id) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Blockchain network not match !',
-        text: `Please use network ${i.network.chain_id} on Metamask !`
-      })
+    try {
+      if (!web3) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Not found Metamask !',
+          text: 'Plese enable Metamask !'
+        })
+        return
+      }
+      let vcoin
+      if (netId == 1) {
+        vcoin = props.listVCoin[0]
+      } else if (netId == 42) {
+        vcoin = props.listVCoin[1]
+      } else if (netId == 3) {
+        vcoin = props.listVCoin[2]
+      } else if (netId == 4) {
+        vcoin = props.listVCoin[3]
+      } else if (netId == 5) {
+        vcoin = props.listVCoin[4]
+      } else {
+        vcoin = props.listVCoin[5]
+      }
+      if (!vcoin) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Not found VCoin for this network !',
+          text: `Plese create VCoin on ${getNetType(netId)} !`
+        })
+        return
+      }
+      const chainId = getNetType(netId)
+      if (chainId != i.network.chain_id) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Blockchain network not match !',
+          text: `Please use network ${i.network.chain_id} on Metamask !`
+        })
+        return
+      }
+      if (vcoin.account != accs[0]) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Account metamask not match !',
+          text: `Please use account ${i.account} !`
+        })
+        return
+      }
+      props.setLoading(true)
+      const interfaceX = JSON.parse(vcoin.abi)
+      const vcoinContract = new web3.eth.Contract(interfaceX, vcoin.address)
+      if (i.address) {
+        const trans = vcoinContract.methods.addToken(i.address)
+        await sendWithEstimateGas(trans, accs[0])
+        const res = await props.acceptRequest({
+          id: i.id
+        })
+        if (!res.code) {
+          throw new Error(res)
+        }
+        toast.success("Add token success!")
+        props.getListToken()
+        resetState()
+        const res2 = await props.getTokenById(props.data.id)
+        if (res2.code) {
+          if (res2.data) {
+            setData(res2.data)
+          } else {
+            props.setModalOpen('')
+          }
+        }
+      } else {
+        const token = new web3.eth.Contract(JSON.parse(i.abi))
+        const deploy = token.deploy({
+          data: i.bytecode,
+          arguments: JSON.parse(i.constructor_data)
+        })
+        const instance = await deployWithEstimateGas(deploy, accs[0])
+        const setInfo = instance.methods.setInfo(data.symbol, data.name, data.initial_supply)
+        await sendWithEstimateGas(setInfo, accs[0])
+        const setVcoin = instance.methods.setVChain(vcoin.address)
+        await sendWithEstimateGas(setVcoin, accs[0])
+        const addToken = vcoinContract.methods.addToken(instance.options.address)
+        await sendWithEstimateGas(addToken, accs[0])
+        const res = await props.acceptRequest({
+          id: i.id,
+          address: instance.options.address
+        })
+        if (!res.code) {
+          throw new Error(res)
+        }
+        props.getListToken()
+        resetState()
+        const res2 = await props.getTokenById(props.data.id)
+        if (res2.code) {
+          if (res2.data) {
+            setData(res2.data)
+          } else {
+            props.setModalOpen('')
+          }
+        }
+      }
       props.setLoading(false)
-      return
-    }
-    let vcoin
-    if (netId == 1) {
-      vcoin = props.listVCoin[0]
-    } else if (netId == 42) {
-      vcoin = props.listVCoin[1]
-    } else if (netId == 3) {
-      vcoin = props.listVCoin[2]
-    } else if (netId == 4) {
-      vcoin = props.listVCoin[3]
-    } else if (netId == 5) {
-      vcoin = props.listVCoin[4]
-    } else {
-      vcoin = props.listVCoin[5]
-    }
-    if (!vcoin) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Not found VCoin for this network !',
-        text: `Plese create VCoin on ${getNetType(netId)} !`
-      })
+    } catch (error) {
+      toast.error("Add token fail!")
+      console.log(error)
       props.setLoading(false)
-      return
     }
-    if (!web3) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Not found Metamask !',
-        text: 'Plese enable Metamask !'
-      })
-      props.setLoading(false)
-      return
-    }
-    if (vcoin.account != accs[0]) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Account metamask not match !',
-        text: `Please use account ${i.account} !`
-      })
-      props.setLoading(false)
-      return
-    }
-    const interfaceX = JSON.parse(vcoin.abi)
-    const vcoinContract = new web3.eth.Contract(interfaceX, vcoin.address)
-    if (i.address) {
-      const trans = vcoinContract.methods.addToken(i.address)
-      sendWithEstimateGas(trans, accs[0])
-        .then(async () => {
-          const res = await props.acceptRequest({
-            id: i.id
-          })
-          props.setLoading(false)
-          props.getListToken()
-          resetState()
-          props.getTokenById(props.data.id)
-            .then(res => {
-              if (res.code) {
-                if (res.data) {
-                  setData(res.data)
-                } else {
-                  props.setModalOpen('')
-                }
-              }
-            })
-        })
-        .catch(error => {
-          console.log(error)
-          props.setLoading(false)
-        })
-    } else {
-      let smartContractAddress
-      let newInstance
-      const token = new web3.eth.Contract(JSON.parse(i.abi))
-      const deploy = token.deploy({
-        data: i.bytecode,
-        arguments: JSON.parse(i.constructor_data)
-      })
-      deployWithEstimateGas(deploy, accs[0])
-        .then(instance => {
-          smartContractAddress = instance.options.address
-          newInstance = instance
-          const setInfo = instance.methods.setInfo(data.symbol, data.name, data.initial_supply)
-          return sendWithEstimateGas(setInfo, accs[0])
-        })
-        .then(() => {
-          const setVcoin = newInstance.methods.setVChain(vcoin.address)
-          return sendWithEstimateGas(setVcoin, accs[0])
-        })
-        .then(() => {
-          const addToken = vcoinContract.methods.addToken(smartContractAddress)
-          return sendWithEstimateGas(addToken, accs[0])
-        })
-        .then(async () => {
-          const res = await props.acceptRequest({
-            id: i.id,
-            address: smartContractAddress
-          })
-          props.setLoading(false)
-          props.getListToken()
-          resetState()
-          props.getTokenById(props.data.id)
-            .then(res => {
-              if (res.code) {
-                if (res.data) {
-                  setData(res.data)
-                } else {
-                  props.setModalOpen('')
-                }
-              }
-            })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
-    }
-
   }
 
   const handleDenyVChain = async (id) => {
-    props.setLoading(true)
-    const res = await props.denyRequest({ id })
-    if (res.code) {
+    try {
+      props.setLoading(true)
+      const res = await props.denyRequest({ id })
+      if (!res.code) {
+        throw new Error(res)
+      }
       resetState()
       props.getListToken()
-      props.getTokenById(props.data.id)
-        .then(res => {
-          if (res.code) {
-            if (res.data) {
-              setData(res.data)
-            } else {
-              props.setModalOpen('')
-            }
-          }
-          props.setLoading(false)
-        })
-    } else {
+      const res2 =  await props.getTokenById(props.data.id)
+      if (res2.code) {
+        if (res2.data) {
+          setData(res2.data)
+        } else {
+          props.setModalOpen('')
+        }
+      }
+      props.setLoading(false)
+    } catch (error) {
+      props.setLoading(false)
       toast.error("Deny request error")
       console.log('error')
     }
-    props.setLoading(false)
   }
 
 
   const handleDeleteToken = async (i) => {
-    props.setLoading(true)
-    const chainId = getNetType(netId)
-    if (chainId != i.network.chain_id) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Blockchain network not match !',
-        text: `Please use network ${i.network.chain_id} on Metamask !`
-      })
+    try {
+      if (!web3) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Not found Metamask !',
+          text: 'Plese enable Metamask !'
+        })
+        return
+      }
+      let vcoin
+      if (netId == 1) {
+        vcoin = props.listVCoin[0]
+      } else if (netId == 42) {
+        vcoin = props.listVCoin[1]
+      } else if (netId == 3) {
+        vcoin = props.listVCoin[2]
+      } else if (netId == 4) {
+        vcoin = props.listVCoin[3]
+      } else if (netId == 5) {
+        vcoin = props.listVCoin[4]
+      } else {
+        vcoin = props.listVCoin[5]
+      }
+      if (!vcoin) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Not found VCoin for this network !',
+          text: `Plese create VCoin on ${getNetType(netId)} !`
+        })
+        return
+      }
+      const chainId = getNetType(netId)
+      if (chainId != i.network.chain_id) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Blockchain network not match !',
+          text: `Please use network ${i.network.chain_id} on Metamask !`
+        })
+        return
+      }
+      if (vcoin.account != accs[0]) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Account metamask not match !',
+          text: `Please use account ${i.account} !`
+        })
+        return
+      }
+      props.setLoading(true)
+      const interfaceX = JSON.parse(vcoin.abi)
+      const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
+      const removeTk = myContract.methods.removeToken(data.symbol)
+      await sendWithEstimateGas(removeTk, accs[0])
+      const res = await props.deleteToken(i.id)
+      if (!res.code) {
+        throw new Error(res)
+      }
+      props.getListToken()
+      resetState()
+      const res2 = await props.getTokenById(props.data.id)
+      if (res2.code) {
+        if (res2.data) {
+          setData(res2.data)
+        } else {
+          props.setModalOpen('')
+        }
+      }
       props.setLoading(false)
-      return
-    }
-    let vcoin
-    if (netId == 1) {
-      vcoin = props.listVCoin[0]
-    } else if (netId == 42) {
-      vcoin = props.listVCoin[1]
-    } else if (netId == 3) {
-      vcoin = props.listVCoin[2]
-    } else if (netId == 4) {
-      vcoin = props.listVCoin[3]
-    } else if (netId == 5) {
-      vcoin = props.listVCoin[4]
-    } else {
-      vcoin = props.listVCoin[5]
-    }
-    if (!vcoin) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Not found VCoin for this network !',
-        text: `Plese create VCoin on ${getNetType(netId)} !`
-      })
+    } catch (error) {
+      toast.error('Delete token fail !')
+      console.log(error)
       props.setLoading(false)
-      return
     }
-    if (!web3) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Not found Metamask !',
-        text: 'Plese enable Metamask !'
-      })
-      props.setLoading(false)
-      return
-    }
-    if (vcoin.account != accs[0]) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Account metamask not match !',
-        text: `Please use account ${i.account} !`
-      })
-      props.setLoading(false)
-      return
-    }
-    const interfaceX = JSON.parse(vcoin.abi)
-    const myContract = new web3.eth.Contract(interfaceX, vcoin.address)
-    const removeTk = myContract.methods.removeToken(data.symbol)
-    sendWithEstimateGas(removeTk, accs[0])
-      .then(async () => {
-        const res = await props.deleteToken(i.id)
-        props.getListToken()
-        resetState()
-        props.setLoading(false)
-        props.getTokenById(props.data.id)
-          .then(res => {
-            if (res.code) {
-              if (res.data) {
-                setData(res.data)
-              } else {
-                props.setModalOpen('')
-              }
-            }
-          })
-      })
-      .catch(error => {
-        console.log(error)
-        props.setLoading(false)
-      })
   }
 
   const handleOpenSourceCode = (i) => {

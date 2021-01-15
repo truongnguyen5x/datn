@@ -1,15 +1,13 @@
 const { SmartContract, Network, Account, File, Token, User, Request } = require('../models')
 const configService = require("./config")
 const userService = require("./user")
-const accountService = require("./account")
 const networkService = require("./network")
 const fileService = require("./file")
-const { Op } = require("sequelize");
 const { getWeb3Instance, compileSourceCode } = require("../utils/network_util");
-const VCoin = require("../models/vcoin");
-const Web3 = require('web3')
+
 
 const ApiError = require('../middlewares/error')
+const { await } = require('signale')
 
 
 
@@ -196,7 +194,8 @@ const getTokenById = async (id, type) => {
                         model: Request,
                         as: "request",
                         where: {
-                            del: 0
+                            del: 0,
+                            accepted: false
                         },
                         required: true
                     }, {
@@ -204,6 +203,36 @@ const getTokenById = async (id, type) => {
                         as: 'network'
                     }],
 
+                    required: true
+                }],
+                order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
+            })
+        case "in-vchain":
+            return Token.findOne({
+                where: {
+                    id
+                },
+                include: [{
+                    model: User,
+                    as: "owner"
+                }, {
+                    model: SmartContract,
+                    as: 'smartContracts',
+                    include: [{
+                        model: File,
+                        as: 'files'
+                    }, {
+                        model: Request,
+                        as: "request",
+                        where: {
+                            del: 0,
+                            accepted: true
+                        },
+                        required: true
+                    }, {
+                        model: Network,
+                        as: 'network'
+                    }],
                     required: true
                 }],
                 order: [[{ model: SmartContract, as: "smartContracts" }, 'createdAt', 'DESC']]
@@ -295,6 +324,23 @@ const createRequest = async (data) => {
         where: { id: data.id }
     })
     const token = await smartContract.getToken()
+    const acceptedRequests = await Request.findAll({
+        where: {
+            accepted: true
+        },
+        include: {
+            model: SmartContract,
+            as: "smartContract",
+            where: {
+                token_id: token.id,
+                network_id: smartContract.network_id,
+            }
+        }
+    })
+    if (acceptedRequests.length) {
+        throw new ApiError('Error')
+    }
+
     const existRequest = await Request.findAll({
         include: {
             model: SmartContract,

@@ -7,6 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { toast } from "react-toastify"
 import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
+
 import Swal from 'sweetalert2'
 import noImage from "../../assets/img/coin/no-image.png"
 import { setLoading } from '../../redux/actions/home'
@@ -22,6 +23,14 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
+  const [onVcoin, setOnVcoin] = useState({
+    mainnet: false,
+    kovan: false,
+    ropsten: false,
+    rinkeby: false,
+    goerli: false,
+    localhost: false
+  })
 
   useEffect(() => {
     props.getListVCoin()
@@ -30,6 +39,13 @@ const TokenDetails = props => {
         .then(res => {
           if (res.code) {
             setData(res.data)
+            res.data.smartContracts.forEach(i => {
+              if (i?.request?.accepted) {
+                onVcoin[i.network.chain_id] = true
+              }
+            })
+            console.log(onVcoin)
+            setOnVcoin(onVcoin)
           }
         })
     }
@@ -70,99 +86,103 @@ const TokenDetails = props => {
   }
 
   const handleAddToVCoin = async (i) => {
-    props.setLoading(true)
-    const interfaceX = JSON.parse(i.abi)
-    if (i.address) {
-      const chainId = getNetType(netId)
-      if (chainId != i.network.chain_id) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Blockchain network not match !',
-          text: `Please use network ${i.network.chain_id} on Metamask !`
-        })
-        props.setLoading(false)
-        return
-      }
-      let vcoin
-      if (netId == 1) {
-        vcoin = props.listVCoin[0]
-      } else if (netId == 42) {
-        vcoin = props.listVCoin[1]
-      } else if (netId == 3) {
-        vcoin = props.listVCoin[2]
-      } else if (netId == 4) {
-        vcoin = props.listVCoin[3]
-      } else if (netId == 5) {
-        vcoin = props.listVCoin[4]
-      } else {
-        vcoin = props.listVCoin[5]
-      }
-      if (!vcoin) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Not found VCoin for this network !',
-          text: 'Plese contact Admin !'
-        })
-        props.setLoading(false)
-        return
-      }
-      if (!web3) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Not found Metamask !',
-          text: 'Plese enable Metamask !'
-        })
-        props.setLoading(false)
-        return
-      }
-      if (i.account != accs[0]) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Account metamask not match !',
-          text: `Please use account ${i.account} !`
-        })
-        props.setLoading(false)
-        return
-      }
-      const myContract = new web3.eth.Contract(interfaceX, i.address)
-      const transaction = myContract.methods.setVChain(vcoin.address)
-      sendWithEstimateGas(transaction, accs[0])
-        .then(async () => {
-          const res = await props.createRequest({
-            id: i.id
+    try {
+      props.setLoading(true)
+      const interfaceX = JSON.parse(i.abi)
+      if (i.address) {
+        if (!web3) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Not found Metamask !',
+            text: 'Plese enable Metamask !'
           })
-          props.getTokenById(props.data.id)
-            .then(res => {
-              if (res.code) {
-                setData(res.data)
-                toast.success('Created request add token to V-Coin')
-              }
-              props.setLoading(false)
-            })
-        })
-        .catch(error => {
-          console.log(error)
           props.setLoading(false)
-        })
-    } else {
-      const res = await props.createRequest({
-        id: i.id
-      })
-      props.getTokenById(props.data.id)
-        .then(res => {
-          if (res.code) {
-            setData(res.data)
-            toast.success('Created request add token to V-Coin')
-          }
+          return
+        }
+        let vcoin
+        if (netId == 1) {
+          vcoin = props.listVCoin[0]
+        } else if (netId == 42) {
+          vcoin = props.listVCoin[1]
+        } else if (netId == 3) {
+          vcoin = props.listVCoin[2]
+        } else if (netId == 4) {
+          vcoin = props.listVCoin[3]
+        } else if (netId == 5) {
+          vcoin = props.listVCoin[4]
+        } else {
+          vcoin = props.listVCoin[5]
+        }
+        if (!vcoin) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Not found VCoin for this network !',
+            text: 'Plese contact Admin !'
+          })
           props.setLoading(false)
+          return
+        }
+        const chainId = getNetType(netId)
+        if (chainId != i.network.chain_id) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Blockchain network not match !',
+            text: `Please use network ${i.network.chain_id} on Metamask !`
+          })
+          props.setLoading(false)
+          return
+        }
+        if (i.account != accs[0]) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Account metamask not match !',
+            text: `Please use account ${i.account} !`
+          })
+          props.setLoading(false)
+          return
+        }
+        const myContract = new web3.eth.Contract(interfaceX, i.address)
+        const transaction = myContract.methods.setVChain(vcoin.address)
+        await sendWithEstimateGas(transaction, accs[0])
+        const res = await props.createRequest({
+          id: i.id
         })
+        if (!res.code) {
+          throw new Error('api error')
+        }
+        toast.success('Created request add token to V-Coin')
+        const res2 = await props.getTokenById(props.data.id)
+        setData(res2.data)
+        props.setLoading(false)
+      } else {
+        const res = await props.createRequest({
+          id: i.id
+        })
+        props.setLoading(false)
+        if (!res.code) {
+          throw new Error(res)
+        }
+        toast.success('Created request add token to V-Coin')
+        const res2 = await props.getTokenById(props.data.id)
+        if (res2.code) {
+          setData(res2.data)
+        }
+      }
+    } catch (error) {
+      toast.error('Created request fail !')
+      console.log(error)
+      props.setLoading(false)
     }
   }
 
   const handleCancelVCoin = async (id) => {
-    props.setLoading(true)
-    const res = await props.cancelRequest({ id })
-    if (res.code) {
+    try {
+      props.setLoading(true)
+      const res = await props.cancelRequest({ id })
+      if (!res.code) {
+        throw new Error(res)
+      }
+      toast.success('Removed request add token to V-Coin')
       props.getListToken()
       props.getTokenById(props.data.id)
         .then(res => {
@@ -172,29 +192,24 @@ const TokenDetails = props => {
             } else {
               props.setModalOpen('')
             }
-            toast.success('Removed request add token to VCoin')
           }
           props.setLoading(false)
         })
-    } else {
+    } catch (error) {
+      props.setLoading(false)
       toast.error('Cancel request error')
-      console.log('error')
+      console.log(error)
     }
-    props.setLoading(false)
   }
 
   const handleDownloadSdk = async (i) => {
     const zip = exporSdkWorker(data.symbol, i.account, i.address, i.network_id, JSON.parse(i.abi), data.owner.name)
-    zip.generateAsync({ type: "blob" })
-      .then(function (content) {
-        saveAs(content, `${data.symbol}.zip`);
-      });
-
+    const content = await zip.generateAsync({ type: "blob" })
+    saveAs(content, `${data.symbol}.zip`);
   }
 
 
   const handleOpenSourceCode = (i) => {
-    // console.log(i)
     clearAll()
     writeBatchFile(i.files)
     window.open("/ide", "_blank")
@@ -213,8 +228,7 @@ const TokenDetails = props => {
           <Trash size={14} />
         </Button>
       </React.Fragment>
-    }
-    else {
+    } else if (!onVcoin[i.network.chain_id]) {
       return <React.Fragment>
         <Button size="sm" id={"add" + i.id} color="success" onClick={() => handleAddToVCoin(i)}>
           <i className="fas fa-cloud-upload-alt" style={{ fontSize: '15px' }}></i>
@@ -223,6 +237,8 @@ const TokenDetails = props => {
           Add to VChain
           </UncontrolledTooltip>
       </React.Fragment>
+    } else {
+      return null
     }
   }
 

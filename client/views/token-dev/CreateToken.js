@@ -38,9 +38,9 @@ const CreateToken = props => {
   const [balance, setBalance] = useState("")
   const [web3, setWeb3] = useState()
   const [sourceEdited, setSourceEdited] = useState(false)
+  const [useMetaMask, setUseMetaMask] = useState(false)
   const [libSol, setLibSol] = useState('')
   const [tokenSol, setTokenSol] = useState('')
-  const [useMetaMask, setUseMetaMask] = useState(false)
 
   const validate1 = values => {
     const errors = {}
@@ -111,9 +111,19 @@ const CreateToken = props => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
             setAccs(accounts.map(i => i.toUpperCase()))
+            res.eth.getBalance(accounts[0])
+              .then(e => {
+                setBalance(res.utils.fromWei(e))
+              })
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(res.utils.hexToNumber(chainId))
+            res.eth.getAccounts().then(listAcc => {
+              res.eth.getBalance(listAcc[0])
+                .then(e => {
+                  setBalance(res.utils.fromWei(e))
+                })
+            })
           });
         }
         if (res) {
@@ -160,27 +170,21 @@ const CreateToken = props => {
       await sleep(500)
     }
     clearAll()
-    props.getConfig('LIB.SOL')
-      .then(res => {
-        if (res.code) {
-          const { value } = res.data
-          writeOneFile('/Lib.sol', value)
-          setLibSol(value)
-          props.getConfig('TOKEN.SOL')
-            .then(res => {
-              if (res.code) {
-                const { value } = res.data
-                writeOneFile('/Token.sol', value)
-                setTokenSol(value)
-              }
-            })
-        }
-      })
+    const res = await props.getConfig('LIB.SOL')
+    if (res.code) {
+      writeOneFile('/Lib.sol', res.data.value)
+      setLibSol(res.data.value)
+      const res2 = await props.getConfig('TOKEN.SOL')
+      if (res2.code) {
+        writeOneFile('/Token.sol', res2.data.value)
+        setTokenSol(res2.data.value)
+      }
+    }
   }
 
   const onChangeContractInterface = (e) => {
     if (e?.inputs) {
-      console.log("🚀 ~ file: CreateToken.js ~ line 132 ~ onChangeContractInterface ~ e", e)
+      // console.log("🚀 ~ file: CreateToken.js ~ line 132 ~ onChangeContractInterface ~ e", e)
       formik1.setFieldError('dataConstructor', Array(e.inputs.length).fill(""))
       formik1.setFieldValue('dataConstructor', Array(e.inputs.length).fill(""))
     }
@@ -196,17 +200,19 @@ const CreateToken = props => {
   }
 
   const checkDoneStep0 = async () => {
-    props.setLoading(true)
-    const source1 = readBatchFile();
-    setSourceCode(source1)
-    const res = await props.validateSource(source1)
-    if (res.code && res.data.length) {
+    try {
+      props.setLoading(true)
+      const source1 = readBatchFile();
+      setSourceCode(source1)
+      const res = await props.validateSource(source1)
+      if (!res.code || !res.data.length) {
+        throw new Error()
+      }
       setListContractInterface(res.data.map((i, idx) => {
         i.label = i.file + '/' + i.contract
         i.value = idx
         return i
       }))
-      console.log(source1)
       if (source1[0].path == '/Lib.sol' && source1[0].code == libSol
         && source1[1].path == '/Token.sol' && source1[1].code == tokenSol) {
         setSourceEdited(false)
@@ -226,13 +232,14 @@ const CreateToken = props => {
         formik1.resetForm()
         setSourceEdited(true)
         setActiveStep(1)
-        Swal.fire({
-          icon: 'warning',
-          title: 'We compiled your code',
-          text: 'Plese enter some infomation !'
-        })
+        // Swal.fire({
+        //   icon: 'warning',
+        //   title: 'We compiled your code',
+        //   text: 'Plese enter some infomation !'
+        // })
       }
-    } else {
+      props.setLoading(false)
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -240,19 +247,21 @@ const CreateToken = props => {
       })
       props.setLoading(false)
     }
-    props.setLoading(false)
   }
 
   const checkDoneStep1 = async () => {
-    const errors = await formik1.validateForm()
-    if (errors.interface || errors.dataConstructor.some(i => i)) {
-      return
-    }
-    props.setLoading(true)
-    // TODO
-    const { abi, bytecode } = formik1.values.interface
-    const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
-    if (res.code) {
+    try {
+      const errors = await formik1.validateForm()
+      if (errors.interface || errors.dataConstructor.some(i => i)) {
+        return
+      }
+      props.setLoading(true)
+      // TODO
+      const { abi, bytecode } = formik1.values.interface
+      const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
+      if (!res.code) {
+        throw new Error(res)
+      }
       const { data } = res
       if (data.existToken) {
         const { name, description, initial_supply } = data.existToken
@@ -262,7 +271,7 @@ const CreateToken = props => {
       }
       setActiveStep(2)
       props.setLoading(false)
-    } else {
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -273,17 +282,20 @@ const CreateToken = props => {
   }
 
   const checkDoneStep2 = async () => {
-    const errors = await formik2.validateForm()
-    if (!_.isEmpty(errors)) {
-      return
-    }
-    props.setLoading(true)
-    const res = await props.checkTokenSymbolExists(formik2.values.symbol)
-    console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
-    if (res.code) {
+    try {
+      const errors = await formik2.validateForm()
+      if (!_.isEmpty(errors)) {
+        return
+      }
+      props.setLoading(true)
+      const res = await props.checkTokenSymbolExists(formik2.values.symbol)
+      // console.log("🚀 ~ file: CreateToken.js ~ line 222 ~ checkDoneStep2 ~ res", res)
+      if (!res.code) {
+        throw new Error(res)
+      }
       setActiveStep(3)
       props.setLoading(false)
-    } else {
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -294,87 +306,70 @@ const CreateToken = props => {
   }
 
   const checkDoneStep3 = async () => {
-    if (!useMetaMask || !web3 || !sourceEdited) {
-      const errors = await formik3.validateForm()
-      if (!_.isEmpty(errors)) {
-        return
+    try {
+      if (!useMetaMask || !web3 || !sourceEdited) {
+        const errors = await formik3.validateForm()
+        if (!_.isEmpty(errors)) {
+          return
+        }
       }
-    }
-    props.setLoading(true)
-    const { abi, bytecode } = formik1.values.interface
-    const { name, symbol, supply, description } = formik2.values
-    if (useMetaMask) {
-      let smartContractAddress
-      const myContract = new web3.eth.Contract(abi)
-      const deploy = myContract.deploy({
-        data: bytecode,
-        arguments: formik1.values.dataConstructor
-      })
-      deployWithEstimateGas(deploy, accs[0])
-        .then(instance => {
-          smartContractAddress = instance.options.address
-          const setInfo = instance.methods.setInfo(symbol, name, supply)
-          return sendWithEstimateGas(setInfo, accs[0])
+      props.setLoading(true)
+      const { abi, bytecode } = formik1.values.interface
+      const { name, symbol, supply, description } = formik2.values
+      if (useMetaMask) {
+        const myContract = new web3.eth.Contract(abi)
+        const deploy = myContract.deploy({
+          data: bytecode,
+          arguments: formik1.values.dataConstructor
         })
-        .then(() => {
-          return props.createToken({
-            source: sourceCode,
-            chain_id: getNetType(netId),
-            tokenSymbol: symbol,
-            abi,
-            initialSupply: supply,
-            tokenName: name,
-            account: accs[0],
-            description,
-            address: smartContractAddress
-          })
+        const instance = await deployWithEstimateGas(deploy, accs[0])
+        // smartContractAddress = instance.options.address
+        const setInfo = instance.methods.setInfo(symbol, name, supply)
+        await sendWithEstimateGas(setInfo, accs[0])
+        const res = await props.createToken({
+          source: sourceCode,
+          chain_id: getNetType(netId),
+          tokenSymbol: symbol,
+          abi,
+          initialSupply: supply,
+          tokenName: name,
+          account: accs[0],
+          description,
+          address: instance.options.address
         })
-        .then(res => {
-          if (res.code) {
-            resetState()
-            props.setModalOpen("")
-            props.getListToken()
-            toast.success('Create token success')
-            props.setLoading(false)
-          } else {
-            toast.error('Create token error')
-            props.setLoading(false)
-          }
+        if (!res.code) {
+          throw new Error(res)
+        }
+        resetState()
+        props.setModalOpen("")
+        props.getListToken()
+        toast.success('Create token success')
+        props.setLoading(false)
+      } else {
+        // console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
+        const res = await props.createToken({
+          source: sourceCode,
+          network_id: formik3.values.network.id,
+          constructorData: formik1.values.dataConstructor,
+          bytecode: bytecode,
+          tokenSymbol: symbol,
+          abi,
+          initialSupply: supply,
+          tokenName: name,
+          description
         })
-        .catch(error => {
-          props.setLoading(false)
-          console.log(error)
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something error'
-          })
-        })
-    } else {
-      // console.log("🚀 ~ file: CreateToken.js ~ line 259 ~ checkDoneStep3 ~ selectedNetwork", selectedNetwork)
-      props.createToken({
-        source: sourceCode,
-        network_id: formik3.values.network.id,
-        constructorData: formik1.values.dataConstructor,
-        bytecode: bytecode,
-        tokenSymbol: symbol,
-        abi,
-        initialSupply: supply,
-        tokenName: name,
-        description
-      })
-        .then(res => {
-          if (res.code) {
-            resetState()
-            props.setModalOpen("")
-            props.getListToken()
-            toast.success('Create token success')
-            props.setLoading(false)
-          } else {
-            toast.error('Create token error')
-            props.setLoading(false)
-          }
-        })
+        if (!res.code) {
+          throw new Error(res)
+        }
+        resetState()
+        props.setModalOpen("")
+        props.getListToken()
+        toast.success('Create token success')
+        props.setLoading(false)
+      }
+    } catch (error) {
+      toast.error('Create token error')
+      props.setLoading(false)
     }
   }
 

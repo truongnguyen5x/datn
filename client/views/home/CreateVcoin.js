@@ -86,15 +86,24 @@ const CreateVcoin = props => {
 
   useEffect(() => {
     getAndWriteTemplateCode()
-
     getWeb3()
       .then(res => {
         if (window.ethereum) {
           window.ethereum.on('accountsChanged', (accounts) => {
             setAccs(accounts.map(i => i.toUpperCase()))
+            res.eth.getBalance(accounts[0])
+              .then(e => {
+                setBalance(res.utils.fromWei(e))
+              })
           });
           window.ethereum.on('chainChanged', (chainId) => {
             setNetId(res.utils.hexToNumber(chainId))
+            res.eth.getAccounts().then(listAcc => {
+              res.eth.getBalance(listAcc[0])
+                .then(e => {
+                  setBalance(res.utils.fromWei(e))
+                })
+            })
           });
         }
         if (res) {
@@ -128,25 +137,17 @@ const CreateVcoin = props => {
 
   const getAndWriteTemplateCode = async () => {
     while (!window.remixFileSystem) {
-      // console.log('loop')
       await sleep(500)
     }
-    // console.log('clear', window.remixFileSystem)
     clearAll()
-    props.getConfig('LIB.SOL')
-      .then(res => {
-        if (res.code) {
-          const { value } = res.data
-          writeOneFile('/Lib.sol', value)
-          props.getConfig('MAIN.SOL')
-            .then(res => {
-              if (res.code) {
-                const { value } = res.data
-                writeOneFile('/Main.sol', value)
-              }
-            })
-        }
-      })
+    const res = await props.getConfig('LIB.SOL')
+    if (res.code) {
+      writeOneFile('/Lib.sol', res.data.value)
+      const res2 = await props.getConfig('MAIN.SOL')
+      if (res2.code) {
+        writeOneFile('/Main.sol', res2.data.value)
+      }
+    }
   }
 
   const handleNextStep = async () => {
@@ -189,40 +190,46 @@ const CreateVcoin = props => {
   }
 
   const checkDoneStep0 = async () => {
-    props.setLoading(true)
-    const source1 = readBatchFile();
-    setSourceCode(source1)
-    const res = await props.validateSource(source1)
-    if (res.code && res.data.length) {
+    try {
+      props.setLoading(true)
+      const source1 = readBatchFile();
+      // setSourceCode(source1)
+      const res = await props.validateSource(source1)
+      if (!res.code || !res.data.length) {
+        throw new Error()
+      }
       setListContractInterface(res.data.map((i, idx) => {
         i.label = i.file + '/' + i.contract
         i.value = idx
         return i
       }))
       setActiveStep(1)
-    } else {
+      props.setLoading(false)
+    } catch (error) {
+      props.setLoading(false)
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Your source code error, review your code again !'
       })
-      props.setLoading(false)
     }
-    props.setLoading(false)
   }
 
   const checkDoneStep1 = async () => {
-    const errors = await formik1.validateForm()
-    if (errors.interface || errors.dataConstructor.some(i => i)) {
-      return
-    }
-    props.setLoading(true)
-    const { abi, bytecode } = formik1.values.interface
-    const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
-    if (res.code) {
+    try {
+      const errors = await formik1.validateForm()
+      if (errors.interface || errors.dataConstructor.some(i => i)) {
+        return
+      }
+      props.setLoading(true)
+      const { abi, bytecode } = formik1.values.interface
+      const res = await props.testDeploy({ abi, bytecode, constructor: formik1.values.dataConstructor })
+      if (!res.code) {
+        throw new Error()
+      }
       setActiveStep(2)
       props.setLoading(false)
-    } else {
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -234,37 +241,34 @@ const CreateVcoin = props => {
 
 
   const checkDoneStep2 = async () => {
-    props.setLoading(true)
-    const { abi, bytecode } = formik1.values.interface
-    const myContract = new web3.eth.Contract(abi)
-    const deploy = myContract.deploy({
-      data: bytecode,
-      arguments: formik1.values.dataConstructor
-    })
-    deployWithEstimateGas(deploy, accs[0])
-      .then(instance => {
-        return props.createVcoin({
-          account: accs[0],
-          network_id: netId,
-          abi,
-          address: instance.options.address
-        })
+    try {
+      props.setLoading(true)
+      const { abi, bytecode } = formik1.values.interface
+      const myContract = new web3.eth.Contract(abi)
+      const deploy = myContract.deploy({
+        data: bytecode,
+        arguments: formik1.values.dataConstructor
       })
-      .then(res => {
-        if (res.code) {
-          resetState()
-          props.onClose()
-          props.getListVCoin()
-          toast.success("Create token success")
-        } else {
-          toast.error("Create token error !")
-        }
-        props.setLoading(false)
+      const instance = await deployWithEstimateGas(deploy, accs[0])
+      const res = await props.createVcoin({
+        account: accs[0],
+        network_id: netId,
+        abi,
+        address: instance.options.address
       })
-      .catch(error => {
-        console.log(error)
-        props.setLoading(false)
-      })
+      if (!res.code) {
+        throw new Error(res)
+      }
+      resetState()
+      props.onClose()
+      props.getListVCoin()
+      toast.success("Create V-Coin success")
+      props.setLoading(false)
+    } catch (error) {
+      toast.error('Create V-Coin error!')
+      console.log(error)
+      props.setLoading(false)
+    }
   }
 
 
