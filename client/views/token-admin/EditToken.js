@@ -108,7 +108,7 @@ const EditToken = props => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Account metamask not match !',
-                    text: `Please use account ${account} !`
+                    text: `Please switch network to ${listNetwork.join(',')} on Metamask !`
                 })
                 return
             }
@@ -116,6 +116,14 @@ const EditToken = props => {
             const chainId = getNetType(netId)
             // console.log('chain Id', chainId)
             const smartContract = props.data.smartContracts.find(i => i.network.chain_id == chainId)
+            if (!smartContract) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No token for this network !',
+                    text: `Please use account ${account} !`
+                })
+                return
+            }
             // console.log('find smart contract', smartContract)
             const {address, abi} = smartContract
 

@@ -444,10 +444,10 @@ const TokenDetails = props => {
               </Col>
             </Row>
             {props.listType == "in-vchain"
-              && <Button size="sm" className="ml-2" color="danger"
+              && <Button className="ml-2" color="danger"
                 onClick={() => { openModalEdit(true) }}
               >
-                <Edit2 size={12} /> <span className="">Edit</span>
+                <Edit2 size={14} /> <span className="">Edit</span>
               </Button>}
           </TabPane>
           <TabPane tabId={2}>
