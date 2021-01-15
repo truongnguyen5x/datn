@@ -42,7 +42,7 @@ const TokenList = props => {
             <p>{i.name ? `Name: ${i.name}` : `No name`}</p>
             <p>{i.description ? `Description: ${i.description}` : `No description`}</p>
             <Button
-              className=" bg-gradient-primary"
+              className=" bg-gradient-danger"
               onClick={() => handleTokenDetails(i)}
             >
               Detail

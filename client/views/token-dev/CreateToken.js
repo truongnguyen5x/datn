@@ -453,7 +453,7 @@ const CreateToken = props => {
             Use metamask:
         </div>
           <div style={{ width: '38px' }} className="text-center">
-            <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(false)} />
+            <Input type="checkbox" defaultChecked={useMetaMask} onClick={() => setUseMetaMask(false)} />
           </div>
         </div>
         <div className="d-flex m-1">
@@ -482,7 +482,7 @@ const CreateToken = props => {
             Use metamask:
         </div>
           <div style={{ width: '38px' }} className="text-center">
-            <Input type="checkbox" checked={useMetaMask} onClick={() => setUseMetaMask(true)} />
+            <Input type="checkbox" defaultChecked={useMetaMask} onClick={() => setUseMetaMask(true)} />
           </div>
         </div>
         <div className="d-flex m-1">
