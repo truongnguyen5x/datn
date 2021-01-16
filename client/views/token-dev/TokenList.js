@@ -23,6 +23,9 @@ const TokenList = props => {
     props.setModalOpen('detail')
   }
 
+  const onImageError = e => {
+    e.target.src = noImage
+  }
   const renderMails = () => {
     if (!props.listToken.length) {
       return <div className="no-results show">
@@ -34,7 +37,7 @@ const TokenList = props => {
         <Card>
           <CardHeader className="mx-auto">
             <div className="avatar mr-1 avatar-xl">
-              <img src={i.image || noImage} alt="avatarImg" />
+              <img src={i.image || noImage} alt="avatarImg" onError={onImageError} />
             </div>
           </CardHeader>
           <CardBody className="text-center">
