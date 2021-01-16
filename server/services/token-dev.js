@@ -11,9 +11,11 @@ const ApiError = require('../middlewares/error')
 
 
 
+
+
 const createToken = async (data, user_id) => {
     const { source, abi, network_id, account, address, chain_id, bytecode,
-        tokenSymbol, tokenName, initialSupply, description, constructorData } = data
+        tokenSymbol, tokenName, initialSupply, description, constructorData, image } = data
     let token = await Token.findOne({
         where: { symbol: tokenSymbol }
     })
@@ -45,13 +47,14 @@ const createToken = async (data, user_id) => {
     newSmartContract.setNetwork(network)
     if (token) {
         await token.addSmartContract(newSmartContract)
-        await token.update({ symbol: tokenSymbol, name: tokenName, initial_supply: initialSupply, description })
+        await token.update({ symbol: tokenSymbol, name: tokenName, initial_supply: initialSupply, description, image })
     } else {
         token = await Token.create({
             symbol: tokenSymbol,
             name: tokenName,
             initial_supply: initialSupply,
             description,
+            image,
             exchange_rate: 100
         })
         await token.addSmartContract(newSmartContract)
@@ -389,7 +392,13 @@ const checkTokenSymbol = async (symbol, userId) => {
 }
 
 
-
+const updateToken = async (data) => {
+    console.log(data)
+    const token = await Token.findOne({ where: { id: data.id } })
+    delete data.id
+    await token.update(data)
+    return token
+}
 
 module.exports = {
     createToken,
@@ -400,5 +409,6 @@ module.exports = {
     createRequest,
     cancelRequest,
     testDeploy,
-    checkTokenSymbol
+    checkTokenSymbol,
+    updateToken
 }

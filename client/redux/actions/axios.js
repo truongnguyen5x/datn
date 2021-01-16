@@ -32,3 +32,36 @@ export const FetchApi = async (url, method = 'GET', body, headers) => {
         return error.message;
     }
 };
+
+
+export const UploadApi = async (url, body) => {
+    // console.log('upload api', url , body)
+    let token = localStorage.getItem("accessToken");
+    try {
+        let opts = {
+            method: 'POST',
+            url: `${process.env.REACT_APP_API}${url}`,
+            timeout: 1 * 1000 * 60,//1phut
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "content-type": "multipart/form-data"
+            },
+            data: body
+        }
+        let fetchdata = await axios(opts);
+        return fetchdata.data;
+    } catch (error) {
+        console.log(error)
+        let { response } = error;
+        if (response) {
+            if (response.status == 401) {
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                console.log('from fetch api')
+                history.push("/pages/login")
+            }
+            return response.data;
+        }
+        return error.message;
+    }
+};

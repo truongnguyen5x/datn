@@ -2,12 +2,11 @@ import classnames from "classnames"
 import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useEffect, useState } from "react"
-import { ArrowLeft, Download, Trash } from "react-feather"
+import { ArrowLeft, Download, Edit2, Trash } from "react-feather"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { connect } from "react-redux"
 import { toast } from "react-toastify"
 import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from 'reactstrap'
-
 import Swal from 'sweetalert2'
 import noImage from "../../assets/img/coin/no-image.png"
 import { setLoading } from '../../redux/actions/home'
@@ -16,6 +15,8 @@ import { getListVCoin } from '../../redux/actions/vcoin'
 import { clearAll, writeBatchFile } from '../../utility/file'
 import { exporSdkWorker } from '../../utility/sdk'
 import { getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
+import EditToken from './EditToken'
+
 
 const TokenDetails = props => {
   const [activeTab, setActiveTab] = useState(1)
@@ -23,6 +24,8 @@ const TokenDetails = props => {
   const [web3, setWeb3] = useState()
   const [netId, setNetId] = useState(0)
   const [accs, setAccs] = useState([])
+  const [modalEdit, openModalEdit] = useState(false)
+
   const [onVcoin, setOnVcoin] = useState({
     mainnet: false,
     kovan: false,
@@ -89,7 +92,7 @@ const TokenDetails = props => {
     try {
       props.setLoading(true)
       const interfaceX = JSON.parse(i.abi)
-      
+
       let vcoin
       if (netId == 1) {
         vcoin = props.listVCoin[0]
@@ -380,6 +383,11 @@ const TokenDetails = props => {
                   <div className="font-weight-bold token-detail-title">Total supply</div>
                   <div>{parseInt(data?.initial_supply || 0).toLocaleString()}</div>
                 </div>
+                <Button className="ml-1" color="danger"
+                  onClick={() => { openModalEdit(true) }}
+                >
+                  <Edit2 size={14} /> <span className="">Edit</span>
+                </Button>
               </Col>
               <Col md={3}>
                 <div className="d-flex justify-content-center mb-5 flex-direction-column align-items-center">
@@ -412,7 +420,13 @@ const TokenDetails = props => {
         </TabContent>
 
       </div>
-
+      <EditToken
+        data={data}
+        visible={modalEdit}
+        onClose={() => {
+          openModalEdit(false)
+        }}
+      />
     </div>
   )
 

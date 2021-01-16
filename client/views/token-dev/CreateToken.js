@@ -20,10 +20,11 @@ import {
 import Swal from 'sweetalert2'
 import "../../assets/scss/plugins/extensions/editor.scss"
 import "../../assets/scss/plugins/extensions/toastr.scss"
+import Upload from '../../components/Upload'
 import { getAccountBalance } from '../../redux/actions/account'
 import { setLoading } from '../../redux/actions/home'
 import { getListNetwork } from '../../redux/actions/network'
-import { checkTokenSymbolExists, createToken, getConfig, getListToken, setModalOpen, testDeploy, validateSource } from "../../redux/actions/token-dev"
+import { checkTokenSymbolExists, createToken, getConfig, getListToken, setModalOpen, testDeploy, uploadImage, validateSource } from "../../redux/actions/token-dev"
 import { sleep } from '../../utility'
 import { clearAll, readBatchFile, writeOneFile } from '../../utility/file'
 import { deployWithEstimateGas, getNetType, getWeb3, sendWithEstimateGas } from '../../utility/web3'
@@ -80,7 +81,8 @@ const CreateToken = props => {
       symbol: '',
       name: '',
       description: '',
-      supply: ''
+      supply: '',
+      image: ''
     },
     validate: validate2
   });
@@ -314,8 +316,19 @@ const CreateToken = props => {
         }
       }
       props.setLoading(true)
+
       const { abi, bytecode } = formik1.values.interface
       const { name, symbol, supply, description } = formik2.values
+      let { image } = formik2.values
+      if (image.name) {
+        const formData = new FormData()
+        formData.append('image', image)
+        const res = await props.uploadImage(formData)
+        if (!res.code) {
+          throw new Error()
+        }
+        image = res.data
+      }
       if (useMetaMask) {
         const myContract = new web3.eth.Contract(abi)
         const deploy = myContract.deploy({
@@ -335,7 +348,8 @@ const CreateToken = props => {
           tokenName: name,
           account: accs[0],
           description,
-          address: instance.options.address
+          address: instance.options.address,
+          image
         })
         if (!res.code) {
           throw new Error(res)
@@ -356,7 +370,8 @@ const CreateToken = props => {
           abi,
           initialSupply: supply,
           tokenName: name,
-          description
+          description,
+          image
         })
         if (!res.code) {
           throw new Error(res)
@@ -677,6 +692,15 @@ const CreateToken = props => {
                       onChange={formik2.handleChange}
                     />
                   </div>
+                  <div className="d-flex justify-content-center mt-2">
+                    <Upload
+                      image={formik2.values.image}
+                      onChange={image => formik2.setFieldValue('image', image)}
+                    />
+                  </div>
+                  <div className="text-center">
+                    <span className="">Upload image for token</span>
+                  </div>
                 </Col>
               </Row>
 
@@ -800,7 +824,8 @@ const mapDispatchToProps = {
   setModalOpen,
   testDeploy,
   checkTokenSymbolExists,
-  setLoading
+  setLoading,
+  uploadImage
 }
 
 

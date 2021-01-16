@@ -1,5 +1,5 @@
 
-import { FetchApi } from "../axios"
+import { FetchApi, UploadApi } from "../axios"
 
 export const getListToken = () => (dispatch, getState) => {
     const type = getState().tokenDev.listType
@@ -82,4 +82,11 @@ export const testDeploy = (data) => dispatch => {
 
 export const checkTokenSymbolExists = (symbol) => dispatch => {
     return FetchApi(`/api/token-dev/checkTokenSymbol`, 'GET', { symbol })
+}
+export const updateToken = (data) => dispatch => {
+    return FetchApi(`/api/token-dev`, 'PUT', data)
+}
+export const uploadImage = data => dispatch => {
+    // console.log('redux action', data)
+    return UploadApi(`/api/token-dev/upload`, data)
 }

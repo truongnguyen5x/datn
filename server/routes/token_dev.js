@@ -11,8 +11,8 @@ routes.delete('/request', checkRole(0, 1), tokenDevController.cancelRequest)
 routes.post('/request', checkRole(0, 1), tokenDevController.createRequest)
 routes.post('/validate', checkRole(0, 1), tokenDevController.validateSource)
 routes.post('/testDeploy', checkRole(0, 1), tokenDevController.testDeploy)
-
-
+routes.put('/', checkRole(0, 1), tokenDevController.updateToken)
+routes.post('/upload', checkRole(0, 1), tokenDevController.upload);
 routes.get('/:id', checkRole(0, 1), tokenDevController.getTokenById)
 
 module.exports = routes
