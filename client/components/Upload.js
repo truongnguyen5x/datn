@@ -24,14 +24,14 @@ const Upload = props => {
             {image
                 ? image.name
                     ? <img src={URL.createObjectURL(image)} />
-                    : <img src={image} onError={() => setImage(null)}/>
+                    : <img src={image} onError={() => setImage(null)} />
                 : null}
 
         </div>
-        <div className="camera" >
+        <div className="camera" onClick={() => ref.current.click()}>
             {image
-                ? <Camera className="icon-2" color="white" onClick={() => ref.current.click()} />
-                : <Camera className="icon" onClick={() => ref.current.click()} />}
+                ? <Camera className="icon-2" color="white" />
+                : <Camera className="icon" />}
         </div>
 
         <input ref={ref} type="file" accept="image/*" onChange={onChangeImage} />

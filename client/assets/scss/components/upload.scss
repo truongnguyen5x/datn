@@ -20,12 +20,14 @@
     border: 1px solid rgba(128, 128, 128, 0.308);
     cursor: pointer;
     .icon-2 {
-        display: none;
+      display: none;
     }
     &:hover {
-        .icon-2 {
-            display: inline;
-        }
+      background-color: rgba(128, 128, 128, 0.74);
+
+      .icon-2 {
+        display: inline;
+      }
     }
   }
 

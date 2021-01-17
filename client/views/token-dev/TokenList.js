@@ -23,9 +23,6 @@ const TokenList = props => {
     props.setModalOpen('detail')
   }
 
-  const onImageError = e => {
-    e.target.src = noImage
-  }
   const renderMails = () => {
     if (!props.listToken.length) {
       return <div className="no-results show">
@@ -37,7 +34,7 @@ const TokenList = props => {
         <Card>
           <CardHeader className="mx-auto">
             <div className="avatar mr-1 avatar-xl">
-              <img src={i.image || noImage} alt="avatarImg" onError={onImageError} />
+              <img src={i.image || noImage} alt="avatarImg" onError={e => e.target.src = noImage} />
             </div>
           </CardHeader>
           <CardBody className="text-center">
@@ -63,7 +60,7 @@ const TokenList = props => {
       <div className="token-app-area">
         <div className="token-app-list-wrapper">
           <div className="token-app-list">
-            <div style={{height: '40px'}} className="d-lg-none">
+            <div style={{ height: '40px' }} className="d-lg-none">
               <div
                 className="d-lg-none sidebar-toggle"
                 onClick={() => props.mainSidebar(true)}

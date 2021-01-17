@@ -18,8 +18,6 @@ import {
   TabPane
 } from "reactstrap"
 import Swal from 'sweetalert2'
-import "../../assets/scss/plugins/extensions/editor.scss"
-import "../../assets/scss/plugins/extensions/toastr.scss"
 import Upload from '../../components/Upload'
 import { getAccountBalance } from '../../redux/actions/account'
 import { setLoading } from '../../redux/actions/home'
@@ -49,7 +47,7 @@ const CreateToken = props => {
       errors.interface = 'Required !'
     }
     errors.dataConstructor = formik1.values.dataConstructor.map(i => !i)
-    console.log('validate1', errors, formik1.values.dataConstructor)
+    // console.log('validate1', errors, formik1.values.dataConstructor)
     return errors
   }
   const formik1 = useFormik({
@@ -224,7 +222,7 @@ const CreateToken = props => {
         const res1 = await props.testDeploy({ abi, bytecode, constructor: ['1000000'] })
         if (res1.code && res1.data.existToken) {
           const { name, description, initial_supply } = res1.data.existToken
-          console.log("🚀 ~ file: CreateToken.js ~ line 166 ~ checkDoneStep0 ~ res.data.existToken", res.data.existToken)
+          // console.log("🚀 ~ file: CreateToken.js ~ line 166 ~ checkDoneStep0 ~ res.data.existToken", res.data.existToken)
           formik2.setValues({ symbol: 'TK1', name, description, supply: initial_supply })
         } else {
           formik2.setValues({ symbol: 'TK1', name: 'token1', supply: '1000000000000000000000000' })

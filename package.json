@@ -4,8 +4,8 @@
   "scripts": {
     "dev:web": "webpack --watch --progress",
     "dev:server": "nodemon server/index.js",
-    "prod:server": "NODE_ENV=production node server/index.js",
-    "prod:web": "NODE_ENV=production webpack --progress",
+    "prod:server": "set NODE_ENV=production&& node server/index.js",
+    "prod:web": "set NODE_ENV=production&& webpack --progress",
     "start:ganache": "ganache-cli --account=\"0x18d55f4933b3a97d41b755d75f2f36e6f1a2da58f7cfb03e1f59d328ed24a9d6,100000000000000000000\" --account=\"0xc91ee386f9582a0b15f11d76efba9a2647c3a6dbfc774fc8a50b7a76a28c9c45,100000000000000000000\" --account=\"0x5733281d7a38000fc50e0ac85fc5b7643827a3c92daa7015d2111593139e150e,100000000000000000000\" --account=\"0x2c3cabda8bd8b885d38dea44c78a9f3830f3069961384368e52969f659abc3de, 100000000000000000000\""
   },
   "dependencies": {
