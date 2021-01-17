@@ -28,11 +28,13 @@ const Upload = props => {
                 : null}
 
         </div>
-        <div className="camera" onClick={() => ref.current.click()}>
-            {image
-                ? <Camera className="icon-2" color="white" />
-                : <Camera className="icon" />}
-        </div>
+        {image
+            ? <div className="camera camera-2" onClick={() => ref.current.click()}>
+                <Camera className="icon-2" color="white" />
+            </div>
+            : <div className="camera" onClick={() => ref.current.click()}>
+                <Camera className="icon" />
+            </div>}
 
         <input ref={ref} type="file" accept="image/*" onChange={onChangeImage} />
     </div>
