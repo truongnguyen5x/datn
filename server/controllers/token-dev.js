@@ -98,7 +98,12 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         // console.log('22222222222222')
         let date = Date.now()
-        let name = date + '-' + decodeURI(file.originalname.normalize())
+        let name
+        try {
+            name = date + '-' + decodeURI(file.originalname.normalize())
+        } catch (error) {
+            name = "image"
+        }
         file.fileName = '/uploads/' + name
         cb(null, name);
     }

@@ -393,7 +393,7 @@ const TokenDetails = props => {
                 <div className="d-flex justify-content-center mb-5 flex-direction-column align-items-center">
                   <div>
                     <div className="avatar mr-1 avatar-xl">
-                      <img src={data?.image || noImage} alt="avatarImg" />
+                      <img src={data?.image || noImage} alt="avatarImg" onError={e => e.target.src = noImage} />
                     </div>
                   </div>
                   <h5>Upload token image</h5>
