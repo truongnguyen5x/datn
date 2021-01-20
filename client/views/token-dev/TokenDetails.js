@@ -216,7 +216,7 @@ const TokenDetails = props => {
   }
 
   const handleDownloadSdk = async (i) => {
-    const zip = exporSdkWorker(data.symbol, i.account, i.address, i.network_id, JSON.parse(i.abi), data.owner.name)
+    const zip = exporSdkWorker(data.symbol, i.account, i.address, i.network.chain_id, JSON.parse(i.abi), data.owner.name)
     const content = await zip.generateAsync({ type: "blob" })
     saveAs(content, `${data.symbol}.zip`);
   }

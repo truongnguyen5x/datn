@@ -142,7 +142,8 @@ const getListToken = async (user_id, type) => {
                         as: 'network'
                     }],
                     required: true
-                }]
+                }],
+                order: [["symbol", 'ASC']]
             })
         case "in-vchain":
             return Token.findAll({
@@ -168,7 +169,8 @@ const getListToken = async (user_id, type) => {
                         as: 'network'
                     }],
                     required: true
-                }]
+                }],
+                order: [["symbol", 'ASC']]
             })
         default:
             return []

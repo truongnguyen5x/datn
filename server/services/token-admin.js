@@ -33,7 +33,8 @@ const getListToken = async (type) => {
                         as: 'network'
                     }],
                     required: true
-                }]
+                }],
+                order: [["symbol", 'ASC']]
             })
 
         case "in-vchain":
@@ -57,7 +58,8 @@ const getListToken = async (type) => {
                         as: 'network'
                     }],
                     required: true
-                }]
+                }],
+                order: [["symbol", 'ASC']]
             })
         default:
             return []

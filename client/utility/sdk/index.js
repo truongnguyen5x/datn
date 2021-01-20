@@ -112,59 +112,6 @@ ${listParamDoc.join("\n")}
 */`
   }
 
-  const renderMedthods = methods => {
-    const { stateMutability, inputs } = methods
-    if (stateMutability == "view") {
-      return `
-${renderJsDoc(inputs)}
-Token${name}.${methods.name} = async function (${renderParams(inputs)}) {
-  const response = await ${name}Contract.methods.${methods.name}(${renderParams(inputs)}).call();
-  return response;
-};`
-    } else {
-      return `
-${renderJsDoc(inputs)} 
-Token${name}.${methods.name} = async function (${renderParams(inputs)}) {
-  await ${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
-      from: address, gas: 300000
-  }, (error, result) => {
-      if (error) {
-          console.log('error in ${methods.name}' + error);
-          return 0;
-      }
-      return result;
-  });
-};
-`
-    }
-  };
-  const tokenContent =
-    `"use strict";
-
-const Web3 = require('web3');
-const DappContract = require('./contracts/${name}.json');
-
-const version = require('./package.json').version;
-
-const config = require('./config/config.json');
-
-const web3Provider = new Web3.providers.HttpProvider(config.provider);
-const web3 = new Web3(web3Provider);
-const { address } = web3.eth.accounts.privateKeyToAccount(config.private_key);
-web3.eth.accounts.wallet.add(config.private_key);
-const ${name}Contract = new web3.eth.Contract(
-DappContract,
-config.address
-)
-
-let Token${name} = {};
-
-Token${name}.version = version;
-Token${name}.address = config.address;
-${functionList.map(i => renderMedthods(i)).join("")}    
-  
-module.exports = Token${name};
-`
 
   const renderMedthodFrontend = methods => {
     const { stateMutability, inputs } = methods
@@ -182,15 +129,21 @@ Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(
       return `
 ${renderJsDoc(inputs)} 
 Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
-await this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
-  from: fromAddress, gas: 300000
-}, (error, result) => {
-  if (error) {
-      console.log('error in ${methods.name}' + error);
-      return 0;
-  }
-  return result;
-});
+  return new Promise((resolve, reject) => {
+    this.${name}Contract.methods.${methods.name}(${renderParams(inputs)})
+    .estimateGas({from:fromAddress })
+    .then(gas => {
+      this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
+        from: fromAddress, gas: gas + 1000000
+      }, (error, result) => {
+        if (error) {
+            console.log('error in ${methods.name}' + error);
+            reject(error)
+        }
+        resolve(result)
+      });
+    })
+  })
 };
 `
     }
@@ -221,32 +174,6 @@ module.exports = Token${name}
 
 `
 
-
-  // return {
-  //   name,
-  //   zip: [{
-  //     path: "package.json",
-  //     content: JSON.stringify(packageFile, null, 4)
-  //   }, {
-  //     path: "contracts",
-  //     child: [{
-  //       path: `${name}.json`,
-  //       content: JSON.stringify(abi, null, 4)
-  //     }]
-  //   }, {
-  //     path: "config",
-  //     child: [{
-  //       path: "config.json",
-  //       content: JSON.stringify(configContent, null, 4)
-  //     }]
-  //   }, {
-  //     path: "index.js",
-  //     content: tokenContent
-  //   }, {
-  //     path: "frontend.js",
-  //     content: frontendSdk
-  //   }]
-  // }
 
   const zip = new JSZip();
   const root = zip.folder(name);

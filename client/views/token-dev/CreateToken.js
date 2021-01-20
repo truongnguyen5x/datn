@@ -318,7 +318,7 @@ const CreateToken = props => {
       const { abi, bytecode } = formik1.values.interface
       const { name, symbol, supply, description } = formik2.values
       let { image } = formik2.values
-      if (image.name) {
+      if (image && image.name) {
         const formData = new FormData()
         formData.append('image', image)
         const res = await props.uploadImage(formData)
@@ -381,6 +381,7 @@ const CreateToken = props => {
         props.setLoading(false)
       }
     } catch (error) {
+      console.log(error)
       toast.error('Create token error')
       props.setLoading(false)
     }
