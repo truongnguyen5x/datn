@@ -19,7 +19,7 @@ class SidebarHeader extends Component {
           <li className="nav-item mr-auto">
             <NavLink to="/" className="navbar-brand">
               <div className="brand-logo" />
-              <h2 className="brand-text mb-0">{this.props.role == "admin" ? "Ad V-Coin" : "Dev V-Coin"}</h2>
+              <h2 className="brand-text mb-0">{this.props.role == "admin" ? "Admin" : "Dev V-Coin"}</h2>
             </NavLink>
           </li>
           <li className="nav-item nav-toggle">
