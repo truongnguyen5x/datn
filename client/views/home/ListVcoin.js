@@ -9,6 +9,7 @@ import { getListVCoin } from "../../redux/actions/vcoin/index"
 import { getNetType } from '../../utility/web3'
 import CreateVCoin from './CreateVcoin'
 import DetailVcoin from './DetailVcoin'
+import Swal from 'sweetalert2'
 
 const ListVCoin = (props) => {
 
@@ -51,7 +52,21 @@ const ListVCoin = (props) => {
 
                 <Button type="success"
                     color='danger'
-                    onClick={() => openModalCreate(true)}
+                    onClick={() => {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "If deploy new V-Coin you must re-add the tokens to it",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, continue!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                openModalCreate(true)
+                            }
+                        })
+                    }}
                 >
                     Deploy a V-Coin
                  </Button>

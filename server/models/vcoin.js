@@ -13,6 +13,7 @@ const VCoin = sequelize.define('VCoin', {
     },
     swap_fee: {
         type: DataTypes.STRING,
+        defaultValue: '50000'
     },
     network_id: {
         type: DataTypes.BIGINT,
