@@ -113,7 +113,7 @@ const TokenDetails = props => {
         Swal.fire({
           icon: 'error',
           title: 'Account metamask not match !',
-          text: `Please use account ${i.account} !`
+          text: `Please use account ${vcoin.account} !`
         })
         return
       }
@@ -253,7 +253,7 @@ const TokenDetails = props => {
         Swal.fire({
           icon: 'error',
           title: 'Account metamask not match !',
-          text: `Please use account ${i.account} !`
+          text: `Please use account ${vcoin.account} !`
         })
         return
       }

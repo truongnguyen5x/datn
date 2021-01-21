@@ -281,14 +281,17 @@ const TokenDetails = props => {
         </div>
         <div>
           {renderButtonAction(i)}
-          <Button size="sm" id="sdk" color="primary" className="ml-1"
-            onClick={() => handleDownloadSdk(i)}
-          >
-            <Download size={14} />
-          </Button>
-          <UncontrolledTooltip target="sdk">
-            Download SDK
+          {i?.address && <React.Fragment>
+            <Button size="sm" id="sdk" color="primary" className="ml-1"
+              onClick={() => handleDownloadSdk(i)}
+            >
+              <Download size={14} />
+            </Button>
+            <UncontrolledTooltip target="sdk">
+              Download SDK
             </UncontrolledTooltip>
+          </React.Fragment>}
+
           <Button size="sm" id="code" color="primary" className="ml-1"
             onClick={() => handleOpenSourceCode(i)}>
             <i className="fas fa-code" style={{ fontSize: '15px' }}></i>

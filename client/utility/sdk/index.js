@@ -129,21 +129,13 @@ Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(
       return `
 ${renderJsDoc(inputs)} 
 Token${name}.prototype.${methods.name} = async function (${renderParamsFrontend(inputs)}) {
-  return new Promise((resolve, reject) => {
-    this.${name}Contract.methods.${methods.name}(${renderParams(inputs)})
+    return this.${name}Contract.methods.${methods.name}(${renderParams(inputs)})
     .estimateGas({from:fromAddress })
     .then(gas => {
-      this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
+      return this.${name}Contract.methods.${methods.name}(${renderParams(inputs)}).send({
         from: fromAddress, gas: gas + 1000000
-      }, (error, result) => {
-        if (error) {
-            console.log('error in ${methods.name}' + error);
-            reject(error)
-        }
-        resolve(result)
-      });
+      })
     })
-  })
 };
 `
     }
